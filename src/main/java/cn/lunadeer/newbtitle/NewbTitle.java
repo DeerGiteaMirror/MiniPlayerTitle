@@ -1,5 +1,6 @@
 package cn.lunadeer.newbtitle;
 
+import cn.lunadeer.newbtitle.utils.ConfigManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class NewbTitle extends JavaPlugin {
@@ -7,6 +8,8 @@ public final class NewbTitle extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
+        instance = this;
+        config = new ConfigManager(instance);
 
     }
 
@@ -14,4 +17,7 @@ public final class NewbTitle extends JavaPlugin {
     public void onDisable() {
         // Plugin shutdown logic
     }
+
+    public static NewbTitle instance;
+    public static ConfigManager config;
 }
