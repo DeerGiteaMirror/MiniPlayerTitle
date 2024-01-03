@@ -1,0 +1,4 @@
+name: NewbTitle
+version: '${project.version}'
+main: cn.lunadeer.newbtitle.NewbTitle
+api-version: '1.20'
