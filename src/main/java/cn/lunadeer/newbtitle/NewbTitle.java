@@ -1,6 +1,7 @@
 package cn.lunadeer.newbtitle;
 
 import cn.lunadeer.newbtitle.utils.ConfigManager;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class NewbTitle extends JavaPlugin {
@@ -10,6 +11,7 @@ public final class NewbTitle extends JavaPlugin {
         // Plugin startup logic
         instance = this;
         config = new ConfigManager(instance);
+
 
     }
 

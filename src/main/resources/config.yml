@@ -1,0 +1,11 @@
+Database:
+  Host: localhost
+  Port: 5432
+  Name: newbtitle
+  User: postgres
+  Pass: postgres
+
+Prefix: "["
+Suffix: "]"
+
+Debug: false
