@@ -7,8 +7,7 @@ import cn.lunadeer.newbtitle.utils.XLogger;
 import java.sql.ResultSet;
 
 public class SaleTitle extends Title {
-    private final Integer _id;
-    private final Integer _title_id;
+    private Integer _sale_id;
     private Integer _price;
     private Integer _days;
     private Integer _amount;
@@ -16,8 +15,8 @@ public class SaleTitle extends Title {
 
     public SaleTitle(Integer id, Integer title_id, Integer price, Integer days, Integer amount, Long sale_end_at) {
         super(title_id);
-        this._id = id;
-        this._title_id = title_id;
+        this._sale_id = id;
+        this._id = title_id;
         this._price = price;
         this._days = days;
         this._amount = amount;
@@ -94,13 +93,13 @@ public class SaleTitle extends Title {
     private void save() {
         String sql = "";
         sql += "UPDATE nt_title_shop ";
-        sql += "SET title_id = " + this._title_id + ", ";
+        sql += "SET title_id = " + this._id + ", ";
         sql += "price = " + this._price + ", ";
         sql += "days = " + this._days + ", ";
         sql += "amount = " + this._amount + ", ";
         sql += "sale_end_at = " + this._sale_end_at + ", ";
         sql += "updated_at = CURRENT_TIMESTAMP ";
-        sql += "WHERE id = " + this._id + ";";
+        sql += "WHERE id = " + this._sale_id + ";";
 
         Database.query(sql);
     }

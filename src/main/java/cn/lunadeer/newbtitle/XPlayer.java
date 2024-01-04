@@ -81,7 +81,7 @@ public class XPlayer {
             while (rs != null && rs.next()) {
                 Integer title_id = rs.getInt("title_id");
                 Long expire_at = rs.getLong("expire_at");
-                PlayerTitle title = new PlayerTitle(title_id, expire_at);
+                PlayerTitle title = new PlayerTitle(title_id, uuid, expire_at);
                 titles.put(title_id, title);
             }
         } catch (Exception e) {
@@ -151,8 +151,31 @@ public class XPlayer {
             Notification.error(_player, "你的余额不足");
             return;
         }
-        // todo 校验是否已有此称号 以及是否已过期
-        // todo 如果已则续费 如果未则购买
+        if (!_titles.containsKey(title.getId())) {
+            _titles.put(title.getId(), PlayerTitle.create(title.getId(), _player.getUniqueId()));
+        }
+        PlayerTitle title_bought = _titles.get(title.getId());
+        if (title_bought.getExpireAtTimestamp() == -1) {
+            Notification.warn(_player, "你已经拥有此称号");
+            return;
+        }
+        set_coin(_coin - title.getPrice());
+        if (title.getDays() == -1) {
+            title_bought.setExpireAtTimestamp(-1L);
+            return;
+        }
+        if (title_bought.isExpired()) {
+            title_bought.setExpireAtTimestamp(System.currentTimeMillis() + title.getDays() * 24 * 60 * 60 * 1000L);
+        } else {
+            title_bought.setExpireAtTimestamp(title_bought.getExpireAtTimestamp() + title.getDays() * 24 * 60 * 60 * 1000L);
+        }
+    }
 
+    public void setTitle(Integer title_id, Long expire_at) {
+        if (!_titles.containsKey(title_id)) {
+            _titles.put(title_id, PlayerTitle.create(title_id, _player.getUniqueId()));
+        }
+        PlayerTitle title = _titles.get(title_id);
+        title.setExpireAtTimestamp(expire_at);
     }
 }
