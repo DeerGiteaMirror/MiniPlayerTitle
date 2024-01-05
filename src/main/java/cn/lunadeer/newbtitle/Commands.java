@@ -1,12 +1,15 @@
 package cn.lunadeer.newbtitle;
 
+import cn.lunadeer.newbtitle.utils.Notification;
+import cn.lunadeer.newbtitle.utils.XLogger;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.*;
 
 public class Commands implements TabExecutor {
     /**
@@ -23,7 +26,38 @@ public class Commands implements TabExecutor {
      */
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        return false;
+        switch (label) {
+            case "nt":
+                if (args.length == 0) {
+                    if (sender instanceof Player) {
+                        Player player = (Player) sender;
+                        Notification.warn(player, "用法: /nt <use|list|shop|buy>");
+                    } else  {
+                        XLogger.info("用法: /nt <use|list|shop|buy>");
+                    }
+                    return true;
+                }
+                switch (args[0]) {
+                    case "use":
+                        return use(sender, args);
+                    case "list":
+                        return list(sender, args);
+                    case "shop":
+                        return shop(sender, args);
+                    case "buy":
+                        return buy(sender, args);
+                    default:
+                        if (sender instanceof Player) {
+                            Player player = (Player) sender;
+                            Notification.warn(player, "用法: /nt <use|list|shop|buy>");
+                        } else  {
+                            XLogger.info("用法: /nt <use|list|shop|buy>");
+                        }
+                        return true;
+                }
+            default:
+                return false;
+        }
     }
 
     /**
@@ -41,6 +75,101 @@ public class Commands implements TabExecutor {
      */
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        return null;
+        switch (label) {
+            case "nt":
+                if (args.length == 0) {
+                    return Arrays.asList("use", "list", "shop", "buy");
+                }
+                switch (args[0]) {
+                    case "use":
+                        return Collections.singletonList("要使用的称号ID");
+                    case "list":
+                        return Collections.singletonList("页数(可选)");
+                    case "shop":
+                        return Collections.singletonList("页数(可选)");
+                    case "buy":
+                        return Collections.singletonList("要购买的条目ID");
+                    default:
+                        return Arrays.asList("use", "list", "shop", "buy");
+                }
+            default:
+                return null;
+        }
+    }
+
+    private static boolean use(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+            XLogger.warn("该命令只能由玩家执行");
+            return true;
+        }
+        Player player = (Player) sender;
+        if (args.length == 0) {
+            Notification.warn(player, "用法: /nt use <称号ID>");
+            return true;
+        }
+        XPlayer xPlayer = new XPlayer(player);
+        Integer title_id = Integer.parseInt(args[0]);
+        xPlayer.updateUsingTitle(title_id);
+        return true;
+    }
+
+    private static boolean list(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+            XLogger.warn("该命令只能由玩家执行");
+            return true;
+        }
+        Player player = (Player) sender;
+        int page = 1;
+        if (args.length != 0) {
+            try {
+                page = Integer.parseInt(args[0]);
+            } catch (Exception e) {
+                Notification.warn(player, "用法: /nt list <页数>");
+                return true;
+            }
+        }
+        XPlayer xPlayer = new XPlayer(player);
+        xPlayer.openBackpack(page);
+        return true;
+    }
+
+    private static boolean shop(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+            XLogger.warn("该命令只能由玩家执行");
+            return true;
+        }
+        Player player = (Player) sender;
+        int page = 1;
+        if (args.length != 0) {
+            try {
+                page = Integer.parseInt(args[0]);
+            } catch (Exception e) {
+                Notification.warn(player, "用法: /nt shop <页数>");
+                return true;
+            }
+        }
+        Shop.open(player, page);
+        return true;
+    }
+
+    private static boolean buy(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+            XLogger.warn("该命令只能由玩家执行");
+            return true;
+        }
+        Player player = (Player) sender;
+        if (args.length == 0) {
+            Notification.warn(player, "用法: /nt buy <称号ID>");
+            return true;
+        }
+        XPlayer xPlayer = new XPlayer(player);
+        Integer sale_id = Integer.parseInt(args[0]);
+        SaleTitle saleTitle = Shop.getSaleTitle(sale_id);
+        if (saleTitle == null) {
+            Notification.error(player, "该称号不存在");
+            return true;
+        }
+        xPlayer.buyTitle(saleTitle);
+        return true;
     }
 }

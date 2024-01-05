@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.HoverEvent;
 
 import java.sql.ResultSet;
 
@@ -79,7 +80,7 @@ public class Title {
     public Component getTitle() {
         String[] parts = this._title.split("&#");
         TextComponent[] components = new TextComponent[parts.length];
-        if (parts[0].length() > 0) {
+        if (!parts[0].isEmpty()) {
             components[0] = Component.text(parts[0]);
         }
         for (int i = 1; i < parts.length; i++) {
@@ -93,7 +94,7 @@ public class Title {
         TextComponent suffix = Component.text(NewbTitle.config.getSuffix());
         components[0] = prefix.append(components[0]);
         components[parts.length - 1] = components[parts.length - 1].append(suffix);
-        return Component.join(join, components);
+        return Component.join(join, components).hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text(this._description)));
     }
 
     public void setTitle(String title) {

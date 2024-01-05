@@ -49,12 +49,14 @@ public class XPlayer {
             if (i >= titles.size()) {
                 break;
             }
-            PlayerTitle title = titles.get(i);
+            int title_id = (int) titles.keySet().toArray()[i];
+            TextComponent idx = Component.text("[" + title_id + "] ");
+            PlayerTitle title = titles.get(title_id);
             Line line = Line.create();
             boolean is_using = Objects.equals(title.getId(), _current_title_id);
             TextComponent buy_button = Component.text(is_using ? "卸下" : "使用")
                     .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/nt use " + (is_using ? -1 : title.getId())));
-            line.set(Line.Slot.LEFT, (TextComponent) title.getTitle())
+            line.set(Line.Slot.LEFT, idx.append(title.getTitle()))
                     .set(Line.Slot.MIDDLE, title.getExpireAt())
                     .set(Line.Slot.RIGHT, buy_button);
             view.set(View.Slot.LINE_1, line);
@@ -75,11 +77,10 @@ public class XPlayer {
         applyCurrentTitle();
         String sql = "";
         sql += "UPDATE nt_player_using_title ";
-        sql += "SET title_id = " + title_id + ", ";
+        sql += "SET title_id = " + _current_title_id + ", ";
         sql += "updated_at = CURRENT_TIMESTAMP ";
         sql += "WHERE uuid = '" + _player.getUniqueId().toString() + "';";
         Database.query(sql);
-        _current_title_id = title_id;
         Notification.info(_player, "成功使用称号: " + _titles.get(title_id).getTitle());
     }
 

@@ -1,6 +1,7 @@
 package cn.lunadeer.newbtitle;
 
 import cn.lunadeer.newbtitle.utils.ConfigManager;
+import cn.lunadeer.newbtitle.utils.Database;
 import cn.lunadeer.newbtitle.utils.XLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -15,6 +16,7 @@ public final class NewbTitle extends JavaPlugin {
         // Plugin startup logic
         instance = this;
         config = new ConfigManager(instance);
+        Database.migrate();
 
         Bukkit.getPluginManager().registerEvents(new Events(), this);
         Objects.requireNonNull(Bukkit.getPluginCommand("NewbTitle")).setExecutor(new Commands());

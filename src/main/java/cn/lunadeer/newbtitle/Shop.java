@@ -34,13 +34,15 @@ public class Shop {
             if (i >= titles.size()) {
                 break;
             }
-            SaleTitle title = titles.get(i);
+            Integer title_sale_id = (Integer) titles.keySet().toArray()[i];
+            TextComponent idx = Component.text("[" + title_sale_id + "] ");
+            SaleTitle title = titles.get(title_sale_id);
             Line line = Line.create();
             TextComponent buy_button = Component.text("购买")
-                    .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/nt shop buy " + title.getId()));
-            line.set(Line.Slot.LEFT, (TextComponent) title.getTitle())
+                    .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/nt shop buy " + title_sale_id));
+            line.set(Line.Slot.LEFT, idx.append(title.getTitle()))
                     .set(Line.Slot.MIDDLE, title.getPrice() + "｜" +
-                            (title.getDays() < 0 ?"∞" : title.getDays()) + "｜" +
+                            (title.getDays() < 0 ? "∞" : title.getDays()) + "｜" +
                             (title.getAmount() < 0 ? "∞" : title.getAmount()))
                     .set(Line.Slot.RIGHT, buy_button);
             view.set(View.Slot.LINE_1, line);
@@ -105,5 +107,33 @@ public class Shop {
             XLogger.err("XPlayer getTitles failed: " + e.getMessage());
         }
         return titles;
+    }
+
+    public static SaleTitle getSaleTitle(Integer sale_id) {
+        String sql = "";
+        sql += "SELECT ";
+        sql += "id, ";
+        sql += "title_id, ";
+        sql += "price, ";
+        sql += "days, ";
+        sql += "amount, ";
+        sql += "sale_end_at";
+        sql += "FROM nt_title_shop ";
+        sql += "WHERE id = " + sale_id + ";";
+        ResultSet rs = Database.query(sql);
+        try {
+            if (rs != null && rs.next()) {
+                Integer id = rs.getInt("id");
+                Integer title_id = rs.getInt("title_id");
+                Integer price = rs.getInt("price");
+                Integer days = rs.getInt("days");
+                Integer amount = rs.getInt("amount");
+                Long sale_end_at = rs.getLong("sale_end_at");
+                return new SaleTitle(id, title_id, price, days, amount, sale_end_at);
+            }
+        } catch (Exception e) {
+            XLogger.err("XPlayer getTitles failed: " + e.getMessage());
+        }
+        return null;
     }
 }
