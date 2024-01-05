@@ -23,48 +23,46 @@ public class SaleTitle extends Title {
         this._sale_end_at = sale_end_at;
     }
 
-    public static SaleTitle create(Integer title_id) {
-        String sql = "";
-        sql += "INSERT INTO nt_title_shop (title_id, price, days, amount, sale_end_at) ";
-        sql += "VALUES (" + title_id + ", 0, 0, -1, CURRENT_TIMESTAMP) ";
-        sql += "RETURNING id;";
-        ResultSet rs = Database.query(sql);
-        try {
-            if (rs != null && rs.next()) {
-                Integer id = rs.getInt("id");
-                return new SaleTitle(id, title_id, 0, 0, -1, System.currentTimeMillis());
-            }
-        } catch (Exception e) {
-            XLogger.err("SaleTitle create failed: " + e.getMessage());
-        }
-        return null;
-    }
-
     public Integer getPrice() {
         return this._price;
     }
 
-    public void setPrice(Integer price) {
+    private void setPrice(Integer price) {
         this._price = price;
         this.save();
+    }
+
+    public static void setPrice(Integer id, Integer price) {
+        SaleTitle title = Shop.getSaleTitles().get(id);
+        title.setPrice(price);
     }
 
     public Integer getDays() {
         return this._days;
     }
 
-    public void setDays(Integer days) {
+    private void setDays(Integer days) {
         this._days = days;
         this.save();
+    }
+
+    public static void setDays(Integer id, Integer days) {
+        SaleTitle title = Shop.getSaleTitles().get(id);
+        title.setDays(days);
     }
 
     public Integer getAmount() {
         return this._amount;
     }
 
-    public void setAmount(Integer amount) {
+    private void setAmount(Integer amount) {
         this._amount = amount;
         this.save();
+    }
+
+    public static void setAmount(Integer id, Integer amount) {
+        SaleTitle title = Shop.getSaleTitles().get(id);
+        title.setAmount(amount);
     }
 
     public String getSaleEndAt() {
@@ -77,9 +75,14 @@ public class SaleTitle extends Title {
         }
     }
 
-    public void setSaleEndAt(Long sale_end_at) {
+    private void setSaleEndAt(Long sale_end_at) {
         this._sale_end_at = sale_end_at;
         this.save();
+    }
+
+    public static void setSaleEndAt(Integer id, Long sale_end_at) {
+        SaleTitle title = Shop.getSaleTitles().get(id);
+        title.setSaleEndAt(sale_end_at);
     }
 
     public Boolean isSaleExpired() {

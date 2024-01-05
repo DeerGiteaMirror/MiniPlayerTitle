@@ -1,4 +1,6 @@
 package cn.lunadeer.newbtitle;
 
-public class Events {
+import org.bukkit.event.Listener;
+
+public class Events implements Listener {
 }

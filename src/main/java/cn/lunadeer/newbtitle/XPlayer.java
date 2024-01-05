@@ -2,12 +2,18 @@ package cn.lunadeer.newbtitle;
 
 import cn.lunadeer.newbtitle.utils.Database;
 import cn.lunadeer.newbtitle.utils.Notification;
+import cn.lunadeer.newbtitle.utils.STUI.Line;
+import cn.lunadeer.newbtitle.utils.STUI.View;
 import cn.lunadeer.newbtitle.utils.XLogger;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class XPlayer {
@@ -21,7 +27,47 @@ public class XPlayer {
         _titles = getTitles(player.getUniqueId());
         _current_title_id = getCurrentTitleId(player.getUniqueId());
         _coin = getCoin(player.getUniqueId());
-        applyCurrentTitle();
+        updateUsingTitle(_current_title_id);
+    }
+
+    public void openBackpack(Integer page) {
+        Line header = Line.create();
+        header.set(Line.Slot.LEFT, "称号")
+                .set(Line.Slot.MIDDLE, "到期时间")
+                .set(Line.Slot.RIGHT, "操作");
+
+        Map<Integer, PlayerTitle> titles = getTitles(_player.getUniqueId());
+        int offset = (page - 1) * 4;
+        if (offset >= titles.size() || offset < 0) {
+            Notification.error(_player, "页数超出范围");
+            return;
+        }
+        View view = View.create();
+        view.title("｜｜ 我的称号 ｜｜")
+                .set(View.Slot.SUBTITLE, header);
+        for (int i = offset; i < offset + 4; i++) {
+            if (i >= titles.size()) {
+                break;
+            }
+            PlayerTitle title = titles.get(i);
+            Line line = Line.create();
+            boolean is_using = Objects.equals(title.getId(), _current_title_id);
+            TextComponent buy_button = Component.text(is_using ? "卸下" : "使用")
+                    .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/nt use " + (is_using ? -1 : title.getId())));
+            line.set(Line.Slot.LEFT, (TextComponent) title.getTitle())
+                    .set(Line.Slot.MIDDLE, title.getExpireAt())
+                    .set(Line.Slot.RIGHT, buy_button);
+            view.set(View.Slot.LINE_1, line);
+        }
+        Line action_bar = Line.create();
+        TextComponent previous_button = Component.text("上一页")
+                .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/nt list " + (page - 1)));
+        TextComponent next_button = Component.text("下一页")
+                .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/nt list " + (page + 1)));
+        action_bar.set(Line.Slot.MIDDLE, previous_button)
+                .set(Line.Slot.RIGHT, next_button);
+        view.set(View.Slot.ACTIONBAR, action_bar);
+        view.showOn(_player);
     }
 
     public void updateUsingTitle(Integer title_id) {
@@ -42,13 +88,13 @@ public class XPlayer {
             return;
         }
         if (!_titles.containsKey(_current_title_id)) {
-            Notification.error(_player, "你没有这个称号");
+            Notification.error(_player, "称号 " + _current_title_id + " 显示错误");
             _current_title_id = -1;
             return;
         }
         PlayerTitle title = _titles.get(_current_title_id);
         if (title.isExpired()) {
-            Notification.error(_player, "此称号已经过期");
+            Notification.error(_player, "称号 " + title.getTitle() + " 已过期");
             _current_title_id = -1;
             return;
         }
@@ -160,14 +206,17 @@ public class XPlayer {
             return;
         }
         set_coin(_coin - title.getPrice());
+        Notification.info(_player, "成功购买称号: " + title.getTitle());
         if (title.getDays() == -1) {
             title_bought.setExpireAtTimestamp(-1L);
             return;
         }
         if (title_bought.isExpired()) {
             title_bought.setExpireAtTimestamp(System.currentTimeMillis() + title.getDays() * 24 * 60 * 60 * 1000L);
+            Notification.info(_player, "称号 " + title.getTitle() + " 已重新激活，有效期至 " + title_bought.getExpireAt());
         } else {
             title_bought.setExpireAtTimestamp(title_bought.getExpireAtTimestamp() + title.getDays() * 24 * 60 * 60 * 1000L);
+            Notification.info(_player, "称号 " + title.getTitle() + " 已续期至 " + title_bought.getExpireAt());
         }
     }
 
@@ -177,5 +226,6 @@ public class XPlayer {
         }
         PlayerTitle title = _titles.get(title_id);
         title.setExpireAtTimestamp(expire_at);
+        Notification.info(_player, "获得称号: " + title.getTitle() + "，有效期至 " + title.getExpireAt());
     }
 }
