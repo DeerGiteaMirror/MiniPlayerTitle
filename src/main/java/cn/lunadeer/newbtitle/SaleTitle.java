@@ -23,6 +23,24 @@ public class SaleTitle extends Title {
         this._sale_end_at = sale_end_at;
     }
 
+    public static SaleTitle create(Integer title_id) {
+        String sql = "";
+        sql += "INSERT INTO nt_title_shop (title_id, price, days, amount, sale_end_at) ";
+        sql += "VALUES (" + title_id + ", 0, 0, 0, -1) ";
+        sql += "RETURNING id;";
+        ResultSet rs = Database.query(sql);
+        try {
+            if (rs != null && rs.next()) {
+                Integer id = rs.getInt("id");
+                SaleTitle title = new SaleTitle(id, title_id, 0, 0, -1, System.currentTimeMillis());
+                return title;
+            }
+        } catch (Exception e) {
+            XLogger.err("SaleTitle create failed: " + e.getMessage());
+        }
+        return null;
+    }
+
     public Integer getPrice() {
         return this._price;
     }

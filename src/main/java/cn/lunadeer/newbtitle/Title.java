@@ -19,11 +19,22 @@ public class Title {
     protected String _updated_at;
     JoinConfiguration join = JoinConfiguration.separator(Component.text(" "));
 
-    public Title(String title, String description) {
-        this._title = title;
-        this._description = description;
-        this._enabled = true;
-        this.save();
+    public static Title create(String title, String description) {
+        String sql = "";
+        sql += "INSERT INTO nt_title (title, description, enabled) VALUES (";
+        sql += "'" + title + "', ";
+        sql += "'" + description + "', ";
+        sql += "true ";
+        sql += ") RETURNING id;";
+        ResultSet rs = Database.query(sql);
+        try {
+            if (rs != null && rs.next()) {
+                return new Title(rs.getInt("id"));
+            }
+        } catch (Exception e) {
+            XLogger.err("Title create failed: " + e.getMessage());
+        }
+        return null;
     }
 
     public Title(Integer id) {

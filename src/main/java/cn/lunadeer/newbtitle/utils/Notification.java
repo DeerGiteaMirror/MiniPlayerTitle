@@ -3,6 +3,7 @@ package cn.lunadeer.newbtitle.utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class Notification {
@@ -20,5 +21,17 @@ public class Notification {
 
     public static void error(Player player, String msg) {
         player.sendMessage(Component.text("[NewbTitle] " + msg, e_style));
+    }
+
+    public static void info(CommandSender sender, String msg) {
+        sender.sendMessage(Component.text("[NewbTitle] " + msg, i_style));
+    }
+
+    public static void warn(CommandSender sender, String msg) {
+        sender.sendMessage(Component.text("[NewbTitle] " + msg, w_style));
+    }
+
+    public static void error(CommandSender sender, String msg) {
+        sender.sendMessage(Component.text("[NewbTitle] " + msg, e_style));
     }
 }

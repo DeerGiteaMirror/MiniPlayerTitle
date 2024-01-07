@@ -58,22 +58,6 @@ public class Shop {
         view.showOn(player);
     }
 
-    public static void addTitle(Integer title_id) {
-        String sql = "";
-        sql += "INSERT INTO nt_title_shop (title_id, price, days, amount, sale_end_at) ";
-        sql += "VALUES (" + title_id + ", 0, 0, -1, CURRENT_TIMESTAMP) ";
-        sql += "RETURNING id;";
-        ResultSet rs = Database.query(sql);
-        try {
-            if (rs != null && rs.next()) {
-                Integer id = rs.getInt("id");
-                SaleTitle title = new SaleTitle(id, title_id, 0, 0, -1, System.currentTimeMillis());
-            }
-        } catch (Exception e) {
-            XLogger.err("SaleTitle create failed: " + e.getMessage());
-        }
-    }
-
     public static void deleteTitle(Integer id) {
         String sql = "";
         sql += "DELETE FROM nt_title_shop WHERE id = " + id + ";";

@@ -1,5 +1,6 @@
 package cn.lunadeer.newbtitle;
 
+import cn.lunadeer.newbtitle.commands.AdminCommands;
 import cn.lunadeer.newbtitle.utils.Notification;
 import cn.lunadeer.newbtitle.utils.XLogger;
 import org.bukkit.command.Command;
@@ -10,6 +11,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+
+import static cn.lunadeer.newbtitle.commands.PlayerCommands.*;
 
 public class Commands implements TabExecutor {
     /**
@@ -46,12 +49,34 @@ public class Commands implements TabExecutor {
                         return shop(sender, args);
                     case "buy":
                         return buy(sender, args);
+                    case "create":
+                        return AdminCommands.createTitle(sender, args);
+                    case "delete":
+                        return AdminCommands.deleteTitle(sender, args);
+                    case "setdesc":
+                        return AdminCommands.setTitleDescription(sender, args);
+                    case "setname":
+                        return AdminCommands.setTitleName(sender, args);
+                    case "addshop":
+                        return AdminCommands.addShop(sender, args);
+                    case "removeshop":
+                        return AdminCommands.removeShop(sender, args);
+                    case "setprice":
+                        return AdminCommands.setPrice(sender, args);
+                    case "setamount":
+                        return AdminCommands.setAmount(sender, args);
+                    case "setendat":
+                        return AdminCommands.setSaleEndAt(sender, args);
                     default:
                         if (sender instanceof Player) {
                             Player player = (Player) sender;
                             Notification.warn(player, "用法: /nt <use|list|shop|buy>");
+                            if (player.isOp()){
+                                Notification.warn(player, "用法: /nt <create|delete|setdesc|setname|addshop|removeshop|setprice|setamount|setendat>");
+                            }
                         } else  {
                             XLogger.info("用法: /nt <use|list|shop|buy>");
+                            XLogger.info("用法: /nt <create|delete|setdesc|setname|addshop|removeshop|setprice|setamount|setendat>");
                         }
                         return true;
                 }
@@ -78,7 +103,22 @@ public class Commands implements TabExecutor {
         switch (label) {
             case "nt":
                 if (args.length == 0) {
-                    return Arrays.asList("use", "list", "shop", "buy");
+                    String[] player_cmd = {"use", "list", "shop", "buy"};
+                    String[] admin_cmd = {"create", "delete", "setdesc", "setname", "addshop", "removeshop", "setprice", "setamount", "setendat"};
+                    List<String> res = new ArrayList<>();
+                    if (sender instanceof Player) {
+                        Player player = (Player) sender;
+                        if (player.isOp()) {
+                            res.addAll(Arrays.asList(player_cmd));
+                            res.addAll(Arrays.asList(admin_cmd));
+                        } else {
+                            res.addAll(Arrays.asList(player_cmd));
+                        }
+                    } else {
+                        res.addAll(Arrays.asList(player_cmd));
+                        res.addAll(Arrays.asList(admin_cmd));
+                    }
+                    return res;
                 }
                 switch (args[0]) {
                     case "use":
@@ -89,6 +129,24 @@ public class Commands implements TabExecutor {
                         return Collections.singletonList("页数(可选)");
                     case "buy":
                         return Collections.singletonList("要购买的条目ID");
+                    case "create":
+                        return Collections.singletonList("<称号名称> <称号描述>");
+                    case "delete":
+                        return Collections.singletonList("<称号ID>");
+                    case "setdesc":
+                        return Collections.singletonList("<称号ID> <称号描述>");
+                    case "setname":
+                        return Collections.singletonList("<称号ID> <称号名称>");
+                    case "addshop":
+                        return Collections.singletonList("<称号ID>");
+                    case "removeshop":
+                        return Collections.singletonList("<商品ID>");
+                    case "setprice":
+                        return Collections.singletonList("<商品ID> <价格> <天数>(-1为永久)");
+                    case "setamount":
+                        return Collections.singletonList("<商品ID> <数量> (-1为无限)");
+                    case "setendat":
+                        return Collections.singletonList("<商品ID> <结束时间戳>(-1为永久)");
                     default:
                         return Arrays.asList("use", "list", "shop", "buy");
                 }
@@ -97,79 +155,5 @@ public class Commands implements TabExecutor {
         }
     }
 
-    private static boolean use(CommandSender sender, String[] args) {
-        if (!(sender instanceof Player)) {
-            XLogger.warn("该命令只能由玩家执行");
-            return true;
-        }
-        Player player = (Player) sender;
-        if (args.length == 0) {
-            Notification.warn(player, "用法: /nt use <称号ID>");
-            return true;
-        }
-        XPlayer xPlayer = new XPlayer(player);
-        Integer title_id = Integer.parseInt(args[0]);
-        xPlayer.updateUsingTitle(title_id);
-        return true;
-    }
 
-    private static boolean list(CommandSender sender, String[] args) {
-        if (!(sender instanceof Player)) {
-            XLogger.warn("该命令只能由玩家执行");
-            return true;
-        }
-        Player player = (Player) sender;
-        int page = 1;
-        if (args.length != 0) {
-            try {
-                page = Integer.parseInt(args[0]);
-            } catch (Exception e) {
-                Notification.warn(player, "用法: /nt list <页数>");
-                return true;
-            }
-        }
-        XPlayer xPlayer = new XPlayer(player);
-        xPlayer.openBackpack(page);
-        return true;
-    }
-
-    private static boolean shop(CommandSender sender, String[] args) {
-        if (!(sender instanceof Player)) {
-            XLogger.warn("该命令只能由玩家执行");
-            return true;
-        }
-        Player player = (Player) sender;
-        int page = 1;
-        if (args.length != 0) {
-            try {
-                page = Integer.parseInt(args[0]);
-            } catch (Exception e) {
-                Notification.warn(player, "用法: /nt shop <页数>");
-                return true;
-            }
-        }
-        Shop.open(player, page);
-        return true;
-    }
-
-    private static boolean buy(CommandSender sender, String[] args) {
-        if (!(sender instanceof Player)) {
-            XLogger.warn("该命令只能由玩家执行");
-            return true;
-        }
-        Player player = (Player) sender;
-        if (args.length == 0) {
-            Notification.warn(player, "用法: /nt buy <称号ID>");
-            return true;
-        }
-        XPlayer xPlayer = new XPlayer(player);
-        Integer sale_id = Integer.parseInt(args[0]);
-        SaleTitle saleTitle = Shop.getSaleTitle(sale_id);
-        if (saleTitle == null) {
-            Notification.error(player, "该称号不存在");
-            return true;
-        }
-        xPlayer.buyTitle(saleTitle);
-        return true;
-    }
 }
