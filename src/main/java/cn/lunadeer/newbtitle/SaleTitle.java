@@ -28,12 +28,10 @@ public class SaleTitle extends Title {
         sql += "INSERT INTO nt_title_shop (title_id, price, days, amount, sale_end_at) ";
         sql += "VALUES (" + title_id + ", 0, 0, 0, -1) ";
         sql += "RETURNING id;";
-        ResultSet rs = Database.query(sql);
-        try {
+        try (ResultSet rs = Database.query(sql)) {
             if (rs != null && rs.next()) {
                 Integer id = rs.getInt("id");
-                SaleTitle title = new SaleTitle(id, title_id, 0, 0, -1, System.currentTimeMillis());
-                return title;
+                return new SaleTitle(id, title_id, 0, 0, -1, System.currentTimeMillis());
             }
         } catch (Exception e) {
             XLogger.err("SaleTitle create failed: " + e.getMessage());

@@ -4,7 +4,6 @@ import cn.lunadeer.newbtitle.utils.ConfigManager;
 import cn.lunadeer.newbtitle.utils.Database;
 import cn.lunadeer.newbtitle.utils.XLogger;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;

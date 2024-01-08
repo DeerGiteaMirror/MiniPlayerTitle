@@ -16,9 +16,9 @@ public class Line {
 
 
     public Line() {
-        this.left_elements = Component.text().build();
-        this.middle_elements = Component.text().build();
-        this.right_elements = Component.text().build();
+        this.left_elements = Component.text("       ");
+        this.middle_elements = Component.text("       ");
+        this.right_elements = Component.text("       ");
     }
 
     public TextComponent build() {

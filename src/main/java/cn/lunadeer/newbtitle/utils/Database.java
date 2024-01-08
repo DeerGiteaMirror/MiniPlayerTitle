@@ -3,7 +3,6 @@ package cn.lunadeer.newbtitle.utils;
 import cn.lunadeer.newbtitle.NewbTitle;
 
 import java.sql.*;
-import java.util.Objects;
 
 public class Database {
 
@@ -18,15 +17,16 @@ public class Database {
     }
 
     public static ResultSet query(String sql) {
+        Connection conn = getConnection();
+        if (conn == null) {
+            return null;
+        }
         try {
-            Connection connection = getConnection();
-            Statement statement = Objects.requireNonNull(connection).createStatement();
-            ResultSet res = statement.executeQuery(sql);
-            statement.close();
-            connection.close();
-            return res;
+            Statement stmt = conn.createStatement();
+            return stmt.executeQuery(sql);
         } catch (SQLException e) {
             XLogger.err("Database query failed: " + e.getMessage());
+            XLogger.err("SQL: " + sql);
             return null;
         }
     }
@@ -35,7 +35,7 @@ public class Database {
         String sql = "";
 
         // title table
-        sql += "CREATE TABLE IF NOT EXISTS 'nt_title' (" +
+        sql += "CREATE TABLE IF NOT EXISTS nt_title (" +
                 "  id                 SERIAL PRIMARY KEY," +
                 "  title              TEXT NOT NULL," +
                 "  description        TEXT NOT NULL," +
@@ -45,20 +45,20 @@ public class Database {
                 ");";
 
         // title shop table
-        sql += "CREATE TABLE IF NOT EXISTS 'nt_title_shop' (" +
+        sql += "CREATE TABLE IF NOT EXISTS nt_title_shop (" +
                 "  id                 SERIAL PRIMARY KEY," +
                 "  title_id           INTEGER NOT NULL," +
                 "  price              INTEGER NOT NULL DEFAULT 0," +
                 "  days               INTEGER NOT NULL DEFAULT 0," +
                 "  amount             INTEGER NOT NULL DEFAULT -1," +
-                "  sale_end_at        TIMESTAMP," +
+                "  sale_end_at        BIGINT NOT NULL DEFAULT -1," +
                 "  created_at         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
                 "  updated_at         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
                 "  FOREIGN KEY (title_id) REFERENCES nt_title(id) ON DELETE CASCADE" +
                 ");";
 
         // player coin table
-        sql += "CREATE TABLE IF NOT EXISTS 'nt_player_coin' (" +
+        sql += "CREATE TABLE IF NOT EXISTS nt_player_coin (" +
                 "  uuid              UUID PRIMARY KEY," +
                 "  coin              INTEGER NOT NULL DEFAULT 0," +
                 "  created_at        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
@@ -66,24 +66,41 @@ public class Database {
                 ");";
 
         // player title table
-        sql += "CREATE TABLE IF NOT EXISTS 'nt_player_title' (" +
+        sql += "CREATE TABLE IF NOT EXISTS nt_player_title (" +
                 "  id                SERIAL PRIMARY KEY," +
                 "  player_uuid       UUID NOT NULL," +
                 "  title_id          INTEGER NOT NULL," +
-                "  expire_at         TIMESTAMP," +
+                "  expire_at         BIGINT NOT NULL DEFAULT -1," +
                 "  created_at        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
                 "  updated_at        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
                 "  FOREIGN KEY (title_id) REFERENCES nt_title(id) ON DELETE CASCADE" +
                 ");";
 
         // player using title table
-        sql += "CREATE TABLE IF NOT EXISTS 'nt_player_using_title' (" +
+        sql += "CREATE TABLE IF NOT EXISTS nt_player_using_title (" +
                 "  uuid              UUID PRIMARY KEY," +
                 "  title_id          INTEGER NOT NULL," +
                 "  created_at        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
                 "  updated_at        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
                 "  FOREIGN KEY (title_id) REFERENCES nt_title(id) ON DELETE CASCADE" +
                 ");";
+
+        sql += "INSERT INTO nt_title (" +
+                "id,         " +
+                "title,      " +
+                "description," +
+                "enabled,    " +
+                "created_at, " +
+                "updated_at  " +
+                ") VALUES (" +
+                "-1,          " +
+                "'default',   " +
+                "'default',   " +
+                "TRUE,        " +
+                "CURRENT_TIMESTAMP, " +
+                "CURRENT_TIMESTAMP  " +
+                ") ON CONFLICT (id) DO NOTHING;";
+
 
         query(sql);
     }

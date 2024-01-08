@@ -1,8 +1,8 @@
 package cn.lunadeer.newbtitle;
 
 import cn.lunadeer.newbtitle.utils.Database;
-import org.bukkit.entity.Player;
 
+import java.sql.ResultSet;
 import java.util.UUID;
 
 public class PlayerTitle extends Title {
@@ -20,8 +20,7 @@ public class PlayerTitle extends Title {
         sql += "INSERT INTO nt_player_title (title_id, player_uuid, expire_at) ";
         sql += "VALUES (" + title_id + ", '" + player_uuid.toString() + "', -1) ";
         sql += "RETURNING id;";
-        java.sql.ResultSet rs = Database.query(sql);
-        try {
+        try (ResultSet rs = Database.query(sql)) {
             if (rs != null && rs.next()) {
                 return new PlayerTitle(title_id, player_uuid, -1L);
             }

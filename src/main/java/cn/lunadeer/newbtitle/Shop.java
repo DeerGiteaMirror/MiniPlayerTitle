@@ -8,6 +8,7 @@ import cn.lunadeer.newbtitle.utils.XLogger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
@@ -15,13 +16,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Shop {
-    public static void open(Player player, Integer page) {
+    public static void open(CommandSender sender, Integer page) {
+        Map<Integer, SaleTitle> titles = getSaleTitles();
+        if (!(sender instanceof Player)) {
+            for (Integer title_sale_id : titles.keySet()) {
+                SaleTitle title = titles.get(title_sale_id);
+                XLogger.info("[" + title_sale_id + "] " + title.getTitle().toString() + " price:" + title.getPrice() + " days:" + title.getDays() + " amount:" + title.getAmount());
+            }
+            return;
+        }
+        Player player = (Player) sender;
         Line header = Line.create();
         header.set(Line.Slot.LEFT, "称号")
                 .set(Line.Slot.MIDDLE, "价格｜天｜剩余")
                 .set(Line.Slot.RIGHT, "操作");
-
-        Map<Integer, SaleTitle> titles = getSaleTitles();
         int offset = (page - 1) * 4;
         if (offset >= titles.size() || offset < 0) {
             Notification.error(player, "页数超出范围");
@@ -39,13 +47,13 @@ public class Shop {
             SaleTitle title = titles.get(title_sale_id);
             Line line = Line.create();
             TextComponent buy_button = Component.text("购买")
-                    .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/nt shop buy " + title_sale_id));
+                    .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/nt buy " + title_sale_id));
             line.set(Line.Slot.LEFT, idx.append(title.getTitle()))
                     .set(Line.Slot.MIDDLE, title.getPrice() + "｜" +
                             (title.getDays() < 0 ? "∞" : title.getDays()) + "｜" +
                             (title.getAmount() < 0 ? "∞" : title.getAmount()))
                     .set(Line.Slot.RIGHT, buy_button);
-            view.set(View.Slot.LINE_1, line);
+            view.set(i, line);
         }
         Line action_bar = Line.create();
         TextComponent previous_button = Component.text("上一页")
@@ -72,11 +80,10 @@ public class Shop {
         sql += "price, ";
         sql += "days, ";
         sql += "amount, ";
-        sql += "sale_end_at";
+        sql += "sale_end_at ";
         sql += "FROM nt_title_shop;";
-        ResultSet rs = Database.query(sql);
         Map<Integer, SaleTitle> titles = new HashMap<>();
-        try {
+        try (ResultSet rs = Database.query(sql)) {
             while (rs != null && rs.next()) {
                 Integer id = rs.getInt("id");
                 Integer title_id = rs.getInt("title_id");
@@ -101,11 +108,10 @@ public class Shop {
         sql += "price, ";
         sql += "days, ";
         sql += "amount, ";
-        sql += "sale_end_at";
+        sql += "sale_end_at ";
         sql += "FROM nt_title_shop ";
         sql += "WHERE id = " + sale_id + ";";
-        ResultSet rs = Database.query(sql);
-        try {
+        try (ResultSet rs = Database.query(sql)) {
             if (rs != null && rs.next()) {
                 Integer id = rs.getInt("id");
                 Integer title_id = rs.getInt("title_id");

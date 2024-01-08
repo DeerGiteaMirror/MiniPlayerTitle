@@ -34,4 +34,28 @@ public class Notification {
     public static void error(CommandSender sender, String msg) {
         sender.sendMessage(Component.text("[NewbTitle] " + msg, e_style));
     }
+
+    public static void info(Player player, Component msg) {
+        player.sendMessage(Component.text("[NewbTitle] ", i_style).append(msg));
+    }
+
+    public static void warn(Player player, Component msg) {
+        player.sendMessage(Component.text("[NewbTitle] " + msg, w_style).append(msg));
+    }
+
+    public static void error(Player player, Component msg) {
+        player.sendMessage(Component.text("[NewbTitle] " + msg, e_style).append(msg));
+    }
+
+    public static void info(CommandSender player, Component msg) {
+        player.sendMessage(Component.text("[NewbTitle] ", i_style).append(msg));
+    }
+
+    public static void warn(CommandSender player, Component msg) {
+        player.sendMessage(Component.text("[NewbTitle] " + msg, w_style).append(msg));
+    }
+
+    public static void error(CommandSender player, Component msg) {
+        player.sendMessage(Component.text("[NewbTitle] " + msg, e_style).append(msg));
+    }
 }

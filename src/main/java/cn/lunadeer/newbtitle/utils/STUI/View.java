@@ -14,35 +14,35 @@ public class View {
         ACTIONBAR
     }
 
-    protected TextComponent title;
-    protected TextComponent subtitle;
-    protected TextComponent content_line1;
-    protected TextComponent content_line2;
-    protected TextComponent content_line3;
-    protected TextComponent content_line4;
-    protected TextComponent actionbar;
+    protected TextComponent title = Component.text("       ");
+    protected TextComponent subtitle = Component.text("       ");
+    protected TextComponent content_line1 = Component.text("       ");
+    protected TextComponent content_line2 = Component.text("       ");
+    protected TextComponent content_line3 = Component.text("       ");
+    protected TextComponent content_line4 = Component.text("       ");
+    protected TextComponent actionbar = Component.text("       ");
 
-    public void showOn(Player player){
+    public void showOn(Player player) {
         player.sendMessage(title);
         player.sendMessage(subtitle);
         player.sendMessage(content_line1);
         player.sendMessage(content_line2);
         player.sendMessage(content_line3);
         player.sendMessage(content_line4);
-        player.sendActionBar(actionbar);
+        player.sendMessage(actionbar);
     }
 
-    public static View create(){
+    public static View create() {
         return new View();
     }
 
-    public View title(String title){
+    public View title(String title) {
         this.title = Component.text(title);
         return this;
     }
 
-    public View set(Slot line, TextComponent component){
-        switch (line){
+    public View set(Slot line, TextComponent component) {
+        switch (line) {
             case SUBTITLE:
                 this.subtitle = component;
                 break;
@@ -65,8 +65,8 @@ public class View {
         return this;
     }
 
-    public View set(Slot line, String component){
-        switch (line){
+    public View set(Slot line, String component) {
+        switch (line) {
             case SUBTITLE:
                 this.subtitle = Component.text(component);
                 break;
@@ -89,8 +89,23 @@ public class View {
         return this;
     }
 
-    public View set(Slot line, Line component){
-        switch (line){
+    public View set(int index, Line component) {
+        if (index % 4 == 0) {
+            this.set(View.Slot.LINE_1, component);
+        } else if (index % 4 == 1) {
+            this.set(View.Slot.LINE_2, component);
+        } else if (index % 4 == 2) {
+            this.set(View.Slot.LINE_3, component);
+        } else if (index % 4 == 3) {
+            this.set(View.Slot.LINE_4, component);
+        } else {
+            throw new IllegalArgumentException("index must be 0-3");
+        }
+        return this;
+    }
+
+    public View set(Slot line, Line component) {
+        switch (line) {
             case SUBTITLE:
                 this.subtitle = component.build();
                 break;

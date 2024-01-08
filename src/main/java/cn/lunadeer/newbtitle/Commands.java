@@ -10,7 +10,10 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static cn.lunadeer.newbtitle.commands.PlayerCommands.*;
 
@@ -32,12 +35,7 @@ public class Commands implements TabExecutor {
         switch (label) {
             case "nt":
                 if (args.length == 0) {
-                    if (sender instanceof Player) {
-                        Player player = (Player) sender;
-                        Notification.warn(player, "用法: /nt <use|list|shop|buy>");
-                    } else  {
-                        XLogger.info("用法: /nt <use|list|shop|buy>");
-                    }
+                    printHelp(sender);
                     return true;
                 }
                 switch (args[0]) {
@@ -67,21 +65,27 @@ public class Commands implements TabExecutor {
                         return AdminCommands.setAmount(sender, args);
                     case "setendat":
                         return AdminCommands.setSaleEndAt(sender, args);
+                    case "listall":
+                        return AdminCommands.listAllTitle(sender, args);
                     default:
-                        if (sender instanceof Player) {
-                            Player player = (Player) sender;
-                            Notification.warn(player, "用法: /nt <use|list|shop|buy>");
-                            if (player.isOp()){
-                                Notification.warn(player, "用法: /nt <create|delete|setdesc|setname|addshop|removeshop|setprice|setamount|setendat>");
-                            }
-                        } else  {
-                            XLogger.info("用法: /nt <use|list|shop|buy>");
-                            XLogger.info("用法: /nt <create|delete|setdesc|setname|addshop|removeshop|setprice|setamount|setendat>");
-                        }
+                        printHelp(sender);
                         return true;
                 }
             default:
                 return false;
+        }
+    }
+
+    private void printHelp(@NotNull CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            Notification.warn(player, "用法: /nt <use|list|shop|buy>");
+            if (player.isOp()){
+                Notification.warn(player, "用法: /nt <create|delete|setdesc|setname|addshop|removeshop|setprice|setamount|setendat|listall>");
+            }
+        } else  {
+            XLogger.info("用法: /nt <use|list|shop|buy>");
+            XLogger.info("用法: /nt <create|delete|setdesc|setname|addshop|removeshop|setprice|setamount|setendat|listall>");
         }
     }
 
@@ -104,7 +108,7 @@ public class Commands implements TabExecutor {
             case "nt":
                 if (args.length == 0) {
                     String[] player_cmd = {"use", "list", "shop", "buy"};
-                    String[] admin_cmd = {"create", "delete", "setdesc", "setname", "addshop", "removeshop", "setprice", "setamount", "setendat"};
+                    String[] admin_cmd = {"create", "delete", "setdesc", "setname", "addshop", "removeshop", "setprice", "setamount", "setendat", "listall"};
                     List<String> res = new ArrayList<>();
                     if (sender instanceof Player) {
                         Player player = (Player) sender;
@@ -124,7 +128,6 @@ public class Commands implements TabExecutor {
                     case "use":
                         return Collections.singletonList("要使用的称号ID");
                     case "list":
-                        return Collections.singletonList("页数(可选)");
                     case "shop":
                         return Collections.singletonList("页数(可选)");
                     case "buy":
@@ -132,13 +135,12 @@ public class Commands implements TabExecutor {
                     case "create":
                         return Collections.singletonList("<称号名称> <称号描述>");
                     case "delete":
+                    case "addshop":
                         return Collections.singletonList("<称号ID>");
                     case "setdesc":
                         return Collections.singletonList("<称号ID> <称号描述>");
                     case "setname":
                         return Collections.singletonList("<称号ID> <称号名称>");
-                    case "addshop":
-                        return Collections.singletonList("<称号ID>");
                     case "removeshop":
                         return Collections.singletonList("<商品ID>");
                     case "setprice":

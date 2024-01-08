@@ -1,22 +1,27 @@
 package cn.lunadeer.newbtitle;
 
 import cn.lunadeer.newbtitle.utils.Database;
+import cn.lunadeer.newbtitle.utils.Notification;
+import cn.lunadeer.newbtitle.utils.STUI.Line;
+import cn.lunadeer.newbtitle.utils.STUI.View;
 import cn.lunadeer.newbtitle.utils.XLogger;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Title {
     protected Integer _id = null;
     protected String _title;
     protected String _description;
     protected Boolean _enabled;
-    protected String _created_at;
-    protected String _updated_at;
     JoinConfiguration join = JoinConfiguration.separator(Component.text(" "));
 
     public static Title create(String title, String description) {
@@ -26,10 +31,10 @@ public class Title {
         sql += "'" + description + "', ";
         sql += "true ";
         sql += ") RETURNING id;";
-        ResultSet rs = Database.query(sql);
-        try {
+        try (ResultSet rs = Database.query(sql)) {
             if (rs != null && rs.next()) {
-                return new Title(rs.getInt("id"));
+                int titleId = rs.getInt("id");
+                return new Title(titleId);
             }
         } catch (Exception e) {
             XLogger.err("Title create failed: " + e.getMessage());
@@ -37,22 +42,75 @@ public class Title {
         return null;
     }
 
+    public static List<Title> all() {
+        List<Title> titles = new ArrayList<>();
+        String sql = "";
+        sql += "SELECT id FROM nt_title;";
+        try (ResultSet rs = Database.query(sql)) {
+            if (rs != null) {
+                while (rs.next()) {
+                    Integer id = rs.getInt("id");
+                    titles.add(new Title(id));
+                }
+            }
+        } catch (Exception e) {
+            XLogger.err("Title all failed: " + e.getMessage());
+        }
+        return titles;
+    }
+
+    public static void listAllTitle(CommandSender sender, Integer page) {
+        List<Title> titles = all();
+        if (!(sender instanceof Player)) {
+            for (Title title : titles) {
+                Notification.info(sender, title.getId() + " " + title.getTitle().toString());
+            }
+            return;
+        }
+        Player player = (Player) sender;
+        Line header = Line.create();
+        header.set(Line.Slot.LEFT, "ID")
+                .set(Line.Slot.MIDDLE, "称号");
+        int offset = (page - 1) * 4;
+        if (offset >= titles.size() || offset < 0) {
+            Notification.error(player, "页数超出范围");
+            return;
+        }
+        View view = View.create();
+        view.title("｜｜ 所有称号 ｜｜")
+                .set(View.Slot.SUBTITLE, header);
+        for (int i = offset; i < offset + 4; i++) {
+            if (i >= titles.size()) {
+                break;
+            }
+            TextComponent idx = Component.text("[" + titles.get(i).getId() + "] ");
+            Line line = Line.create();
+            line.set(Line.Slot.LEFT, idx)
+                    .set(Line.Slot.MIDDLE, (TextComponent) titles.get(i).getTitle());
+            view.set(i, line);
+        }
+        Line action_bar = Line.create();
+        TextComponent previous_button = Component.text("上一页")
+                .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/nt all " + (page - 1)));
+        TextComponent next_button = Component.text("下一页")
+                .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/nt all " + (page + 1)));
+        action_bar.set(Line.Slot.MIDDLE, previous_button)
+                .set(Line.Slot.RIGHT, next_button);
+        view.set(View.Slot.ACTIONBAR, action_bar);
+        view.showOn(player);
+    }
+
     public Title(Integer id) {
         this._id = id;
         String sql = "";
-        sql += "SELECT id, title, description, enabled, ";
-        sql += "DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS created_at, ";
-        sql += "DATE_FORMAT(updated_at, '%Y-%m-%d %H:%i:%s') AS updated_at ";
+        sql += "SELECT id, title, description, enabled ";
         sql += "FROM nt_title ";
         sql += "WHERE id = " + id + ";";
-        ResultSet rs = Database.query(sql);
-        try {
+        try (ResultSet rs = Database.query(sql)) {
             if (rs != null && rs.next()) {
                 this._title = rs.getString("title");
                 this._description = rs.getString("description");
                 this._enabled = rs.getBoolean("enabled");
-                this._created_at = rs.getString("created_at");
-                this._updated_at = rs.getString("updated_at");
             }
         } catch (Exception e) {
             XLogger.err("Title load failed: " + e.getMessage());
@@ -89,22 +147,29 @@ public class Title {
     }
 
     public Component getTitle() {
-        String[] parts = this._title.split("&#");
-        TextComponent[] components = new TextComponent[parts.length];
-        if (!parts[0].isEmpty()) {
-            components[0] = Component.text(parts[0]);
-        }
-        for (int i = 1; i < parts.length; i++) {
-            String part = parts[i];
-            String color_str = part.substring(0, 6);
-            String text = part.substring(6);
-            Color color = new Color(color_str);
-            components[i] = Component.text(text, color.getStyle());
-        }
         TextComponent prefix = Component.text(NewbTitle.config.getPrefix());
         TextComponent suffix = Component.text(NewbTitle.config.getSuffix());
-        components[0] = prefix.append(components[0]);
-        components[parts.length - 1] = components[parts.length - 1].append(suffix);
+        String[] parts = this._title.split("&#");
+        List<TextComponent> components = new ArrayList<>();
+        components.add(prefix);
+        for (String part : parts) {
+            XLogger.debug(part);
+            if (part.isEmpty()) {
+                continue;
+            }
+            // match hex regx ^[0-9a-fA-F]{6}$
+            Color color = new Color("#ffffff");
+            String content;
+            if (part.length() > 6 && part.substring(0, 6).matches("^[0-9a-fA-F]{6}$")) {
+                String color_str = part.substring(0, 6);
+                color = new Color("#" + color_str);
+                content = part.substring(6);
+            } else {
+                content = part;
+            }
+            components.add(Component.text(content, color.getStyle()));
+        }
+        components.add(suffix);
         return Component.join(join, components).hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text(this._description)));
     }
 
@@ -129,13 +194,5 @@ public class Title {
     public void setEnabled(Boolean enabled) {
         this._enabled = enabled;
         this.save();
-    }
-
-    public String getCreatedAt() {
-        return this._created_at;
-    }
-
-    public String getUpdatedAt() {
-        return this._updated_at;
     }
 }
