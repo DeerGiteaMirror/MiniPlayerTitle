@@ -2,6 +2,7 @@ package cn.lunadeer.newbtitle;
 
 import cn.lunadeer.newbtitle.utils.Database;
 import cn.lunadeer.newbtitle.utils.Notification;
+import cn.lunadeer.newbtitle.utils.STUI.Button;
 import cn.lunadeer.newbtitle.utils.STUI.Line;
 import cn.lunadeer.newbtitle.utils.STUI.View;
 import cn.lunadeer.newbtitle.utils.XLogger;
@@ -38,11 +39,6 @@ public class XPlayer {
     }
 
     public void openBackpack(Integer page) {
-        Line header = Line.create();
-        header.set(Line.Slot.LEFT, "称号")
-                .set(Line.Slot.MIDDLE, "到期时间")
-                .set(Line.Slot.RIGHT, "操作");
-
         Map<Integer, PlayerTitle> titles = getTitles(_player.getUniqueId());
         int offset = (page - 1) * 4;
         if (offset >= titles.size() || offset < 0) {
@@ -50,8 +46,7 @@ public class XPlayer {
             return;
         }
         View view = View.create();
-        view.title("｜｜ 我的称号 ｜｜")
-                .set(View.Slot.SUBTITLE, header);
+        view.title("我的称号");
         for (int i = offset; i < offset + 4; i++) {
             if (i >= titles.size()) {
                 break;
@@ -61,21 +56,14 @@ public class XPlayer {
             PlayerTitle title = titles.get(title_id);
             Line line = Line.create();
             boolean is_using = Objects.equals(title.getId(), _current_title_id);
-            TextComponent buy_button = Component.text(is_using ? "卸下" : "使用")
-                    .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/nt use " + (is_using ? -1 : title.getId())));
-            line.set(Line.Slot.LEFT, idx.append(title.getTitle()))
-                    .set(Line.Slot.MIDDLE, title.getExpireAt())
-                    .set(Line.Slot.RIGHT, buy_button);
+            Component button = Button.create(is_using ? "卸下" : "使用", "/nt use " + (is_using ? -1 : title.getId()));
+            line.append(idx)
+                    .append(title.getTitle())
+                    .append(Component.text("有效期至:" + title.getExpireAt()))
+                    .append(button);
             view.set(i, line);
         }
-        Line action_bar = Line.create();
-        TextComponent previous_button = Component.text("上一页")
-                .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/nt list " + (page - 1)));
-        TextComponent next_button = Component.text("下一页")
-                .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/nt list " + (page + 1)));
-        action_bar.set(Line.Slot.MIDDLE, previous_button)
-                .set(Line.Slot.RIGHT, next_button);
-        view.set(View.Slot.ACTIONBAR, action_bar);
+        view.set(View.Slot.ACTIONBAR, View.pagination(page, titles.size(), "/nt list"));
         view.showOn(_player);
     }
 

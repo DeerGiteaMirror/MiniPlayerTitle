@@ -68,35 +68,23 @@ public class Title {
             return;
         }
         Player player = (Player) sender;
-        Line header = Line.create();
-        header.set(Line.Slot.LEFT, "ID")
-                .set(Line.Slot.MIDDLE, "称号");
         int offset = (page - 1) * 4;
         if (offset >= titles.size() || offset < 0) {
             Notification.error(player, "页数超出范围");
             return;
         }
         View view = View.create();
-        view.title("｜｜ 所有称号 ｜｜")
-                .set(View.Slot.SUBTITLE, header);
+        view.title("所有称号");
         for (int i = offset; i < offset + 4; i++) {
             if (i >= titles.size()) {
                 break;
             }
             TextComponent idx = Component.text("[" + titles.get(i).getId() + "] ");
             Line line = Line.create();
-            line.set(Line.Slot.LEFT, idx)
-                    .set(Line.Slot.MIDDLE, (TextComponent) titles.get(i).getTitle());
+            line.append(idx).append(titles.get(i).getTitle());
             view.set(i, line);
         }
-        Line action_bar = Line.create();
-        TextComponent previous_button = Component.text("上一页")
-                .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/nt all " + (page - 1)));
-        TextComponent next_button = Component.text("下一页")
-                .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/nt all " + (page + 1)));
-        action_bar.set(Line.Slot.MIDDLE, previous_button)
-                .set(Line.Slot.RIGHT, next_button);
-        view.set(View.Slot.ACTIONBAR, action_bar);
+        view.set(View.Slot.ACTIONBAR, View.pagination(page, titles.size(), "/nt listall"));
         view.showOn(player);
     }
 
@@ -170,7 +158,11 @@ public class Title {
             components.add(Component.text(content, color.getStyle()));
         }
         components.add(suffix);
-        return Component.join(join, components).hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text(this._description)));
+        TextComponent.Builder title_component = Component.text();
+        for (TextComponent component : components) {
+            title_component.append(component);
+        }
+        return title_component.build().hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text(this._description)));
     }
 
     public void setTitle(String title) {

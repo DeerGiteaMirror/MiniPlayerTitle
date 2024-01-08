@@ -2,6 +2,7 @@ package cn.lunadeer.newbtitle;
 
 import cn.lunadeer.newbtitle.utils.Database;
 import cn.lunadeer.newbtitle.utils.Notification;
+import cn.lunadeer.newbtitle.utils.STUI.Button;
 import cn.lunadeer.newbtitle.utils.STUI.Line;
 import cn.lunadeer.newbtitle.utils.STUI.View;
 import cn.lunadeer.newbtitle.utils.XLogger;
@@ -26,18 +27,13 @@ public class Shop {
             return;
         }
         Player player = (Player) sender;
-        Line header = Line.create();
-        header.set(Line.Slot.LEFT, "称号")
-                .set(Line.Slot.MIDDLE, "价格｜天｜剩余")
-                .set(Line.Slot.RIGHT, "操作");
         int offset = (page - 1) * 4;
         if (offset >= titles.size() || offset < 0) {
             Notification.error(player, "页数超出范围");
             return;
         }
         View view = View.create();
-        view.title("｜｜ 称号商店 ｜｜")
-                .set(View.Slot.SUBTITLE, header);
+        view.title("称号商店");
         for (int i = offset; i < offset + 4; i++) {
             if (i >= titles.size()) {
                 break;
@@ -46,23 +42,16 @@ public class Shop {
             TextComponent idx = Component.text("[" + title_sale_id + "] ");
             SaleTitle title = titles.get(title_sale_id);
             Line line = Line.create();
-            TextComponent buy_button = Component.text("购买")
-                    .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/nt buy " + title_sale_id));
-            line.set(Line.Slot.LEFT, idx.append(title.getTitle()))
-                    .set(Line.Slot.MIDDLE, title.getPrice() + "｜" +
-                            (title.getDays() < 0 ? "∞" : title.getDays()) + "｜" +
-                            (title.getAmount() < 0 ? "∞" : title.getAmount()))
-                    .set(Line.Slot.RIGHT, buy_button);
+            Component button = Button.create("购买", "/nt buy " + title_sale_id);
+            line.append(idx)
+                    .append(title.getTitle())
+                    .append("价格:" + title.getPrice() + " 有效期:" + title.getDays() + "天")
+                    .append("售卖截止:" + title.getSaleEndAt())
+                    .append("剩余:" + ((title.getAmount() == -1) ? "无限" : title.getAmount()))
+                    .append(button);
             view.set(i, line);
         }
-        Line action_bar = Line.create();
-        TextComponent previous_button = Component.text("上一页")
-                .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/nt shop " + (page - 1)));
-        TextComponent next_button = Component.text("下一页")
-                .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/nt shop " + (page + 1)));
-        action_bar.set(Line.Slot.MIDDLE, previous_button)
-                .set(Line.Slot.RIGHT, next_button);
-        view.set(View.Slot.ACTIONBAR, action_bar);
+        view.set(View.Slot.ACTIONBAR, View.pagination(page, titles.size(), "/nt shop"));
         view.showOn(player);
     }
 

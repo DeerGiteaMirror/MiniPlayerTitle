@@ -3,64 +3,45 @@ package cn.lunadeer.newbtitle.utils.STUI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class Line {
-    public enum Slot {
-        LEFT,
-        MIDDLE,
-        RIGHT
-    }
-    private TextComponent left_elements;
-    private TextComponent middle_elements;
-    private TextComponent right_elements;
+    private List<Component> elements = new ArrayList<>();
 
+    private TextComponent divider = Component.text(" - ", View.sub_color);
 
     public Line() {
-        this.left_elements = Component.text("       ");
-        this.middle_elements = Component.text("       ");
-        this.right_elements = Component.text("       ");
     }
 
     public TextComponent build() {
-        TextComponent gap = Component.text(" ");
-        return Component.text().append(left_elements)
-                .append(gap)
-                .append(middle_elements)
-                .append(gap)
-                .append(right_elements).build();
+        TextComponent.Builder builder = Component.text();
+        for (int i = 0; i < elements.size(); i++) {
+            builder.append(elements.get(i));
+            if (i != elements.size() - 1) {
+                builder.append(divider);
+            }
+        }
+        return builder.build();
     }
 
     public static Line create() {
         return new Line();
     }
 
-    public Line set(Slot slot, TextComponent component) {
-        switch (slot) {
-            case LEFT:
-                this.left_elements = component;
-                break;
-            case MIDDLE:
-                this.middle_elements = component;
-                break;
-            case RIGHT:
-                this.right_elements = component;
-                break;
-        }
+    public Line append(TextComponent component) {
+        elements.add(component);
         return this;
     }
 
-    public Line set(Slot slot, String component) {
-        switch (slot) {
-            case LEFT:
-                this.left_elements = Component.text(component);
-                break;
-            case MIDDLE:
-                this.middle_elements = Component.text(component);
-                break;
-            case RIGHT:
-                this.right_elements = Component.text(component);
-                break;
-        }
+    public Line append(Component component) {
+        elements.add(component);
+        return this;
+    }
+
+    public Line append(String component) {
+        elements.add(Component.text(component));
         return this;
     }
 

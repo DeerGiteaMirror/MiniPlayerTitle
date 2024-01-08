@@ -2,7 +2,12 @@ package cn.lunadeer.newbtitle.utils.STUI;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class View {
     public enum Slot {
@@ -14,6 +19,14 @@ public class View {
         ACTIONBAR
     }
 
+    public static TextColor main_color = TextColor.color(0, 179, 255);
+    public static TextColor sub_color = TextColor.color(143, 143, 143);
+    public static TextColor action_color = TextColor.color(251, 255, 139);
+
+    protected TextComponent title_decorate = Component.text("===========", main_color);
+    protected TextComponent sub_title_decorate = Component.text("=====", main_color);
+    protected TextComponent line_decorate = Component.text("- ", main_color);
+    protected TextComponent action_decorate = Component.text("> ", main_color);
     protected TextComponent title = Component.text("       ");
     protected TextComponent subtitle = Component.text("       ");
     protected TextComponent content_line1 = Component.text("       ");
@@ -21,15 +34,43 @@ public class View {
     protected TextComponent content_line3 = Component.text("       ");
     protected TextComponent content_line4 = Component.text("       ");
     protected TextComponent actionbar = Component.text("       ");
+    protected TextComponent bottom_decorate = Component.text("=================================", main_color);
+
+    public static TextComponent pagination(int page, int item_size, String command) {
+        // 第 x/y 页 [上一页] [下一页]
+        int page_size = 4;
+        int page_count = (int) Math.ceil((double) item_size / page_size);
+        if (page_count == 0) {
+            page_count = 1;
+        }
+        List<Component> componentList = new ArrayList<>();
+        componentList.add(Component.text("第 ", main_color));
+        componentList.add(Component.text(page, sub_color));
+        componentList.add(Component.text("/", main_color));
+        componentList.add(Component.text(page_count, sub_color));
+        componentList.add(Component.text(" 页 ", main_color));
+        if (page > 1) {
+            componentList.add(Button.create("[上一页]", command + " " + (page - 1)));
+        }
+        if (page < page_count) {
+            componentList.add(Button.create("[下一页]", command + " " + (page + 1)));
+        }
+        TextComponent.Builder builder = Component.text();
+        for (Component component : componentList) {
+            builder.append(component);
+        }
+        return builder.build();
+    }
 
     public void showOn(Player player) {
-        player.sendMessage(title);
-        player.sendMessage(subtitle);
-        player.sendMessage(content_line1);
-        player.sendMessage(content_line2);
-        player.sendMessage(content_line3);
-        player.sendMessage(content_line4);
-        player.sendMessage(actionbar);
+        player.sendMessage(Component.text().append(title_decorate).append(title).append(title_decorate).build());
+        player.sendMessage(Component.text().append(sub_title_decorate).append(subtitle).build());
+        player.sendMessage(Component.text().append(line_decorate).append(content_line1).build());
+        player.sendMessage(Component.text().append(line_decorate).append(content_line2).build());
+        player.sendMessage(Component.text().append(line_decorate).append(content_line3).build());
+        player.sendMessage(Component.text().append(line_decorate).append(content_line4).build());
+        player.sendMessage(Component.text().append(action_decorate).append(actionbar).build());
+        player.sendMessage(bottom_decorate);
     }
 
     public static View create() {

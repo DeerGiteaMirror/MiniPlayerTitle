@@ -6,7 +6,7 @@
 
     <groupId>cn.lunadeer</groupId>
     <artifactId>NewbTitle</artifactId>
-    <version>0.34-alpha</version>
+    <version>0.36-alpha</version>
     <packaging>jar</packaging>
 
     <name>NewbTitle</name>
