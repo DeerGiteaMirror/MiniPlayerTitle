@@ -1,10 +1,10 @@
 package cn.lunadeer.newbtitle.utils;
 
-import cn.lunadeer.newbtitle.NewbTitle;
+import cn.lunadeer.newbtitle.MiniPlayerTitle;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class ConfigManager {
-    public ConfigManager(NewbTitle plugin) {
+    public ConfigManager(MiniPlayerTitle plugin) {
         _plugin = plugin;
         _plugin.saveDefaultConfig();
         reload();
@@ -94,7 +94,7 @@ public class ConfigManager {
     }
 
 
-    private final NewbTitle _plugin;
+    private final MiniPlayerTitle _plugin;
     private FileConfiguration _file;
     private Boolean _debug;
 

@@ -8,7 +8,6 @@ import cn.lunadeer.newbtitle.utils.STUI.View;
 import cn.lunadeer.newbtitle.utils.XLogger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -42,7 +41,7 @@ public class Shop {
             TextComponent idx = Component.text("[" + title_sale_id + "] ");
             SaleTitle title = titles.get(title_sale_id);
             Line line = Line.create();
-            Component button = Button.create("购买", "/nt buy " + title_sale_id);
+            Component button = Button.create("购买", "/mplt buy " + title_sale_id);
             line.append(idx)
                     .append(title.getTitle())
                     .append("价格:" + title.getPrice() + " 有效期:" + title.getDays() + "天")
@@ -51,13 +50,13 @@ public class Shop {
                     .append(button);
             view.set(i, line);
         }
-        view.set(View.Slot.ACTIONBAR, View.pagination(page, titles.size(), "/nt shop"));
+        view.set(View.Slot.ACTIONBAR, View.pagination(page, titles.size(), "/mplt shop"));
         view.showOn(player);
     }
 
     public static void deleteTitle(Integer id) {
         String sql = "";
-        sql += "DELETE FROM nt_title_shop WHERE id = " + id + ";";
+        sql += "DELETE FROM mplt_title_shop WHERE id = " + id + ";";
         Database.query(sql);
     }
 
@@ -70,7 +69,7 @@ public class Shop {
         sql += "days, ";
         sql += "amount, ";
         sql += "sale_end_at ";
-        sql += "FROM nt_title_shop;";
+        sql += "FROM mplt_title_shop;";
         Map<Integer, SaleTitle> titles = new HashMap<>();
         try (ResultSet rs = Database.query(sql)) {
             while (rs != null && rs.next()) {
@@ -98,7 +97,7 @@ public class Shop {
         sql += "days, ";
         sql += "amount, ";
         sql += "sale_end_at ";
-        sql += "FROM nt_title_shop ";
+        sql += "FROM mplt_title_shop ";
         sql += "WHERE id = " + sale_id + ";";
         try (ResultSet rs = Database.query(sql)) {
             if (rs != null && rs.next()) {

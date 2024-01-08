@@ -15,7 +15,7 @@ public class PlayerCommands {
         }
         org.bukkit.entity.Player player = (org.bukkit.entity.Player) sender;
         if (args.length != 2) {
-            Notification.warn(player, "用法: /nt use <称号ID>");
+            Notification.warn(player, "用法: /mplt use <称号ID>");
             return true;
         }
 
@@ -64,7 +64,7 @@ public class PlayerCommands {
         }
         org.bukkit.entity.Player player = (org.bukkit.entity.Player) sender;
         if (args.length != 2) {
-            Notification.warn(player, "用法: /nt buy <称号ID>");
+            Notification.warn(player, "用法: /mplt buy <称号ID>");
             return true;
         }
         XPlayer xPlayer = new XPlayer(player);

@@ -11,51 +11,53 @@ public class Notification {
     private static final Style w_style = Style.style(TextColor.color(255, 185, 69));
     private static final Style e_style = Style.style(TextColor.color(255, 96, 72));
 
+    private static final String prefix = "[MiniPlayerTitle] ";
+
     public static void info(Player player, String msg) {
-        player.sendMessage(Component.text("[NewbTitle] " + msg, i_style));
+        player.sendMessage(Component.text(prefix + msg, i_style));
     }
 
     public static void warn(Player player, String msg) {
-        player.sendMessage(Component.text("[NewbTitle] " + msg, w_style));
+        player.sendMessage(Component.text(prefix + msg, w_style));
     }
 
     public static void error(Player player, String msg) {
-        player.sendMessage(Component.text("[NewbTitle] " + msg, e_style));
+        player.sendMessage(Component.text(prefix + msg, e_style));
     }
 
     public static void info(CommandSender sender, String msg) {
-        sender.sendMessage(Component.text("[NewbTitle] " + msg, i_style));
+        sender.sendMessage(Component.text(prefix + msg, i_style));
     }
 
     public static void warn(CommandSender sender, String msg) {
-        sender.sendMessage(Component.text("[NewbTitle] " + msg, w_style));
+        sender.sendMessage(Component.text(prefix + msg, w_style));
     }
 
     public static void error(CommandSender sender, String msg) {
-        sender.sendMessage(Component.text("[NewbTitle] " + msg, e_style));
+        sender.sendMessage(Component.text(prefix + msg, e_style));
     }
 
     public static void info(Player player, Component msg) {
-        player.sendMessage(Component.text("[NewbTitle] ", i_style).append(msg));
+        player.sendMessage(Component.text(prefix, i_style).append(msg));
     }
 
     public static void warn(Player player, Component msg) {
-        player.sendMessage(Component.text("[NewbTitle] " + msg, w_style).append(msg));
+        player.sendMessage(Component.text(prefix + msg, w_style).append(msg));
     }
 
     public static void error(Player player, Component msg) {
-        player.sendMessage(Component.text("[NewbTitle] " + msg, e_style).append(msg));
+        player.sendMessage(Component.text(prefix + msg, e_style).append(msg));
     }
 
     public static void info(CommandSender player, Component msg) {
-        player.sendMessage(Component.text("[NewbTitle] ", i_style).append(msg));
+        player.sendMessage(Component.text(prefix, i_style).append(msg));
     }
 
     public static void warn(CommandSender player, Component msg) {
-        player.sendMessage(Component.text("[NewbTitle] " + msg, w_style).append(msg));
+        player.sendMessage(Component.text(prefix + msg, w_style).append(msg));
     }
 
     public static void error(CommandSender player, Component msg) {
-        player.sendMessage(Component.text("[NewbTitle] " + msg, e_style).append(msg));
+        player.sendMessage(Component.text(prefix + msg, e_style).append(msg));
     }
 }

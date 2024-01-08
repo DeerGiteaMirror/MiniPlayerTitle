@@ -1,2 +1,2 @@
-# NewbTitle
+# MiniPlayerTitle
 

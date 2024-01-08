@@ -17,7 +17,7 @@ public class PlayerTitle extends Title {
 
     public static PlayerTitle create(Integer title_id, UUID player_uuid) {
         String sql = "";
-        sql += "INSERT INTO nt_player_title (title_id, player_uuid, expire_at) ";
+        sql += "INSERT INTO mplt_player_title (title_id, player_uuid, expire_at) ";
         sql += "VALUES (" + title_id + ", '" + player_uuid.toString() + "', -1) ";
         sql += "RETURNING id;";
         try (ResultSet rs = Database.query(sql)) {
@@ -59,7 +59,7 @@ public class PlayerTitle extends Title {
 
     private void save() {
         String sql = "";
-        sql += "UPDATE nt_player_title ";
+        sql += "UPDATE mplt_player_title ";
         sql += "SET expire_at = " + this._expire_at + ", ";
         sql += "updated_at = CURRENT_TIMESTAMP ";
         sql += "WHERE player_uuid = '" + _player_uuid.toString() + "', ";
