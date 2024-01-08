@@ -1,14 +1,13 @@
-package cn.lunadeer.newbtitle;
+package cn.lunadeer.miniplayertitle;
 
-import cn.lunadeer.newbtitle.utils.Database;
-import cn.lunadeer.newbtitle.utils.Notification;
-import cn.lunadeer.newbtitle.utils.STUI.Button;
-import cn.lunadeer.newbtitle.utils.STUI.Line;
-import cn.lunadeer.newbtitle.utils.STUI.View;
-import cn.lunadeer.newbtitle.utils.XLogger;
+import cn.lunadeer.miniplayertitle.utils.Database;
+import cn.lunadeer.miniplayertitle.utils.Notification;
+import cn.lunadeer.miniplayertitle.utils.STUI.Button;
+import cn.lunadeer.miniplayertitle.utils.STUI.Line;
+import cn.lunadeer.miniplayertitle.utils.STUI.View;
+import cn.lunadeer.miniplayertitle.utils.XLogger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
@@ -56,14 +55,14 @@ public class XPlayer {
             PlayerTitle title = titles.get(title_id);
             Line line = Line.create();
             boolean is_using = Objects.equals(title.getId(), _current_title_id);
-            Component button = Button.create(is_using ? "卸下" : "使用", "/nt use " + (is_using ? -1 : title.getId()));
+            Component button = Button.create(is_using ? "卸下" : "使用", "/mplt use " + (is_using ? -1 : title.getId()));
             line.append(idx)
                     .append(title.getTitle())
                     .append(Component.text("有效期至:" + title.getExpireAt()))
                     .append(button);
             view.set(i, line);
         }
-        view.set(View.Slot.ACTIONBAR, View.pagination(page, titles.size(), "/nt list"));
+        view.set(View.Slot.ACTIONBAR, View.pagination(page, titles.size(), "/mplt list"));
         view.showOn(_player);
     }
 
@@ -74,7 +73,7 @@ public class XPlayer {
             return;
         }
         String sql = "";
-        sql += "UPDATE nt_player_using_title ";
+        sql += "UPDATE mplt_player_using_title ";
         sql += "SET title_id = " + _current_title_id + ", ";
         sql += "updated_at = CURRENT_TIMESTAMP ";
         sql += "WHERE uuid = '" + _player.getUniqueId().toString() + "';";
@@ -103,7 +102,7 @@ public class XPlayer {
     public void set_coin(Integer coin) {
         _coin = coin;
         String sql = "";
-        sql += "UPDATE nt_player_coin ";
+        sql += "UPDATE mplt_player_coin ";
         sql += "SET coin = " + coin + ", ";
         sql += "updated_at = CURRENT_TIMESTAMP ";
         sql += "WHERE uuid = '" + _player.getUniqueId().toString() + "';";
@@ -114,11 +113,20 @@ public class XPlayer {
         set_coin(_coin + coin);
     }
 
+    public Integer get_coin() {
+        return _coin;
+    }
+
+    public static Integer getCoin(Player player) {
+        XPlayer xplayer = new XPlayer(player);
+        return xplayer.get_coin();
+    }
+
     private static Map<Integer, PlayerTitle> getTitles(UUID uuid) {
         String sql = "";
         sql += "SELECT ";
         sql += "title_id, expire_at ";
-        sql += "FROM nt_player_title ";
+        sql += "FROM mplt_player_title ";
         sql += "WHERE player_uuid = '" + uuid.toString() + "';";
         Map<Integer, PlayerTitle> titles = new HashMap<>();
         try (ResultSet rs = Database.query(sql)) {
@@ -137,7 +145,7 @@ public class XPlayer {
     private static Integer getCurrentTitleId(UUID uuid) {
         String sql = "";
         sql += "SELECT title_id ";
-        sql += "FROM nt_player_using_title ";
+        sql += "FROM mplt_player_using_title ";
         sql += "WHERE uuid = '" + uuid.toString() + "';";
         Integer current_title_id = null;
         try (ResultSet rs = Database.query(sql)) {
@@ -146,7 +154,7 @@ public class XPlayer {
             } else {
                 current_title_id = -1;
                 sql = "";
-                sql += "INSERT INTO nt_player_using_title (uuid, title_id) VALUES (";
+                sql += "INSERT INTO mplt_player_using_title (uuid, title_id) VALUES (";
                 sql += "'" + uuid + "', ";
                 sql += current_title_id + ");";
                 Database.query(sql);
@@ -160,7 +168,7 @@ public class XPlayer {
     private static Integer getCoin(UUID uuid) {
         String sql = "";
         sql += "SELECT coin ";
-        sql += "FROM nt_player_coin ";
+        sql += "FROM mplt_player_coin ";
         sql += "WHERE uuid = '" + uuid.toString() + "';";
         Integer coin = null;
         try (ResultSet rs = Database.query(sql)) {
@@ -169,7 +177,7 @@ public class XPlayer {
             } else {
                 coin = 0;
                 sql = "";
-                sql += "INSERT INTO nt_player_coin (uuid, coin) VALUES (";
+                sql += "INSERT INTO mplt_player_coin (uuid, coin) VALUES (";
                 sql += "'" + uuid + "', ";
                 sql += coin + ");";
                 Database.query(sql);
@@ -181,7 +189,7 @@ public class XPlayer {
     }
 
     public void buyTitle(SaleTitle title) {
-        if (title.isSaleExpired()) {
+        if (title.isSaleExpired() || title.getDays() == 0) {
             Notification.error(_player, "此称号已停止销售");
             return;
         }
@@ -211,7 +219,7 @@ public class XPlayer {
         if (title_bought.isExpired()) {
             title_bought.setExpireAtTimestamp(System.currentTimeMillis() + title.getDays() * 24 * 60 * 60 * 1000L);
             Notification.info(_player, title.getTitle());
-            Notification.info(_player, "称号已重新激活，有效期至 " + title_bought.getExpireAt());
+            Notification.info(_player, "称号已激活，有效期至 " + title_bought.getExpireAt());
         } else {
             title_bought.setExpireAtTimestamp(title_bought.getExpireAtTimestamp() + title.getDays() * 24 * 60 * 60 * 1000L);
             Notification.info(_player, title.getTitle());

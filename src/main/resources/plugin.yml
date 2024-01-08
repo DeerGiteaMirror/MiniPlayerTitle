@@ -1,12 +1,12 @@
-name: NewbTitle
+name: MiniPlayerTitle
 version: '${project.version}'
-main: cn.lunadeer.newbtitle.NewbTitle
+main: cn.lunadeer.miniplayertitle.MiniPlayerTitle
 api-version: '1.20'
 description: 称号插件。
 website: https://lunadeer.cn
 folia-supported: true
 commands:
-  NewbTitle:
+  MiniPlayerTitle:
     description: 称号插件命令
-    usage: /nt <cmd>
-    aliases: [nt]
+    usage: /mplt <cmd>
+    aliases: [mplt]

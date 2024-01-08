@@ -1,10 +1,10 @@
-package cn.lunadeer.newbtitle.commands;
+package cn.lunadeer.miniplayertitle.commands;
 
-import cn.lunadeer.newbtitle.SaleTitle;
-import cn.lunadeer.newbtitle.Shop;
-import cn.lunadeer.newbtitle.XPlayer;
-import cn.lunadeer.newbtitle.utils.Notification;
-import cn.lunadeer.newbtitle.utils.XLogger;
+import cn.lunadeer.miniplayertitle.SaleTitle;
+import cn.lunadeer.miniplayertitle.Shop;
+import cn.lunadeer.miniplayertitle.XPlayer;
+import cn.lunadeer.miniplayertitle.utils.Notification;
+import cn.lunadeer.miniplayertitle.utils.XLogger;
 import org.bukkit.command.CommandSender;
 
 public class PlayerCommands {
@@ -15,7 +15,7 @@ public class PlayerCommands {
         }
         org.bukkit.entity.Player player = (org.bukkit.entity.Player) sender;
         if (args.length != 2) {
-            Notification.warn(player, "用法: /nt use <称号ID>");
+            Notification.warn(player, "用法: /mplt use <称号ID>");
             return true;
         }
 
@@ -64,12 +64,12 @@ public class PlayerCommands {
         }
         org.bukkit.entity.Player player = (org.bukkit.entity.Player) sender;
         if (args.length != 2) {
-            Notification.warn(player, "用法: /nt buy <称号ID>");
+            Notification.warn(player, "用法: /mplt buy <称号ID>");
             return true;
         }
         XPlayer xPlayer = new XPlayer(player);
         Integer sale_id = Integer.parseInt(args[1]);
-        SaleTitle saleTitle = Shop.getSaleTitle(sale_id);
+        SaleTitle saleTitle = Shop.getSaleTitles().get(sale_id);
         if (saleTitle == null) {
             Notification.error(player, "该称号不存在");
             return true;

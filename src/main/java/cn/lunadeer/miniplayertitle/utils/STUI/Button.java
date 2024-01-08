@@ -1,4 +1,4 @@
-package cn.lunadeer.newbtitle.utils.STUI;
+package cn.lunadeer.miniplayertitle.utils.STUI;
 
 import net.kyori.adventure.text.Component;
 

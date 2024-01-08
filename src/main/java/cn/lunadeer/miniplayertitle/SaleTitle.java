@@ -1,8 +1,8 @@
-package cn.lunadeer.newbtitle;
+package cn.lunadeer.miniplayertitle;
 
 
-import cn.lunadeer.newbtitle.utils.Database;
-import cn.lunadeer.newbtitle.utils.XLogger;
+import cn.lunadeer.miniplayertitle.utils.Database;
+import cn.lunadeer.miniplayertitle.utils.XLogger;
 
 import java.sql.ResultSet;
 
@@ -25,7 +25,7 @@ public class SaleTitle extends Title {
 
     public static SaleTitle create(Integer title_id) {
         String sql = "";
-        sql += "INSERT INTO nt_title_shop (title_id, price, days, amount, sale_end_at) ";
+        sql += "INSERT INTO mplt_title_shop (title_id, price, days, amount, sale_end_at) ";
         sql += "VALUES (" + title_id + ", 0, 0, 0, -1) ";
         sql += "RETURNING id;";
         try (ResultSet rs = Database.query(sql)) {
@@ -109,9 +109,13 @@ public class SaleTitle extends Title {
         }
     }
 
+    public Integer getSaleId(){
+        return this._sale_id;
+    }
+
     private void save() {
         String sql = "";
-        sql += "UPDATE nt_title_shop ";
+        sql += "UPDATE mplt_title_shop ";
         sql += "SET title_id = " + this._id + ", ";
         sql += "price = " + this._price + ", ";
         sql += "days = " + this._days + ", ";

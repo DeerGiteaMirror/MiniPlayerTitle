@@ -1,8 +1,8 @@
-package cn.lunadeer.newbtitle;
+package cn.lunadeer.miniplayertitle;
 
-import cn.lunadeer.newbtitle.commands.AdminCommands;
-import cn.lunadeer.newbtitle.utils.Notification;
-import cn.lunadeer.newbtitle.utils.XLogger;
+import cn.lunadeer.miniplayertitle.commands.AdminCommands;
+import cn.lunadeer.miniplayertitle.utils.Notification;
+import cn.lunadeer.miniplayertitle.utils.XLogger;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static cn.lunadeer.newbtitle.commands.PlayerCommands.*;
+import static cn.lunadeer.miniplayertitle.commands.PlayerCommands.*;
 
 public class Commands implements TabExecutor {
     /**
@@ -33,7 +33,7 @@ public class Commands implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         switch (label) {
-            case "nt":
+            case "mplt":
                 if (args.length == 0) {
                     printHelp(sender);
                     return true;
@@ -79,13 +79,13 @@ public class Commands implements TabExecutor {
     private void printHelp(@NotNull CommandSender sender) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            Notification.warn(player, "用法: /nt <use|list|shop|buy>");
-            if (player.isOp()){
-                Notification.warn(player, "用法: /nt <create|delete|setdesc|setname|addshop|removeshop|setprice|setamount|setendat|listall>");
+            Notification.warn(player, "用法: /mplt <use|list|shop|buy>");
+            if (player.isOp()) {
+                Notification.warn(player, "用法: /mplt <create|delete|setdesc|setname|addshop|removeshop|setprice|setamount|setendat|listall>");
             }
-        } else  {
-            XLogger.info("用法: /nt <use|list|shop|buy>");
-            XLogger.info("用法: /nt <create|delete|setdesc|setname|addshop|removeshop|setprice|setamount|setendat|listall>");
+        } else {
+            XLogger.info("用法: /mplt <use|list|shop|buy>");
+            XLogger.info("用法: /mplt <create|delete|setdesc|setname|addshop|removeshop|setprice|setamount|setendat|listall>");
         }
     }
 
@@ -104,57 +104,53 @@ public class Commands implements TabExecutor {
      */
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        switch (label) {
-            case "nt":
-                if (args.length == 0) {
-                    String[] player_cmd = {"use", "list", "shop", "buy"};
-                    String[] admin_cmd = {"create", "delete", "setdesc", "setname", "addshop", "removeshop", "setprice", "setamount", "setendat", "listall"};
-                    List<String> res = new ArrayList<>();
-                    if (sender instanceof Player) {
-                        Player player = (Player) sender;
-                        if (player.isOp()) {
-                            res.addAll(Arrays.asList(player_cmd));
-                            res.addAll(Arrays.asList(admin_cmd));
-                        } else {
-                            res.addAll(Arrays.asList(player_cmd));
-                        }
-                    } else {
-                        res.addAll(Arrays.asList(player_cmd));
-                        res.addAll(Arrays.asList(admin_cmd));
-                    }
-                    return res;
+        if (args.length == 1) {
+            String[] player_cmd = {"use", "list", "shop", "buy"};
+            String[] admin_cmd = {"create", "delete", "setdesc", "setname", "addshop", "removeshop", "setprice", "setamount", "setendat", "listall"};
+            List<String> res = new ArrayList<>();
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
+                if (player.isOp()) {
+                    res.addAll(Arrays.asList(player_cmd));
+                    res.addAll(Arrays.asList(admin_cmd));
+                } else {
+                    res.addAll(Arrays.asList(player_cmd));
                 }
-                switch (args[0]) {
-                    case "use":
-                        return Collections.singletonList("要使用的称号ID");
-                    case "list":
-                    case "shop":
-                        return Collections.singletonList("页数(可选)");
-                    case "buy":
-                        return Collections.singletonList("要购买的条目ID");
-                    case "create":
-                        return Collections.singletonList("<称号名称> <称号描述>");
-                    case "delete":
-                    case "addshop":
-                        return Collections.singletonList("<称号ID>");
-                    case "setdesc":
-                        return Collections.singletonList("<称号ID> <称号描述>");
-                    case "setname":
-                        return Collections.singletonList("<称号ID> <称号名称>");
-                    case "removeshop":
-                        return Collections.singletonList("<商品ID>");
-                    case "setprice":
-                        return Collections.singletonList("<商品ID> <价格> <天数>(-1为永久)");
-                    case "setamount":
-                        return Collections.singletonList("<商品ID> <数量> (-1为无限)");
-                    case "setendat":
-                        return Collections.singletonList("<商品ID> <结束时间戳>(-1为永久)");
-                    default:
-                        return Arrays.asList("use", "list", "shop", "buy");
-                }
-            default:
-                return null;
+            } else {
+                res.addAll(Arrays.asList(player_cmd));
+                res.addAll(Arrays.asList(admin_cmd));
+            }
+            return res;
         }
+        switch (args[0]) {
+            case "use":
+                return Collections.singletonList("要使用的称号ID");
+            case "list":
+            case "shop":
+                return Collections.singletonList("页数(可选)");
+            case "buy":
+                return Collections.singletonList("要购买的条目ID");
+            case "create":
+                return Collections.singletonList("<称号名称> <称号描述>");
+            case "delete":
+            case "addshop":
+                return Collections.singletonList("<称号ID>");
+            case "setdesc":
+                return Collections.singletonList("<称号ID> <称号描述>");
+            case "setname":
+                return Collections.singletonList("<称号ID> <称号名称>");
+            case "removeshop":
+                return Collections.singletonList("<商品ID>");
+            case "setprice":
+                return Collections.singletonList("<商品ID> <价格> <天数>(-1为永久)");
+            case "setamount":
+                return Collections.singletonList("<商品ID> <数量> (-1为无限)");
+            case "setendat":
+                return Collections.singletonList("<商品ID> <结束时间戳>(-1为永久)");
+            default:
+                return Arrays.asList("use", "list", "shop", "buy");
+        }
+
     }
 
 

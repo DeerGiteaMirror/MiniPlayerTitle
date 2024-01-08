@@ -1,14 +1,13 @@
-package cn.lunadeer.newbtitle;
+package cn.lunadeer.miniplayertitle;
 
-import cn.lunadeer.newbtitle.utils.Database;
-import cn.lunadeer.newbtitle.utils.Notification;
-import cn.lunadeer.newbtitle.utils.STUI.Line;
-import cn.lunadeer.newbtitle.utils.STUI.View;
-import cn.lunadeer.newbtitle.utils.XLogger;
+import cn.lunadeer.miniplayertitle.utils.Database;
+import cn.lunadeer.miniplayertitle.utils.Notification;
+import cn.lunadeer.miniplayertitle.utils.STUI.Line;
+import cn.lunadeer.miniplayertitle.utils.STUI.View;
+import cn.lunadeer.miniplayertitle.utils.XLogger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -26,7 +25,7 @@ public class Title {
 
     public static Title create(String title, String description) {
         String sql = "";
-        sql += "INSERT INTO nt_title (title, description, enabled) VALUES (";
+        sql += "INSERT INTO mplt_title (title, description, enabled) VALUES (";
         sql += "'" + title + "', ";
         sql += "'" + description + "', ";
         sql += "true ";
@@ -45,7 +44,7 @@ public class Title {
     public static List<Title> all() {
         List<Title> titles = new ArrayList<>();
         String sql = "";
-        sql += "SELECT id FROM nt_title;";
+        sql += "SELECT id FROM mplt_title;";
         try (ResultSet rs = Database.query(sql)) {
             if (rs != null) {
                 while (rs.next()) {
@@ -63,7 +62,8 @@ public class Title {
         List<Title> titles = all();
         if (!(sender instanceof Player)) {
             for (Title title : titles) {
-                Notification.info(sender, title.getId() + " " + title.getTitle().toString());
+                Notification.info(sender, "[" + title.getId() + "]");
+                Notification.info(sender, title.getTitle());
             }
             return;
         }
@@ -84,7 +84,7 @@ public class Title {
             line.append(idx).append(titles.get(i).getTitle());
             view.set(i, line);
         }
-        view.set(View.Slot.ACTIONBAR, View.pagination(page, titles.size(), "/nt listall"));
+        view.set(View.Slot.ACTIONBAR, View.pagination(page, titles.size(), "/mplt listall"));
         view.showOn(player);
     }
 
@@ -92,7 +92,7 @@ public class Title {
         this._id = id;
         String sql = "";
         sql += "SELECT id, title, description, enabled ";
-        sql += "FROM nt_title ";
+        sql += "FROM mplt_title ";
         sql += "WHERE id = " + id + ";";
         try (ResultSet rs = Database.query(sql)) {
             if (rs != null && rs.next()) {
@@ -107,20 +107,20 @@ public class Title {
 
     public static void delete(Integer id) {
         String sql = "";
-        sql += "DELETE FROM nt_title WHERE id = " + id + ";";
+        sql += "DELETE FROM mplt_title WHERE id = " + id + ";";
         Database.query(sql);
     }
 
     private void save() {
         String sql = "";
         if (this._id == null) {
-            sql += "INSERT INTO nt_title (title, description, enabled) VALUES (";
+            sql += "INSERT INTO mplt_title (title, description, enabled) VALUES (";
             sql += "'" + this._title + "', ";
             sql += "'" + this._description + "', ";
             sql += this._enabled + " ";
             sql += ");";
         } else {
-            sql += "UPDATE nt_title SET ";
+            sql += "UPDATE mplt_title SET ";
             sql += "title = '" + this._title + "', ";
             sql += "description = '" + this._description + "', ";
             sql += "enabled = " + this._enabled + " ";
@@ -135,8 +135,8 @@ public class Title {
     }
 
     public Component getTitle() {
-        TextComponent prefix = Component.text(NewbTitle.config.getPrefix());
-        TextComponent suffix = Component.text(NewbTitle.config.getSuffix());
+        TextComponent prefix = Component.text(MiniPlayerTitle.config.getPrefix());
+        TextComponent suffix = Component.text(MiniPlayerTitle.config.getSuffix());
         String[] parts = this._title.split("&#");
         List<TextComponent> components = new ArrayList<>();
         components.add(prefix);

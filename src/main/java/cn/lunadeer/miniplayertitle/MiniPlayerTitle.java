@@ -1,14 +1,14 @@
-package cn.lunadeer.newbtitle;
+package cn.lunadeer.miniplayertitle;
 
-import cn.lunadeer.newbtitle.utils.ConfigManager;
-import cn.lunadeer.newbtitle.utils.Database;
-import cn.lunadeer.newbtitle.utils.XLogger;
+import cn.lunadeer.miniplayertitle.utils.ConfigManager;
+import cn.lunadeer.miniplayertitle.utils.Database;
+import cn.lunadeer.miniplayertitle.utils.XLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
 
-public final class NewbTitle extends JavaPlugin {
+public final class MiniPlayerTitle extends JavaPlugin {
 
     @Override
     public void onEnable() {
@@ -18,8 +18,8 @@ public final class NewbTitle extends JavaPlugin {
         Database.migrate();
 
         Bukkit.getPluginManager().registerEvents(new Events(), this);
-        Objects.requireNonNull(Bukkit.getPluginCommand("NewbTitle")).setExecutor(new Commands());
-        Objects.requireNonNull(Bukkit.getPluginCommand("NewbTitle")).setTabCompleter(new Commands());
+        Objects.requireNonNull(Bukkit.getPluginCommand("MiniPlayerTitle")).setExecutor(new Commands());
+        Objects.requireNonNull(Bukkit.getPluginCommand("MiniPlayerTitle")).setTabCompleter(new Commands());
 
         XLogger.info("NewbTitle 称号插件已加载");
     }
@@ -29,6 +29,6 @@ public final class NewbTitle extends JavaPlugin {
         // Plugin shutdown logic
     }
 
-    public static NewbTitle instance;
+    public static MiniPlayerTitle instance;
     public static ConfigManager config;
 }

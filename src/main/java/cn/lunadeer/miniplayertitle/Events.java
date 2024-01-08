@@ -1,4 +1,4 @@
-package cn.lunadeer.newbtitle;
+package cn.lunadeer.miniplayertitle;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
@@ -27,14 +27,15 @@ public class Events implements Listener {
                     .append(chatComponent).build();
             event.setCancelled(true);
             event.getPlayer().getServer().sendMessage(newChatComponent);
+        } else {
+            Component titleComponent = title.getTitle();
+            Component newChatComponent = Component.text().append(titleComponent)
+                    .append(Component.text("<"))
+                    .append(nameComponent)
+                    .append(Component.text("> "))
+                    .append(chatComponent).build();
+            event.setCancelled(true);
+            event.getPlayer().getServer().sendMessage(newChatComponent);
         }
-        Component titleComponent = title.getTitle();
-        Component newChatComponent = Component.text().append(titleComponent)
-                .append(Component.text("<"))
-                .append(nameComponent)
-                .append(Component.text("> "))
-                .append(chatComponent).build();
-        event.setCancelled(true);
-        event.getPlayer().getServer().sendMessage(newChatComponent);
     }
 }

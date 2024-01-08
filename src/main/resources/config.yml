@@ -1,9 +1,9 @@
 Database:
   Host: localhost
   Port: 5432
-  Name: newbtitle
-  User: postgres
-  Pass: postgres
+  Name: miniplayertitle
+  User: miniplayertitle
+  Pass: miniplayertitle
 
 Prefix: "["
 Suffix: "]"

@@ -1,17 +1,19 @@
-package cn.lunadeer.newbtitle.utils;
+package cn.lunadeer.miniplayertitle.utils;
 
-import cn.lunadeer.newbtitle.NewbTitle;
+import cn.lunadeer.miniplayertitle.MiniPlayerTitle;
 import org.bukkit.entity.Player;
 
 import java.util.logging.Logger;
 
 public class XLogger {
-    private static final NewbTitle _plugin = NewbTitle.instance;
+    private static final MiniPlayerTitle _plugin = MiniPlayerTitle.instance;
     private static final Logger _logger = _plugin.getLogger();
 
+    private static final String prefix = "[MiniPlayerTitle] ";
+
     public static void info(Player player, String message) {
-        Notification.info(player, "NewbTitle I | " + message);
-        if (NewbTitle.config.isDebug())
+        Notification.info(player, prefix + "I | " + message);
+        if (MiniPlayerTitle.config.isDebug())
             debug("来自玩家[ " + player.getName() + " ] 的信息 | " + message);
     }
 
@@ -20,8 +22,8 @@ public class XLogger {
     }
 
     public static void warn(Player player, String message) {
-        Notification.warn(player, "NewbTitle W | " + message);
-        if (NewbTitle.config.isDebug())
+        Notification.warn(player, prefix + "W | " + message);
+        if (MiniPlayerTitle.config.isDebug())
             debug("来自玩家[ " + player.getName() + " ] 的警告 | " + message);
     }
 
@@ -30,8 +32,8 @@ public class XLogger {
     }
 
     public static void err(Player player, String message) {
-        Notification.error(player, "NewbTitle E | " + message);
-        if (NewbTitle.config.isDebug())
+        Notification.error(player, prefix + "E | " + message);
+        if (MiniPlayerTitle.config.isDebug())
             debug("来自玩家[ " + player.getName() + " ] 的报错 | " + message);
     }
 
@@ -40,15 +42,15 @@ public class XLogger {
     }
 
     public static void debug(Player player, String message) {
-        if (!NewbTitle.config.isDebug()) return;
+        if (!MiniPlayerTitle.config.isDebug()) return;
         if (player.isOp())
-            Notification.info(player, "NewbTitle D | " + message);
+            Notification.info(player, prefix + "D | " + message);
         else
             debug("来自玩家[ " + player.getName() + " ] 的调试 | " + message);
     }
 
     public static void debug(String message) {
-        if (!NewbTitle.config.isDebug()) return;
+        if (!MiniPlayerTitle.config.isDebug()) return;
         _logger.info(" D | " + message);
     }
 }

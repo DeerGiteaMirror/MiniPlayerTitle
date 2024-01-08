@@ -1,8 +1,7 @@
-package cn.lunadeer.newbtitle.utils.STUI;
+package cn.lunadeer.miniplayertitle.utils.STUI;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.entity.Player;
 
@@ -79,6 +78,21 @@ public class View {
 
     public View title(String title) {
         this.title = Component.text(title);
+        return this;
+    }
+
+    public View title(TextComponent title) {
+        this.title = title;
+        return this;
+    }
+
+    public View subtitle(String subtitle) {
+        this.subtitle = Component.text(subtitle);
+        return this;
+    }
+
+    public View subtitle(TextComponent subtitle) {
+        this.subtitle = subtitle;
         return this;
     }
 

@@ -1,6 +1,6 @@
-package cn.lunadeer.newbtitle;
+package cn.lunadeer.miniplayertitle;
 
-import cn.lunadeer.newbtitle.utils.Database;
+import cn.lunadeer.miniplayertitle.utils.Database;
 
 import java.sql.ResultSet;
 import java.util.UUID;
@@ -17,15 +17,15 @@ public class PlayerTitle extends Title {
 
     public static PlayerTitle create(Integer title_id, UUID player_uuid) {
         String sql = "";
-        sql += "INSERT INTO nt_player_title (title_id, player_uuid, expire_at) ";
-        sql += "VALUES (" + title_id + ", '" + player_uuid.toString() + "', -1) ";
+        sql += "INSERT INTO mplt_player_title (title_id, player_uuid, expire_at) ";
+        sql += "VALUES (" + title_id + ", '" + player_uuid.toString() + "', " + System.currentTimeMillis() + ") ";
         sql += "RETURNING id;";
         try (ResultSet rs = Database.query(sql)) {
             if (rs != null && rs.next()) {
                 return new PlayerTitle(title_id, player_uuid, -1L);
             }
         } catch (Exception e) {
-            cn.lunadeer.newbtitle.utils.XLogger.err("PlayerTitle create failed: " + e.getMessage());
+            cn.lunadeer.miniplayertitle.utils.XLogger.err("PlayerTitle create failed: " + e.getMessage());
         }
         return null;
     }
@@ -59,7 +59,7 @@ public class PlayerTitle extends Title {
 
     private void save() {
         String sql = "";
-        sql += "UPDATE nt_player_title ";
+        sql += "UPDATE mplt_player_title ";
         sql += "SET expire_at = " + this._expire_at + ", ";
         sql += "updated_at = CURRENT_TIMESTAMP ";
         sql += "WHERE player_uuid = '" + _player_uuid.toString() + "', ";
