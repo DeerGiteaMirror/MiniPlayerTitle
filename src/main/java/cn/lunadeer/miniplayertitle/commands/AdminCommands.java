@@ -179,19 +179,13 @@ public class AdminCommands {
             return true;
         }
         long time_stamp;
-        if (Integer.parseInt(args[2]) == -1) {
-            time_stamp = -1;
-        } else {
-            // 字符串转时间戳
-            java.text.SimpleDateFormat simpleDateFormat = new java.text.SimpleDateFormat("yyyyMMdd");
-            try {
-                java.util.Date date = simpleDateFormat.parse(args[2]);
-                time_stamp = date.getTime();
-            } catch (Exception e) {
-                Notification.error(sender, "时间格式错误");
-                return true;
-            }
+        try {
+            time_stamp = Long.parseLong(args[2]);
+        } catch (Exception e) {
+            Notification.error(sender, "时间格式错误");
+            return true;
         }
+
         SaleTitle.setSaleEndAt(Integer.parseInt(args[1]), time_stamp);
         return true;
     }

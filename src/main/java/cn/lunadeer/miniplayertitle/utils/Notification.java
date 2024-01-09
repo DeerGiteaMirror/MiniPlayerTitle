@@ -42,11 +42,11 @@ public class Notification {
     }
 
     public static void warn(Player player, Component msg) {
-        player.sendMessage(Component.text(prefix + msg, w_style).append(msg));
+        player.sendMessage(Component.text(prefix, w_style).append(msg));
     }
 
     public static void error(Player player, Component msg) {
-        player.sendMessage(Component.text(prefix + msg, e_style).append(msg));
+        player.sendMessage(Component.text(prefix, e_style).append(msg));
     }
 
     public static void info(CommandSender player, Component msg) {
@@ -54,10 +54,10 @@ public class Notification {
     }
 
     public static void warn(CommandSender player, Component msg) {
-        player.sendMessage(Component.text(prefix + msg, w_style).append(msg));
+        player.sendMessage(Component.text(prefix, w_style).append(msg));
     }
 
     public static void error(CommandSender player, Component msg) {
-        player.sendMessage(Component.text(prefix + msg, e_style).append(msg));
+        player.sendMessage(Component.text(prefix, e_style).append(msg));
     }
 }

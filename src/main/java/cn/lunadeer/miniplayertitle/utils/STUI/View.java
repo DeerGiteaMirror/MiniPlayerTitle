@@ -70,6 +70,7 @@ public class View {
         player.sendMessage(Component.text().append(line_decorate).append(content_line4).build());
         player.sendMessage(Component.text().append(action_decorate).append(actionbar).build());
         player.sendMessage(bottom_decorate);
+        player.sendMessage(Component.text("     "));
     }
 
     public static View create() {

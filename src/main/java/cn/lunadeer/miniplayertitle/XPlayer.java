@@ -5,6 +5,7 @@ import cn.lunadeer.miniplayertitle.utils.Notification;
 import cn.lunadeer.miniplayertitle.utils.STUI.Button;
 import cn.lunadeer.miniplayertitle.utils.STUI.Line;
 import cn.lunadeer.miniplayertitle.utils.STUI.View;
+import cn.lunadeer.miniplayertitle.utils.Time;
 import cn.lunadeer.miniplayertitle.utils.XLogger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -58,7 +59,7 @@ public class XPlayer {
             Component button = Button.create(is_using ? "卸下" : "使用", "/mplt use " + (is_using ? -1 : title.getId()));
             line.append(idx)
                     .append(title.getTitle())
-                    .append(Component.text("有效期至:" + title.getExpireAt()))
+                    .append(Component.text("有效期至:" + title.getExpireAtStr()))
                     .append(button);
             view.set(i, line);
         }
@@ -69,15 +70,16 @@ public class XPlayer {
     public void updateUsingTitle(Integer title_id) {
         _current_title_id = title_id;
         checkTitleValid();
-        if (_current_title_id == -1) {
-            return;
-        }
         String sql = "";
         sql += "UPDATE mplt_player_using_title ";
         sql += "SET title_id = " + _current_title_id + ", ";
         sql += "updated_at = CURRENT_TIMESTAMP ";
         sql += "WHERE uuid = '" + _player.getUniqueId().toString() + "';";
         Database.query(sql);
+        if (_current_title_id == -1) {
+            Notification.info(_player, "成功卸下称号");
+            return;
+        }
         Notification.info(_player, "成功使用称号: ");
         Notification.info(_player, _titles.get(_current_title_id).getTitle());
     }
@@ -201,30 +203,35 @@ public class XPlayer {
             Notification.error(_player, "你的余额不足");
             return;
         }
-        if (!_titles.containsKey(title.getId())) {
-            _titles.put(title.getId(), PlayerTitle.create(title.getId(), _player.getUniqueId()));
-        } else if (_titles.get(title.getId()).getExpireAtTimestamp() == -1) {
-            Notification.warn(_player, "你已经拥有此称号");
+        PlayerTitle title_bought = null;
+        if (_titles.containsKey(title.getId())) {
+            if (!_titles.get(title.getId()).isExpired()) {
+                Notification.warn(_player, "你已经拥有此称号");
+                return;
+            }
+            title_bought = _titles.get(title.getId());
+        } else {
+            title_bought = PlayerTitle.create(title.getId(), _player.getUniqueId());
+        }
+        if (title_bought == null) {
+            Notification.error(_player, "购买失败");
             return;
         }
-        PlayerTitle title_bought = _titles.get(title.getId());
         set_coin(_coin - title.getPrice());
         SaleTitle.setAmount(title.getId(), title.getAmount() - 1);
         Notification.info(_player, "成功购买称号: ");
         Notification.info(_player, title.getTitle());
+
         if (title.getDays() == -1) {
-            title_bought.setExpireAtTimestamp(-1L);
+            title_bought.setExpireAt(-1L);
+            Notification.info(_player, "称号已购买至永久");
             return;
         }
-        if (title_bought.isExpired()) {
-            title_bought.setExpireAtTimestamp(System.currentTimeMillis() + title.getDays() * 24 * 60 * 60 * 1000L);
-            Notification.info(_player, title.getTitle());
-            Notification.info(_player, "称号已激活，有效期至 " + title_bought.getExpireAt());
-        } else {
-            title_bought.setExpireAtTimestamp(title_bought.getExpireAtTimestamp() + title.getDays() * 24 * 60 * 60 * 1000L);
-            Notification.info(_player, title.getTitle());
-            Notification.info(_player, "称号已续期至 " + title_bought.getExpireAt());
-        }
+        Long timestamp = System.currentTimeMillis() + title.getDays() * 24 * 60 * 60 * 1000L;
+        title_bought.setExpireAt((long) Time.getFromTimestamp(timestamp));
+        Notification.info(_player, title.getTitle());
+        Notification.info(_player, "称号已购买至 " + title_bought.getExpireAtStr());
+
     }
 
     public void setTitle(Integer title_id, Long expire_at) {
@@ -232,8 +239,8 @@ public class XPlayer {
             _titles.put(title_id, PlayerTitle.create(title_id, _player.getUniqueId()));
         }
         PlayerTitle title = _titles.get(title_id);
-        title.setExpireAtTimestamp(expire_at);
+        title.setExpireAt(expire_at);
         Notification.info(_player, title.getTitle());
-        Notification.info(_player, "获得称号，有效期至 " + title.getExpireAt());
+        Notification.info(_player, "获得称号，有效期至 " + title.getExpireAtStr());
     }
 }

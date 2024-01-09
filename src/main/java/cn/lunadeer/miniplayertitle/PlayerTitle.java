@@ -1,6 +1,7 @@
 package cn.lunadeer.miniplayertitle;
 
 import cn.lunadeer.miniplayertitle.utils.Database;
+import cn.lunadeer.miniplayertitle.utils.Time;
 
 import java.sql.ResultSet;
 import java.util.UUID;
@@ -30,29 +31,25 @@ public class PlayerTitle extends Title {
         return null;
     }
 
-    public String getExpireAt() {
+    public String getExpireAtStr() {
         if (this._expire_at == -1L) {
             return "永久";
-        } else if (this._expire_at < System.currentTimeMillis()) {
+        } else if (this._expire_at < Time.getCurrent()) {
             return "已过期";
         } else {
-            return new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date(this._expire_at));
+            return this._expire_at.toString();
         }
-    }
-
-    public Long getExpireAtTimestamp() {
-        return this._expire_at;
     }
 
     public Boolean isExpired() {
         if (this._expire_at == -1L) {
             return false;
         } else {
-            return this._expire_at < System.currentTimeMillis();
+            return this._expire_at < Time.getCurrent();
         }
     }
 
-    public void setExpireAtTimestamp(Long expire_at) {
+    public void setExpireAt(Long expire_at) {
         this._expire_at = expire_at;
         this.save();
     }
@@ -62,7 +59,7 @@ public class PlayerTitle extends Title {
         sql += "UPDATE mplt_player_title ";
         sql += "SET expire_at = " + this._expire_at + ", ";
         sql += "updated_at = CURRENT_TIMESTAMP ";
-        sql += "WHERE player_uuid = '" + _player_uuid.toString() + "', ";
+        sql += "WHERE player_uuid = '" + _player_uuid.toString() + "' ";
         sql += "AND title_id = " + this._id + ";";
         Database.query(sql);
     }

@@ -2,7 +2,12 @@ package cn.lunadeer.miniplayertitle;
 
 import cn.lunadeer.miniplayertitle.commands.AdminCommands;
 import cn.lunadeer.miniplayertitle.utils.Notification;
+import cn.lunadeer.miniplayertitle.utils.STUI.Button;
+import cn.lunadeer.miniplayertitle.utils.STUI.Line;
+import cn.lunadeer.miniplayertitle.utils.STUI.View;
 import cn.lunadeer.miniplayertitle.utils.XLogger;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -35,7 +40,7 @@ public class Commands implements TabExecutor {
         switch (label) {
             case "mplt":
                 if (args.length == 0) {
-                    printHelp(sender);
+                    home_view(sender);
                     return true;
                 }
                 switch (args[0]) {
@@ -87,6 +92,21 @@ public class Commands implements TabExecutor {
             XLogger.info("用法: /mplt <use|list|shop|buy>");
             XLogger.info("用法: /mplt <create|delete|setdesc|setname|addshop|removeshop|setprice|setamount|setendat|listall>");
         }
+    }
+
+    private void home_view(CommandSender sender){
+        if (!(sender instanceof Player)){
+            printHelp(sender);
+            return;
+        }
+        View view = View.create();
+        view.title("称号系统");
+        Component backpack = Button.create("称号背包", "/mplt list");
+        Component shop = Button.create("称号商店", "/mplt shop");
+        Line line = Line.create();
+        line.append(backpack).append(shop);
+        view.set(View.Slot.ACTIONBAR, line);
+        view.showOn((Player) sender);
     }
 
     /**
@@ -146,7 +166,7 @@ public class Commands implements TabExecutor {
             case "setamount":
                 return Collections.singletonList("<商品ID> <数量> (-1为无限)");
             case "setendat":
-                return Collections.singletonList("<商品ID> <结束时间戳>(-1为永久)");
+                return Collections.singletonList("<商品ID> <结束时间YYYYMMDD>(-1为永久)");
             default:
                 return Arrays.asList("use", "list", "shop", "buy");
         }

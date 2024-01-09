@@ -2,6 +2,7 @@ package cn.lunadeer.miniplayertitle;
 
 
 import cn.lunadeer.miniplayertitle.utils.Database;
+import cn.lunadeer.miniplayertitle.utils.Time;
 import cn.lunadeer.miniplayertitle.utils.XLogger;
 
 import java.sql.ResultSet;
@@ -31,7 +32,7 @@ public class SaleTitle extends Title {
         try (ResultSet rs = Database.query(sql)) {
             if (rs != null && rs.next()) {
                 Integer id = rs.getInt("id");
-                return new SaleTitle(id, title_id, 0, 0, -1, System.currentTimeMillis());
+                return new SaleTitle(id, title_id, 0, 0, 0, -1L);
             }
         } catch (Exception e) {
             XLogger.err("SaleTitle create failed: " + e.getMessage());
@@ -84,10 +85,10 @@ public class SaleTitle extends Title {
     public String getSaleEndAt() {
         if (this._sale_end_at == -1L) {
             return "常驻";
-        } else if (this._sale_end_at < System.currentTimeMillis()) {
+        } else if (this._sale_end_at < Time.getCurrent()) {
             return "已停售";
         } else {
-            return new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date(this._sale_end_at));
+            return this._sale_end_at.toString();
         }
     }
 
@@ -105,7 +106,7 @@ public class SaleTitle extends Title {
         if (this._sale_end_at == -1L) {
             return false;
         } else {
-            return this._sale_end_at < System.currentTimeMillis();
+            return this._sale_end_at < Time.getCurrent();
         }
     }
 
