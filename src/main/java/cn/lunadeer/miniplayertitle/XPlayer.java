@@ -233,14 +233,4 @@ public class XPlayer {
         Notification.info(_player, "称号已购买至 " + title_bought.getExpireAtStr());
 
     }
-
-    public void setTitle(Integer title_id, Long expire_at) {
-        if (!_titles.containsKey(title_id)) {
-            _titles.put(title_id, PlayerTitle.create(title_id, _player.getUniqueId()));
-        }
-        PlayerTitle title = _titles.get(title_id);
-        title.setExpireAt(expire_at);
-        Notification.info(_player, title.getTitle());
-        Notification.info(_player, "获得称号，有效期至 " + title.getExpireAtStr());
-    }
 }

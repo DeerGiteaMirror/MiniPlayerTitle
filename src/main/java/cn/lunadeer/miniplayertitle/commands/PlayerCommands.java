@@ -77,4 +77,22 @@ public class PlayerCommands {
         xPlayer.buyTitle(saleTitle);
         return true;
     }
+
+    public static boolean custom(CommandSender sender, String[] args) {
+        if (!(sender instanceof org.bukkit.entity.Player)) {
+            XLogger.warn("该命令只能由玩家执行");
+            return true;
+        }
+        org.bukkit.entity.Player player = (org.bukkit.entity.Player) sender;
+        if (args.length != 2) {
+            Notification.warn(player, "用法: /mplt custom <称号>");
+            return true;
+        }
+        // todo add custom title
+        // add title
+        // description = player.getDisplayName() + "的自定义称号";
+        // add player title
+        // expire_at = -1
+        return true;
+    }
 }
