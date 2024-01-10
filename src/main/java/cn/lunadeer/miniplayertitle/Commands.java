@@ -8,6 +8,7 @@ import cn.lunadeer.miniplayertitle.utils.STUI.View;
 import cn.lunadeer.miniplayertitle.utils.STUI.ViewStyles;
 import cn.lunadeer.miniplayertitle.utils.XLogger;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -156,9 +157,14 @@ public class Commands implements TabExecutor {
         Line line_3 = Line.create();
         line_3.append("自定义方法：")
                 .append(Component.text("在聊天框输入 /mplt custom <称号>"));
+        Line line_4 = Line.create();
+        line_4.append("可以使用 Minecraft渐变颜色生成器 来生成具有渐变效果的称号")
+                        .append(Component.text("[点击在浏览器中打开]", ViewStyles.action_color)
+                                .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, "https://ssl.lunadeer.cn:14440/")));
         view.addLine(line_1)
                 .addLine(line_2)
-                .addLine(line_3);
+                .addLine(line_3)
+                .addLine(line_4);
         view.showOn(player);
     }
 
