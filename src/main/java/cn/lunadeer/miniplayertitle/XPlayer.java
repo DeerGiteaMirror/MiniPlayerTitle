@@ -181,7 +181,9 @@ public class XPlayer {
             return;
         }
         set_coin(_coin - title.getPrice());
-        SaleTitle.setAmount(title.getId(), title.getAmount() - 1);
+        if (title.getAmount() > 0) {
+            SaleTitle.setAmount(title.getId(), title.getAmount() - 1);
+        }
         Notification.info(_player, Component.text("成功购买称号: ").append(title.getTitle()));
         Notification.info(_player, "花费: " + title.getPrice() + "称号币，余额: " + _coin + "称号币");
 
