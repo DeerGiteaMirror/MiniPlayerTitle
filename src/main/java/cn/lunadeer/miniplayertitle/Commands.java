@@ -128,12 +128,18 @@ public class Commands implements TabExecutor {
         }
         View view = View.create();
         view.title("称号系统");
+        Line line_1 = Line.create();
+        line_1.append(Component.text("当前版本:"));
+        line_1.append(Component.text(MiniPlayerTitle.instance.getPluginMeta().getVersion()));
+        Line line_2 = Line.create();
+        line_2.append(Component.text("帮助文档:"));
+        line_2.append(Component.text("[点击在浏览器中打开]").clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, "https://ssl.lunadeer.cn:14446/zhangyuheng/MiniPlayerTitle")));
         Component backpack = Button.create("称号背包", "/mplt list");
         Component shop = Button.create("称号商店", "/mplt shop");
         Component custom = Button.create("自定义称号", "/mplt custominfo");
         Line line = Line.create();
         line.append(backpack).append(shop).append(custom);
-        view.actionBar(line);
+        view.actionBar(line).addLine(line_1).addLine(line_2);
         view.showOn((Player) sender);
     }
 
@@ -159,7 +165,7 @@ public class Commands implements TabExecutor {
                 .append(Component.text("在聊天框输入 /mplt custom <称号>"));
         Line line_4 = Line.create();
         line_4.append("可以使用 Minecraft渐变颜色生成器 来生成具有渐变效果的称号")
-                        .append(Component.text("[点击在浏览器中打开]", ViewStyles.action_color)
+                        .append(Component.text("[点击在浏览器中打开生成器]", ViewStyles.action_color)
                                 .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, "https://ssl.lunadeer.cn:14440/")));
         view.addLine(line_1)
                 .addLine(line_2)
