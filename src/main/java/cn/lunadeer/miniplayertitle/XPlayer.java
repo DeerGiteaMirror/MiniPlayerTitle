@@ -4,7 +4,7 @@ import cn.lunadeer.miniplayertitle.utils.Database;
 import cn.lunadeer.miniplayertitle.utils.Notification;
 import cn.lunadeer.miniplayertitle.utils.STUI.Button;
 import cn.lunadeer.miniplayertitle.utils.STUI.Line;
-import cn.lunadeer.miniplayertitle.utils.STUI.View;
+import cn.lunadeer.miniplayertitle.utils.STUI.ListView;
 import cn.lunadeer.miniplayertitle.utils.Time;
 import cn.lunadeer.miniplayertitle.utils.XLogger;
 import net.kyori.adventure.text.Component;
@@ -12,10 +12,7 @@ import net.kyori.adventure.text.TextComponent;
 import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class XPlayer {
     private final Player _player;
@@ -39,21 +36,12 @@ public class XPlayer {
     }
 
     public void openBackpack(Integer page) {
-        Map<Integer, PlayerTitle> titles = getTitles(_player.getUniqueId());
-        int offset = (page - 1) * 4;
-        if (offset >= titles.size() || offset < 0) {
-            Notification.error(_player, "页数超出范围");
-            return;
-        }
-        View view = View.create();
+        Collection<PlayerTitle> titles = getTitles(_player.getUniqueId()).values();
+        ListView view = ListView.create(4, "/mplt list");
         view.title("我的称号");
-        for (int i = offset; i < offset + 4; i++) {
-            if (i >= titles.size()) {
-                break;
-            }
-            int title_id = (int) titles.keySet().toArray()[i];
+        for (PlayerTitle title : titles) {
+            int title_id = title.getId();
             TextComponent idx = Component.text("[" + title_id + "] ");
-            PlayerTitle title = titles.get(title_id);
             Line line = Line.create();
             boolean is_using = Objects.equals(title.getId(), _current_title_id);
             Component button = Button.create(is_using ? "卸下" : "使用", "/mplt use " + (is_using ? -1 : title.getId()));
@@ -61,10 +49,9 @@ public class XPlayer {
                     .append(title.getTitle())
                     .append(Component.text("有效期至:" + title.getExpireAtStr()))
                     .append(button);
-            view.set(i, line);
+            view.add(line);
         }
-        view.set(View.Slot.ACTIONBAR, View.pagination(page, titles.size(), "/mplt list"));
-        view.showOn(_player);
+        view.showOn(_player, page);
     }
 
     public void updateUsingTitle(Integer title_id) {
@@ -149,12 +136,11 @@ public class XPlayer {
         sql += "SELECT title_id ";
         sql += "FROM mplt_player_using_title ";
         sql += "WHERE uuid = '" + uuid.toString() + "';";
-        Integer current_title_id = null;
+        int current_title_id = -1;
         try (ResultSet rs = Database.query(sql)) {
             if (rs != null && rs.next()) {
                 current_title_id = rs.getInt("title_id");
             } else {
-                current_title_id = -1;
                 sql = "";
                 sql += "INSERT INTO mplt_player_using_title (uuid, title_id) VALUES (";
                 sql += "'" + uuid + "', ";

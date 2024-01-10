@@ -7,7 +7,6 @@ import cn.lunadeer.miniplayertitle.utils.STUI.Line;
 import cn.lunadeer.miniplayertitle.utils.STUI.View;
 import cn.lunadeer.miniplayertitle.utils.XLogger;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -105,7 +104,7 @@ public class Commands implements TabExecutor {
         Component shop = Button.create("称号商店", "/mplt shop");
         Line line = Line.create();
         line.append(backpack).append(shop);
-        view.set(View.Slot.ACTIONBAR, line);
+        view.actionBar(line);
         view.showOn((Player) sender);
     }
 

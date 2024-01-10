@@ -3,10 +3,9 @@ package cn.lunadeer.miniplayertitle;
 import cn.lunadeer.miniplayertitle.utils.Database;
 import cn.lunadeer.miniplayertitle.utils.Notification;
 import cn.lunadeer.miniplayertitle.utils.STUI.Line;
-import cn.lunadeer.miniplayertitle.utils.STUI.View;
+import cn.lunadeer.miniplayertitle.utils.STUI.ListView;
 import cn.lunadeer.miniplayertitle.utils.XLogger;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.command.CommandSender;
@@ -21,7 +20,6 @@ public class Title {
     protected String _title;
     protected String _description;
     protected Boolean _enabled;
-    JoinConfiguration join = JoinConfiguration.separator(Component.text(" "));
 
     public static Title create(String title, String description) {
         String sql = "";
@@ -62,30 +60,21 @@ public class Title {
         List<Title> titles = all();
         if (!(sender instanceof Player)) {
             for (Title title : titles) {
-                Notification.info(sender, "[" + title.getId() + "]");
-                Notification.info(sender, title.getTitle());
+                Component idx = Component.text("[" + title.getId() + "]");
+                Notification.info(sender, idx.append(title.getTitle()));
             }
             return;
         }
         Player player = (Player) sender;
-        int offset = (page - 1) * 4;
-        if (offset >= titles.size() || offset < 0) {
-            Notification.error(player, "页数超出范围");
-            return;
-        }
-        View view = View.create();
+        ListView view = ListView.create(5, "/mplt listall");
         view.title("所有称号");
-        for (int i = offset; i < offset + 4; i++) {
-            if (i >= titles.size()) {
-                break;
-            }
-            TextComponent idx = Component.text("[" + titles.get(i).getId() + "] ");
+        for (Title title : titles) {
+            TextComponent idx = Component.text("[" + title.getId() + "] ");
             Line line = Line.create();
-            line.append(idx).append(titles.get(i).getTitle());
-            view.set(i, line);
+            line.append(idx).append(title.getTitle());
+            view.add(line);
         }
-        view.set(View.Slot.ACTIONBAR, View.pagination(page, titles.size(), "/mplt listall"));
-        view.showOn(player);
+        view.showOn(player, page);
     }
 
     public Title(Integer id) {

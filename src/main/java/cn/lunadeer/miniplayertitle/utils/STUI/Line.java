@@ -8,9 +8,9 @@ import java.util.List;
 
 
 public class Line {
-    private List<Component> elements = new ArrayList<>();
+    private final List<Component> elements = new ArrayList<>();
 
-    private TextComponent divider = Component.text(" - ", View.sub_color);
+    private final TextComponent divider = Component.text(" - ", ViewStyles.sub_color);
 
     public Line() {
     }

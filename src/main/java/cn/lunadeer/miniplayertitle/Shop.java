@@ -4,7 +4,7 @@ import cn.lunadeer.miniplayertitle.utils.Database;
 import cn.lunadeer.miniplayertitle.utils.Notification;
 import cn.lunadeer.miniplayertitle.utils.STUI.Button;
 import cn.lunadeer.miniplayertitle.utils.STUI.Line;
-import cn.lunadeer.miniplayertitle.utils.STUI.View;
+import cn.lunadeer.miniplayertitle.utils.STUI.ListView;
 import cn.lunadeer.miniplayertitle.utils.XLogger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -20,39 +20,30 @@ public class Shop {
         Map<Integer, SaleTitle> titles = getSaleTitles();
         if (!(sender instanceof Player)) {
             for (SaleTitle title : titles.values()) {
-                Notification.info(sender, "[" + title.getSaleId() + "]");
-                Notification.info(sender, title.getTitle());
+                Component idx = Component.text("[" + title.getSaleId() + "] ");
+                Notification.info(sender, idx.append(title.getTitle()));
             }
             return;
         }
         Player player = (Player) sender;
-        int offset = (page - 1) * 4;
-        if (offset >= titles.size() || offset < 0) {
-            Notification.error(player, "页数超出范围");
-            return;
-        }
-        View view = View.create();
+        ListView view = ListView.create(5, "/mplt shop");
         view.title("称号商店");
         view.subtitle("当前余额: " + XPlayer.getCoin(player) + "金币");
-        for (int i = offset; i < offset + 4; i++) {
-            if (i >= titles.size()) {
-                break;
-            }
-            Integer title_sale_id = (Integer) titles.keySet().toArray()[i];
+        for (Map.Entry<Integer, SaleTitle> entry : titles.entrySet()) {
+            Integer title_sale_id = entry.getKey();
             TextComponent idx = Component.text("[" + title_sale_id + "] ");
-            SaleTitle title = titles.get(title_sale_id);
+            SaleTitle title = entry.getValue();
             Line line = Line.create();
             Component button = Button.create("购买", "/mplt buy " + title_sale_id);
             line.append(idx)
                     .append(title.getTitle())
-                    .append("价格:" + title.getPrice() + " 有效期:" + (title.getDays()==-1?"永久":title.getDays() + "天"))
+                    .append("价格:" + title.getPrice() + " 有效期:" + (title.getDays() == -1 ? "永久" : title.getDays() + "天"))
                     .append("售卖截止:" + title.getSaleEndAt())
                     .append("剩余:" + ((title.getAmount() == -1) ? "无限" : title.getAmount()))
                     .append(button);
-            view.set(i, line);
+            view.add(line);
         }
-        view.set(View.Slot.ACTIONBAR, View.pagination(page, titles.size(), "/mplt shop"));
-        view.showOn(player);
+        view.showOn(player, page);
     }
 
     public static void deleteTitle(Integer id) {
