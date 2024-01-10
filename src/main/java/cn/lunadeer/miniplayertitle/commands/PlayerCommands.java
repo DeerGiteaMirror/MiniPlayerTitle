@@ -1,9 +1,11 @@
 package cn.lunadeer.miniplayertitle.commands;
 
-import cn.lunadeer.miniplayertitle.*;
+import cn.lunadeer.miniplayertitle.MiniPlayerTitle;
+import cn.lunadeer.miniplayertitle.SaleTitle;
+import cn.lunadeer.miniplayertitle.Shop;
+import cn.lunadeer.miniplayertitle.XPlayer;
 import cn.lunadeer.miniplayertitle.utils.Notification;
 import cn.lunadeer.miniplayertitle.utils.XLogger;
-import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

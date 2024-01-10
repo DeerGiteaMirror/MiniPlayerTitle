@@ -8,8 +8,6 @@ import cn.lunadeer.miniplayertitle.utils.STUI.View;
 import cn.lunadeer.miniplayertitle.utils.STUI.ViewStyles;
 import cn.lunadeer.miniplayertitle.utils.XLogger;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;

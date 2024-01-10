@@ -1,5 +1,6 @@
 package cn.lunadeer.miniplayertitle;
 
+import cn.lunadeer.miniplayertitle.utils.Notification;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import org.bukkit.event.EventHandler;
@@ -11,6 +12,7 @@ public class Events implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         XPlayer player = new XPlayer(event.getPlayer());
+        Notification.info(event.getPlayer(), "输入 /mplt 使用称号系统");
     }
 
     @EventHandler

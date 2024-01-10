@@ -4,7 +4,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.entity.Player;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
