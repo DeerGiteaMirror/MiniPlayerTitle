@@ -44,33 +44,53 @@ public class Commands implements TabExecutor {
                 }
                 switch (args[0]) {
                     case "use":
-                        return use(sender, args);
+                        use(sender, args);
+                        return true;
                     case "list":
-                        return list(sender, args);
+                        list(sender, args);
+                        return true;
                     case "shop":
-                        return shop(sender, args);
+                        shop(sender, args);
+                        return true;
                     case "buy":
-                        return buy(sender, args);
+                        buy(sender, args);
+                        return true;
                     case "create":
-                        return AdminCommands.createTitle(sender, args);
+                        AdminCommands.createTitle(sender, args);
+                        return true;
                     case "delete":
-                        return AdminCommands.deleteTitle(sender, args);
+                        AdminCommands.deleteTitle(sender, args);
+                        return true;
                     case "setdesc":
-                        return AdminCommands.setTitleDescription(sender, args);
+                        AdminCommands.setTitleDescription(sender, args);
+                        return true;
                     case "setname":
-                        return AdminCommands.setTitleName(sender, args);
+                        AdminCommands.setTitleName(sender, args);
+                        return true;
                     case "addshop":
-                        return AdminCommands.addShop(sender, args);
+                        AdminCommands.addShop(sender, args);
+                        return true;
                     case "removeshop":
-                        return AdminCommands.removeShop(sender, args);
+                        AdminCommands.removeShop(sender, args);
+                        return true;
                     case "setprice":
-                        return AdminCommands.setPrice(sender, args);
+                        AdminCommands.setPrice(sender, args);
+                        return true;
                     case "setamount":
-                        return AdminCommands.setAmount(sender, args);
+                        AdminCommands.setAmount(sender, args);
+                        return true;
                     case "setendat":
-                        return AdminCommands.setSaleEndAt(sender, args);
+                        AdminCommands.setSaleEndAt(sender, args);
+                        return true;
                     case "listall":
-                        return AdminCommands.listAllTitle(sender, args);
+                        AdminCommands.listAllTitle(sender, args);
+                        return true;
+                    case "addcoin":
+                        AdminCommands.addCoin(sender, args);
+                        return true;
+                    case "setcoin":
+                        AdminCommands.setCoin(sender, args);
+                        return true;
                     default:
                         printHelp(sender);
                         return true;
@@ -93,8 +113,8 @@ public class Commands implements TabExecutor {
         }
     }
 
-    private void home_view(CommandSender sender){
-        if (!(sender instanceof Player)){
+    private void home_view(CommandSender sender) {
+        if (!(sender instanceof Player)) {
             printHelp(sender);
             return;
         }
@@ -125,7 +145,7 @@ public class Commands implements TabExecutor {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length == 1) {
             String[] player_cmd = {"use", "list", "shop", "buy"};
-            String[] admin_cmd = {"create", "delete", "setdesc", "setname", "addshop", "removeshop", "setprice", "setamount", "setendat", "listall"};
+            String[] admin_cmd = {"create", "delete", "setdesc", "setname", "addshop", "removeshop", "setprice", "setamount", "setendat", "listall", "addcoin", "setcoin"};
             List<String> res = new ArrayList<>();
             if (sender instanceof Player) {
                 Player player = (Player) sender;
@@ -141,35 +161,69 @@ public class Commands implements TabExecutor {
             }
             return res;
         }
-        switch (args[0]) {
-            case "use":
-                return Collections.singletonList("要使用的称号ID");
-            case "list":
-            case "shop":
-                return Collections.singletonList("页数(可选)");
-            case "buy":
-                return Collections.singletonList("要购买的条目ID");
-            case "create":
-                return Collections.singletonList("<称号名称> <称号描述>");
-            case "delete":
-            case "addshop":
-                return Collections.singletonList("<称号ID>");
-            case "setdesc":
-                return Collections.singletonList("<称号ID> <称号描述>");
-            case "setname":
-                return Collections.singletonList("<称号ID> <称号名称>");
-            case "removeshop":
-                return Collections.singletonList("<商品ID>");
-            case "setprice":
-                return Collections.singletonList("<商品ID> <价格> <天数>(-1为永久)");
-            case "setamount":
-                return Collections.singletonList("<商品ID> <数量> (-1为无限)");
-            case "setendat":
-                return Collections.singletonList("<商品ID> <结束时间YYYYMMDD>(-1为永久)");
-            default:
-                return Arrays.asList("use", "list", "shop", "buy");
+        if (args.length == 2) {
+            switch (args[0]) {
+                case "use":
+                    return Collections.singletonList("要使用的称号ID");
+                case "list":
+                case "shop":
+                case "listall":
+                    return Collections.singletonList("页数(可选)");
+                case "buy":
+                    return Collections.singletonList("要购买的条目ID");
+                case "create":
+                    return Collections.singletonList("<称号名称> <称号描述>");
+                case "delete":
+                case "addshop":
+                    return Collections.singletonList("<称号ID>");
+                case "setdesc":
+                    return Collections.singletonList("<称号ID> <称号描述>");
+                case "setname":
+                    return Collections.singletonList("<称号ID> <称号名称>");
+                case "removeshop":
+                    return Collections.singletonList("<商品ID>");
+                case "setprice":
+                    return Collections.singletonList("<商品ID> <价格> <天数>(-1为永久)");
+                case "setamount":
+                    return Collections.singletonList("<商品ID> <数量>(-1为无限)");
+                case "setendat":
+                    return Collections.singletonList("<商品ID> <结束时间YYYYMMDD>(-1为永久)");
+                case "addcoin":
+                case "setcoin":
+                    // return player list
+                    List<String> res = new ArrayList<>();
+                    for (Player player : MiniPlayerTitle.instance.getServer().getOnlinePlayers()) {
+                        res.add(player.getName());
+                    }
+                    return res;
+                default:
+                    return Arrays.asList("use", "list", "shop", "buy");
+            }
         }
-
+        if (args.length == 3) {
+            switch (args[0]) {
+                case "addcoin":
+                case "setcoin":
+                    return Collections.singletonList("<金币数量>");
+                case "create":
+                case "setdesc":
+                    return Collections.singletonList("<称号描述>");
+                case "setname":
+                    return Collections.singletonList("<称号名称>");
+                case "setprice":
+                    return Collections.singletonList("<价格> <天数>(-1为永久)");
+                case "setamount":
+                    return Collections.singletonList("<数量>(-1为无限)");
+                case "setendat":
+                    return Collections.singletonList("<结束时间YYYYMMDD>(-1为永久)");
+            }
+        }
+        if (args.length == 4) {
+            if (args[0].equals("setprice")) {
+                return Collections.singletonList("<天数>(-1为永久)");
+            }
+        }
+        return Arrays.asList("use", "list", "shop", "buy");
     }
 
 
