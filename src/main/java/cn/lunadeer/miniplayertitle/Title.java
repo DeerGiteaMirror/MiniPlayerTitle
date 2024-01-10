@@ -123,14 +123,13 @@ public class Title {
         return this._id;
     }
 
-    public Component getTitle() {
+    public TextComponent getTitle() {
         TextComponent prefix = Component.text(MiniPlayerTitle.config.getPrefix());
         TextComponent suffix = Component.text(MiniPlayerTitle.config.getSuffix());
         String[] parts = this._title.split("&#");
         List<TextComponent> components = new ArrayList<>();
         components.add(prefix);
         for (String part : parts) {
-            XLogger.debug(part);
             if (part.isEmpty()) {
                 continue;
             }
@@ -152,6 +151,24 @@ public class Title {
             title_component.append(component);
         }
         return title_component.build().hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text(this._description)));
+    }
+
+    public String getTitleContent() {
+        String[] parts = this._title.split("&#");
+        StringBuilder res = new StringBuilder();
+        for (String part : parts) {
+            if (part.isEmpty()) {
+                continue;
+            }
+            String content;
+            if (part.length() > 6 && part.substring(0, 6).matches("^[0-9a-fA-F]{6}$")) {
+                content = part.substring(6);
+            } else {
+                content = part;
+            }
+            res.append(content);
+        }
+        return res.toString();
     }
 
     public void setTitle(String title) {

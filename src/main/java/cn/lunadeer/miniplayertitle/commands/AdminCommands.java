@@ -116,7 +116,7 @@ public class AdminCommands {
         if (title == null) {
             Notification.error(sender, "添加商品失败");
         } else {
-            Notification.info(sender, "已添加称号到商店, 商品ID: " + title.getId());
+            Notification.info(sender, "已添加称号到商店, 商品ID: " + title.getSaleId());
             Notification.info(sender, title.getTitle());
         }
     }
@@ -149,8 +149,23 @@ public class AdminCommands {
             Notification.warn(sender, "用法: /mplt setprice <商品ID> <价格> <天数>(-1为永久)");
             return;
         }
-        SaleTitle.setPrice(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
-        SaleTitle.setDays(Integer.parseInt(args[1]), Integer.parseInt(args[3]));
+        int price;
+        int days;
+        int id;
+        try {
+            price = Integer.parseInt(args[2]);
+            days = Integer.parseInt(args[3]);
+            id = Integer.parseInt(args[1]);
+        } catch (Exception e) {
+            Notification.error(sender, "价格或天数格式错误");
+            return;
+        }
+        if (price < 0 || days < -1) {
+            Notification.error(sender, "价格或天数格式错误");
+            return;
+        }
+        SaleTitle.setPrice(id, price);
+        SaleTitle.setDays(id, days);
         Notification.info(sender, "已设置商品价格");
     }
 
@@ -166,7 +181,16 @@ public class AdminCommands {
             Notification.warn(sender, "用法: /mplt setamount <商品ID> <数量>(-1为无限)");
             return;
         }
-        SaleTitle.setAmount(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
+        int amount;
+        int id;
+        try {
+            amount = Integer.parseInt(args[2]);
+            id = Integer.parseInt(args[1]);
+        } catch (Exception e) {
+            Notification.error(sender, "数量格式错误");
+            return;
+        }
+        SaleTitle.setAmount(id, amount);
         Notification.info(sender, "已设置商品数量");
     }
 

@@ -5,8 +5,11 @@ import cn.lunadeer.miniplayertitle.utils.Notification;
 import cn.lunadeer.miniplayertitle.utils.STUI.Button;
 import cn.lunadeer.miniplayertitle.utils.STUI.Line;
 import cn.lunadeer.miniplayertitle.utils.STUI.View;
+import cn.lunadeer.miniplayertitle.utils.STUI.ViewStyles;
 import cn.lunadeer.miniplayertitle.utils.XLogger;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -54,6 +57,12 @@ public class Commands implements TabExecutor {
                         return true;
                     case "buy":
                         buy(sender, args);
+                        return true;
+                    case "custom":
+                        custom(sender, args);
+                        return true;
+                    case "custominfo":
+                        custom_info(sender);
                         return true;
                     case "create":
                         AdminCommands.createTitle(sender, args);
@@ -103,12 +112,12 @@ public class Commands implements TabExecutor {
     private void printHelp(@NotNull CommandSender sender) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            Notification.warn(player, "用法: /mplt <use|list|shop|buy>");
+            Notification.warn(player, "用法: /mplt <use|list|shop|buy|custom|custominfo>");
             if (player.isOp()) {
                 Notification.warn(player, "用法: /mplt <create|delete|setdesc|setname|addshop|removeshop|setprice|setamount|setendat|listall>");
             }
         } else {
-            XLogger.info("用法: /mplt <use|list|shop|buy>");
+            XLogger.info("用法: /mplt <use|list|shop|buy|custom>");
             XLogger.info("用法: /mplt <create|delete|setdesc|setname|addshop|removeshop|setprice|setamount|setendat|listall>");
         }
     }
@@ -122,10 +131,37 @@ public class Commands implements TabExecutor {
         view.title("称号系统");
         Component backpack = Button.create("称号背包", "/mplt list");
         Component shop = Button.create("称号商店", "/mplt shop");
+        Component custom = Button.create("自定义称号", "/mplt custominfo");
         Line line = Line.create();
-        line.append(backpack).append(shop);
+        line.append(backpack).append(shop).append(custom);
         view.actionBar(line);
         view.showOn((Player) sender);
+    }
+
+    private void custom_info(CommandSender sender) {
+        if (!(sender instanceof Player)) {
+            printHelp(sender);
+            return;
+        }
+        Player player = (Player) sender;
+        View view = View.create();
+        view.title("自定义称号帮助");
+        view.subtitle("当前余额: " + XPlayer.getCoin(player) + "称号币");
+        Line line_1 = Line.create();
+        line_1.append("当前自定义称号状态：")
+                .append(MiniPlayerTitle.config.isEnableCustom() ?
+                        Component.text("开启", ViewStyles.success_color) :
+                        Component.text("关闭", ViewStyles.error_color));
+        Line line_2 = Line.create();
+        line_2.append("自定义称号花费：")
+                .append(MiniPlayerTitle.config.getCustomCost().toString());
+        Line line_3 = Line.create();
+        line_3.append("自定义方法：")
+                .append(Component.text("在聊天框输入 /mplt custom <称号>"));
+        view.addLine(line_1)
+                .addLine(line_2)
+                .addLine(line_3);
+        view.showOn(player);
     }
 
     /**
@@ -144,7 +180,7 @@ public class Commands implements TabExecutor {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length == 1) {
-            String[] player_cmd = {"use", "list", "shop", "buy"};
+            String[] player_cmd = {"use", "list", "shop", "buy", "custom", "custominfo"};
             String[] admin_cmd = {"create", "delete", "setdesc", "setname", "addshop", "removeshop", "setprice", "setamount", "setendat", "listall", "addcoin", "setcoin"};
             List<String> res = new ArrayList<>();
             if (sender instanceof Player) {
@@ -165,6 +201,8 @@ public class Commands implements TabExecutor {
             switch (args[0]) {
                 case "use":
                     return Collections.singletonList("要使用的称号ID");
+                case "custom":
+                    return Collections.singletonList("自定义称号");
                 case "list":
                 case "shop":
                 case "listall":
@@ -223,7 +261,7 @@ public class Commands implements TabExecutor {
                 return Collections.singletonList("<天数>(-1为永久)");
             }
         }
-        return Arrays.asList("use", "list", "shop", "buy");
+        return Arrays.asList("use", "list", "shop", "buy", "custom", "custominfo");
     }
 
 

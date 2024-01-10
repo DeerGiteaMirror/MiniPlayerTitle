@@ -1,11 +1,11 @@
 package cn.lunadeer.miniplayertitle.commands;
 
-import cn.lunadeer.miniplayertitle.SaleTitle;
-import cn.lunadeer.miniplayertitle.Shop;
-import cn.lunadeer.miniplayertitle.XPlayer;
+import cn.lunadeer.miniplayertitle.*;
 import cn.lunadeer.miniplayertitle.utils.Notification;
 import cn.lunadeer.miniplayertitle.utils.XLogger;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class PlayerCommands {
     public static void use(CommandSender sender, String[] args) {
@@ -22,7 +22,6 @@ public class PlayerCommands {
         XPlayer xPlayer = new XPlayer(player);
         Integer title_id = Integer.parseInt(args[1]);
         xPlayer.updateUsingTitle(title_id);
-        return;
     }
 
     public static void list(CommandSender sender, String[] args) {
@@ -42,7 +41,6 @@ public class PlayerCommands {
         }
         XPlayer xPlayer = new XPlayer(player);
         xPlayer.openBackpack(page);
-        return;
     }
 
     public static void shop(CommandSender sender, String[] args) {
@@ -54,7 +52,6 @@ public class PlayerCommands {
             }
         }
         Shop.open(sender, page);
-        return;
     }
 
     public static void buy(CommandSender sender, String[] args) {
@@ -75,7 +72,6 @@ public class PlayerCommands {
             return;
         }
         xPlayer.buyTitle(saleTitle);
-        return;
     }
 
     public static void custom(CommandSender sender, String[] args) {
@@ -83,16 +79,16 @@ public class PlayerCommands {
             XLogger.warn("该命令只能由玩家执行");
             return;
         }
-        org.bukkit.entity.Player player = (org.bukkit.entity.Player) sender;
+        Player player = (Player) sender;
         if (args.length != 2) {
             Notification.warn(player, "用法: /mplt custom <称号>");
             return;
         }
-        // todo add custom title
-        // add title
-        // description = player.getDisplayName() + "的自定义称号";
-        // add player title
-        // expire_at = -1
-        return;
+        if (!MiniPlayerTitle.config.isEnableCustom()) {
+            Notification.error(player, "自定义称号功能已关闭");
+            return;
+        }
+        XPlayer xPlayer = new XPlayer(player);
+        xPlayer.custom(args[1]);
     }
 }

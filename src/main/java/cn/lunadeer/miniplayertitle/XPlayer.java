@@ -23,8 +23,7 @@ public class XPlayer {
     public XPlayer(Player player) {
         _player = player;
         _titles = getTitles(player.getUniqueId());
-        _current_title_id = getCurrentTitleId(player.getUniqueId());
-        _coin = getCoin(player.getUniqueId());
+        getInfo();
         checkTitleValid();
     }
 
@@ -37,7 +36,7 @@ public class XPlayer {
 
     public void openBackpack(Integer page) {
         Collection<PlayerTitle> titles = getTitles(_player.getUniqueId()).values();
-        ListView view = ListView.create(4, "/mplt list");
+        ListView view = ListView.create(5, "/mplt list");
         view.title("我的称号");
         for (PlayerTitle title : titles) {
             int title_id = title.getId();
@@ -58,17 +57,16 @@ public class XPlayer {
         _current_title_id = title_id;
         checkTitleValid();
         String sql = "";
-        sql += "UPDATE mplt_player_using_title ";
-        sql += "SET title_id = " + _current_title_id + ", ";
+        sql += "UPDATE mplt_player_info ";
+        sql += "SET using_title_id = " + _current_title_id + ", ";
         sql += "updated_at = CURRENT_TIMESTAMP ";
-        sql += "WHERE uuid = '" + _player.getUniqueId().toString() + "';";
+        sql += "WHERE uuid = '" + _player.getUniqueId() + "';";
         Database.query(sql);
         if (_current_title_id == -1) {
             Notification.info(_player, "成功卸下称号");
             return;
         }
-        Notification.info(_player, "成功使用称号: ");
-        Notification.info(_player, _titles.get(_current_title_id).getTitle());
+        Notification.info(_player, Component.text("成功使用称号: ").append(_titles.get(_current_title_id).getTitle()));
     }
 
     private void checkTitleValid() {
@@ -82,8 +80,7 @@ public class XPlayer {
         }
         PlayerTitle title = _titles.get(_current_title_id);
         if (title.isExpired()) {
-            Notification.error(_player, "称号已过期");
-            Notification.error(_player, title.getTitle());
+            Notification.error(_player, title.getTitle().append(Component.text(" 称号已过期")));
             _current_title_id = -1;
         }
     }
@@ -91,7 +88,7 @@ public class XPlayer {
     public void set_coin(Integer coin) {
         _coin = coin;
         String sql = "";
-        sql += "UPDATE mplt_player_coin ";
+        sql += "UPDATE mplt_player_info ";
         sql += "SET coin = " + coin + ", ";
         sql += "updated_at = CURRENT_TIMESTAMP ";
         sql += "WHERE uuid = '" + _player.getUniqueId().toString() + "';";
@@ -131,49 +128,29 @@ public class XPlayer {
         return titles;
     }
 
-    private static Integer getCurrentTitleId(UUID uuid) {
+    private void getInfo() {
+        UUID uuid = _player.getUniqueId();
         String sql = "";
-        sql += "SELECT title_id ";
-        sql += "FROM mplt_player_using_title ";
+        sql += "SELECT coin, using_title_id ";
+        sql += "FROM mplt_player_info ";
         sql += "WHERE uuid = '" + uuid.toString() + "';";
-        int current_title_id = -1;
+        this._coin = MiniPlayerTitle.config.getDefaultCoin();
+        this._current_title_id = -1;
         try (ResultSet rs = Database.query(sql)) {
             if (rs != null && rs.next()) {
-                current_title_id = rs.getInt("title_id");
+                this._coin = rs.getInt("coin");
+                this._current_title_id = rs.getInt("using_title_id");
             } else {
                 sql = "";
-                sql += "INSERT INTO mplt_player_using_title (uuid, title_id) VALUES (";
+                sql += "INSERT INTO mplt_player_info (uuid, coin, using_title_id) VALUES (";
                 sql += "'" + uuid + "', ";
-                sql += current_title_id + ");";
+                sql += this._coin + ", ";
+                sql += this._current_title_id + ");";
                 Database.query(sql);
             }
         } catch (Exception e) {
-            XLogger.err("XPlayer getCurrentTitleId failed: " + e.getMessage());
+            XLogger.err("XPlayer getInfo failed: " + e.getMessage());
         }
-        return current_title_id;
-    }
-
-    private static Integer getCoin(UUID uuid) {
-        String sql = "";
-        sql += "SELECT coin ";
-        sql += "FROM mplt_player_coin ";
-        sql += "WHERE uuid = '" + uuid.toString() + "';";
-        Integer coin = null;
-        try (ResultSet rs = Database.query(sql)) {
-            if (rs != null && rs.next()) {
-                coin = rs.getInt("coin");
-            } else {
-                coin = 0;
-                sql = "";
-                sql += "INSERT INTO mplt_player_coin (uuid, coin) VALUES (";
-                sql += "'" + uuid + "', ";
-                sql += coin + ");";
-                Database.query(sql);
-            }
-        } catch (Exception e) {
-            XLogger.err("XPlayer getCoin failed: " + e.getMessage());
-        }
-        return coin;
     }
 
     public void buyTitle(SaleTitle title) {
@@ -205,18 +182,46 @@ public class XPlayer {
         }
         set_coin(_coin - title.getPrice());
         SaleTitle.setAmount(title.getId(), title.getAmount() - 1);
-        Notification.info(_player, "成功购买称号: ");
-        Notification.info(_player, title.getTitle());
+        Notification.info(_player, Component.text("成功购买称号: ").append(title.getTitle()));
+        Notification.info(_player, "花费: " + title.getPrice() + "称号币，余额: " + _coin + "称号币");
 
         if (title.getDays() == -1) {
             title_bought.setExpireAt(-1L);
-            Notification.info(_player, "称号已购买至永久");
+        } else {
+            Long timestamp = System.currentTimeMillis() + title.getDays() * 24 * 60 * 60 * 1000L;
+            title_bought.setExpireAt((long) Time.getFromTimestamp(timestamp));
+        }
+        Notification.info(_player, title.getTitle().append(Component.text(" 已购买至 " + title_bought.getExpireAtStr())));
+    }
+
+    public void custom(String title_str){
+        if (this.get_coin() < MiniPlayerTitle.config.getCustomCost()) {
+            Notification.error(this._player, "称号币不足");
             return;
         }
-        Long timestamp = System.currentTimeMillis() + title.getDays() * 24 * 60 * 60 * 1000L;
-        title_bought.setExpireAt((long) Time.getFromTimestamp(timestamp));
-        Notification.info(_player, title.getTitle());
-        Notification.info(_player, "称号已购买至 " + title_bought.getExpireAtStr());
-
+        List<String> exist_titles = new ArrayList<>();
+        for (Title title : Title.all()) {
+            exist_titles.add(title.getTitleContent());
+        }
+        Title title = Title.create(title_str, this._player.getName() + "的自定义称号");
+        if (title == null) {
+            Notification.error(this._player, "创建称号失败");
+            return;
+        }
+        if (exist_titles.contains(title.getTitleContent())) {
+            Notification.error(this._player, "已存在同名称号");
+            Title.delete(title.getId());
+            return;
+        }
+        PlayerTitle playerTitle = PlayerTitle.create(title.getId(), this._player.getUniqueId());
+        if (playerTitle == null) {
+            Notification.error(this._player, "创建称号失败");
+            Title.delete(title.getId());
+            return;
+        }
+        playerTitle.setExpireAt(-1L);
+        this.set_coin(this.get_coin() - MiniPlayerTitle.config.getCustomCost());
+        Notification.info(this._player, Component.text("成功创建自定义称号: ").append(title.getTitle()));
+        Notification.info(this._player, "花费: " + MiniPlayerTitle.config.getCustomCost() + "称号币，余额: " + this.get_coin() + "称号币");
     }
 }

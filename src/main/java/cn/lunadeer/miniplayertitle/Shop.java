@@ -28,7 +28,7 @@ public class Shop {
         Player player = (Player) sender;
         ListView view = ListView.create(5, "/mplt shop");
         view.title("称号商店");
-        view.subtitle("当前余额: " + XPlayer.getCoin(player) + "金币");
+        view.subtitle("当前余额: " + XPlayer.getCoin(player) + "称号币");
         for (Map.Entry<Integer, SaleTitle> entry : titles.entrySet()) {
             Integer title_sale_id = entry.getKey();
             TextComponent idx = Component.text("[" + title_sale_id + "] ");

@@ -8,4 +8,10 @@ Database:
 Prefix: "["
 Suffix: "]"
 
+CustomCost:
+  Enabled: true
+  Cost: 1000
+
+DefaultCoin: 0
+
 Debug: false

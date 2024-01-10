@@ -8,6 +8,7 @@ public class ConfigManager {
         _plugin = plugin;
         _plugin.saveDefaultConfig();
         reload();
+        _plugin.saveConfig();
     }
 
     public void reload() {
@@ -21,6 +22,9 @@ public class ConfigManager {
         _db_pass = _file.getString("Database.Pass", "postgres");
         _prefix = _file.getString("Prefix", "[");
         _suffix = _file.getString("Suffix", "]");
+        _default_coin = _file.getInt("DefaultCoin", 0);
+        _enable_custom = _file.getBoolean("CustomCost.Enabled", true);
+        _custom_cost = _file.getInt("CustomCost.Cost", 1000);
     }
 
     public Boolean isDebug() {
@@ -33,7 +37,7 @@ public class ConfigManager {
         _plugin.saveConfig();
     }
 
-    public String getDBConnectionUrl(){
+    public String getDBConnectionUrl() {
         return "jdbc:postgresql://" + _db_host + ":" + _db_port + "/" + _db_name;
     }
 
@@ -93,6 +97,36 @@ public class ConfigManager {
         return _suffix;
     }
 
+    public Integer getDefaultCoin() {
+        return _default_coin;
+    }
+
+    public Boolean isEnableCustom() {
+        return _enable_custom;
+    }
+
+    public Integer getCustomCost() {
+        return _custom_cost;
+    }
+
+    public void enableCustom(){
+        _enable_custom = true;
+        _file.set("CustomCost.Enabled", true);
+        _plugin.saveConfig();
+    }
+
+    public void disableCustom(){
+        _enable_custom = false;
+        _file.set("CustomCost.Enabled", false);
+        _plugin.saveConfig();
+    }
+
+    public void setCustomCost(Integer cost){
+        _custom_cost = cost;
+        _file.set("CustomCost.Cost", cost);
+        _plugin.saveConfig();
+    }
+
 
     private final MiniPlayerTitle _plugin;
     private FileConfiguration _file;
@@ -105,4 +139,7 @@ public class ConfigManager {
     private String _db_name;
     private String _prefix;
     private String _suffix;
+    private Integer _default_coin;
+    private Boolean _enable_custom;
+    private Integer _custom_cost;
 }
