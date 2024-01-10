@@ -51,6 +51,10 @@ public class ListView {
 
     public void showOn(Player player, Integer page) {
         int offset = (page - 1) * page_size;
+        if (lines.isEmpty()) {
+            Notification.warn(player, "没有数据");
+            return;
+        }
         if (offset >= lines.size() || offset < 0) {
             Notification.error(player, "页数超出范围");
             return;
