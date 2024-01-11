@@ -12,7 +12,7 @@ public class Events implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         XPlayer player = new XPlayer(event.getPlayer());
-        Notification.info(event.getPlayer(), "输入 /mplt 使用称号系统");
+        Commands.home_view(event.getPlayer());
     }
 
     @EventHandler

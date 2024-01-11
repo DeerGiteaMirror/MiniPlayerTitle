@@ -4,7 +4,7 @@
 
 [PlayerTitle](https://ricedoc.handyplus.cn/wiki/PlayerTitle/) 青春版
 
-![image-20240110164757834](https://ssl.lunadeer.cn:14437/i/2024/01/10/659e59bfc8f7b.png)
+![image-20240111093304074](https://ssl.lunadeer.cn:14437/i/2024/01/11/659f455088092.png)
 
 ## 说明
 
@@ -72,7 +72,7 @@
 - 自定义称号支持RGB彩色字，需要使用 `&#`为开头的十六进制RGB颜色代码表示颜色，例如`&#000000`表示黑色。可以使用 [Minecraft 渐变颜色生成器](https://ssl.lunadeer.cn:14440/) 来生成具有渐变效果的称号。
 - 创建成功后会自动扣除所需的花费。
 
-![image-20240110171242703](https://ssl.lunadeer.cn:14437/i/2024/01/10/659e5f8b2f5fb.png)
+![image-20240111093331929](https://ssl.lunadeer.cn:14437/i/2024/01/11/659f456c4a88b.png)
 
 ## 管理员指南
 

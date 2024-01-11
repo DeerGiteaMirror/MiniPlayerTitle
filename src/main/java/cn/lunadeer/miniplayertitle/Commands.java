@@ -108,7 +108,7 @@ public class Commands implements TabExecutor {
         }
     }
 
-    private void printHelp(@NotNull CommandSender sender) {
+    private static void printHelp(@NotNull CommandSender sender) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             Notification.warn(player, "用法: /mplt <use|list|shop|buy|custom|custominfo>");
@@ -121,7 +121,7 @@ public class Commands implements TabExecutor {
         }
     }
 
-    private void home_view(CommandSender sender) {
+    public static void home_view(CommandSender sender) {
         if (!(sender instanceof Player)) {
             printHelp(sender);
             return;
