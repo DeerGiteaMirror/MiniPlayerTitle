@@ -41,19 +41,6 @@ public class ConfigManager {
         return "jdbc:postgresql://" + _db_host + ":" + _db_port + "/" + _db_name;
     }
 
-    public void setDbHost(String db_host) {
-        _db_host = db_host;
-        _file.set("Database.Host", db_host);
-        _plugin.saveConfig();
-    }
-
-
-    public void setDbPort(String db_port) {
-        _db_port = db_port;
-        _file.set("Database.Port", db_port);
-        _plugin.saveConfig();
-    }
-
 
     public void setDbUser(String db_user) {
         _db_user = db_user;
@@ -82,12 +69,6 @@ public class ConfigManager {
         return _db_pass;
     }
 
-
-    public void setDbName(String db_name) {
-        _db_name = db_name;
-        _file.set("Database.Name", db_name);
-        _plugin.saveConfig();
-    }
 
     public String getPrefix() {
         return _prefix;
