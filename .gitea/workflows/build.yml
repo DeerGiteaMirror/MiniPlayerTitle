@@ -29,9 +29,11 @@ jobs:
         run: |
           echo "done!"
       - name: "setup go for release script"
-        uses: https://ssl.lunadeer.cn:14446/actions/setup-go@v4
-        with:
-          go-version: '>=1.20.1'
+        run: |
+          wget --no-check-certificate https://go.dev/dl/go1.21.6.linux-amd64.tar.gz 
+          rm -rf /usr/local/go && tar -C /usr/local -xzf go1.21.6.linux-amd64.tar.gz
+          ln -s /usr/local/go/bin/go /usr/bin/go
+          go version
       - name: "Release"
         uses: https://ssl.lunadeer.cn:14446/actions/release-action@main
         with:
