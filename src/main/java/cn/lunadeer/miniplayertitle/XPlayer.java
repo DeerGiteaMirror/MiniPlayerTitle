@@ -62,6 +62,7 @@ public class XPlayer {
         sql += "updated_at = CURRENT_TIMESTAMP ";
         sql += "WHERE uuid = '" + _player.getUniqueId() + "';";
         Database.query(sql);
+        updateName();
         if (_current_title_id == -1) {
             Notification.info(_player, "成功卸下称号");
             return;
@@ -196,7 +197,7 @@ public class XPlayer {
         Notification.info(_player, title.getTitle().append(Component.text(" 已购买至 " + title_bought.getExpireAtStr())));
     }
 
-    public void custom(String title_str){
+    public void custom(String title_str) {
         if (this.get_coin() < MiniPlayerTitle.config.getCustomCost()) {
             Notification.error(this._player, "称号币不足");
             return;
@@ -225,5 +226,33 @@ public class XPlayer {
         this.set_coin(this.get_coin() - MiniPlayerTitle.config.getCustomCost());
         Notification.info(this._player, Component.text("成功创建自定义称号: ").append(title.getTitle()));
         Notification.info(this._player, "花费: " + MiniPlayerTitle.config.getCustomCost() + "称号币，余额: " + this.get_coin() + "称号币");
+    }
+
+    public void updateName() {
+        PlayerTitle title = getTitle();
+        if (title == null) {
+            Component newDisplayName = Component.text()
+                    .append(Component.text("<"))
+                    .append(_player.name())
+                    .append(Component.text("> ")).build();
+            Component newListName = Component.text()
+                    .append(_player.name()).build();
+            _player.displayName(newDisplayName);
+            _player.playerListName(newListName);
+            return;
+        }
+
+        Component titleComponent = title.getTitle();
+        Component newDisplayName = Component.text()
+                .append(titleComponent)
+                .append(Component.text("<"))
+                .append(_player.name())
+                .append(Component.text(">")).build();
+        Component newListName = Component.text()
+                .append(titleComponent)
+                .append(Component.text(" "))
+                .append(_player.name()).build();
+        _player.displayName(newDisplayName);
+        _player.playerListName(newListName);
     }
 }
