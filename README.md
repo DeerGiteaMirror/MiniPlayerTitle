@@ -174,6 +174,7 @@ Suffix: "]"
 CustomCost:
   Enabled: true
   Cost: 1000
+  MaxLength: 8
 
 # 玩家称号币初始值
 DefaultCoin: 0

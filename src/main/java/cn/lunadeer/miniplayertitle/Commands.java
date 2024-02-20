@@ -167,8 +167,12 @@ public class Commands implements TabExecutor {
         line_4.append("可以使用 Minecraft渐变颜色生成器 来生成具有渐变效果的称号")
                         .append(Component.text("[点击在浏览器中打开生成器]", ViewStyles.action_color)
                                 .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, "https://ssl.lunadeer.cn:14440/")));
+        Line line_5 = Line.create();
+        line_5.append("最大长度（不含颜色代码）：")
+                .append(MiniPlayerTitle.config.getMaxLength().toString());
         view.addLine(line_1)
                 .addLine(line_2)
+                .addLine(line_5)
                 .addLine(line_3)
                 .addLine(line_4);
         view.showOn(player);

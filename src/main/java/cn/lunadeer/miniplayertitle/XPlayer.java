@@ -211,6 +211,11 @@ public class XPlayer {
             Notification.error(this._player, "创建称号失败");
             return;
         }
+        if (title.getTitleContent().length() > MiniPlayerTitle.config.getMaxLength()) {
+            Notification.error(this._player, "称号长度超过限制，最大字符长度（不含颜色代码）: " + MiniPlayerTitle.config.getMaxLength());
+            Title.delete(title.getId());
+            return;
+        }
         if (exist_titles.contains(title.getTitleContent())) {
             Notification.error(this._player, "已存在同名称号");
             Title.delete(title.getId());

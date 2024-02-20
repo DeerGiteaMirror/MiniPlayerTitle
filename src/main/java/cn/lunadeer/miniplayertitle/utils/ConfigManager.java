@@ -25,6 +25,7 @@ public class ConfigManager {
         _default_coin = _file.getInt("DefaultCoin", 0);
         _enable_custom = _file.getBoolean("CustomCost.Enabled", true);
         _custom_cost = _file.getInt("CustomCost.Cost", 1000);
+        _max_length = _file.getInt("CustomCost.MaxLength", 8);
     }
 
     public Boolean isDebug() {
@@ -90,6 +91,10 @@ public class ConfigManager {
         return _custom_cost;
     }
 
+    public Integer getMaxLength() {
+        return _max_length;
+    }
+
     public void enableCustom(){
         _enable_custom = true;
         _file.set("CustomCost.Enabled", true);
@@ -108,6 +113,12 @@ public class ConfigManager {
         _plugin.saveConfig();
     }
 
+    public void setMaxLength(Integer length){
+        _max_length = length;
+        _file.set("CustomCost.MaxLength", length);
+        _plugin.saveConfig();
+    }
+
 
     private final MiniPlayerTitle _plugin;
     private FileConfiguration _file;
@@ -123,4 +134,6 @@ public class ConfigManager {
     private Integer _default_coin;
     private Boolean _enable_custom;
     private Integer _custom_cost;
+
+    private Integer _max_length;
 }

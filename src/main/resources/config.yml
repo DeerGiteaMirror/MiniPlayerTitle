@@ -11,6 +11,7 @@ Suffix: "]"
 CustomCost:
   Enabled: true
   Cost: 1000
+  MaxLength: 8
 
 DefaultCoin: 0
 
