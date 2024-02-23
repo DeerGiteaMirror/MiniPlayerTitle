@@ -1,5 +1,9 @@
 # MiniPlayerTitle
 
+开源地址：[Gitea](https://ssl.lunadeer.cn:14446/zhangyuheng/MiniPlayerTitle)
+
+文档地址：[Doc](https://ssl.lunadeer.cn:14448/doc/2/)
+
 ## 简易玩家称号插件
 
 [PlayerTitle](https://ricedoc.handyplus.cn/wiki/PlayerTitle/) 青春版
