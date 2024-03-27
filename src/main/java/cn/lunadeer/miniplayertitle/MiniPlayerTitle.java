@@ -23,6 +23,8 @@ public final class MiniPlayerTitle extends JavaPlugin {
         Objects.requireNonNull(Bukkit.getPluginCommand("MiniPlayerTitle")).setExecutor(new Commands());
         Objects.requireNonNull(Bukkit.getPluginCommand("MiniPlayerTitle")).setTabCompleter(new Commands());
 
+        Metrics metrics = new Metrics(this, 21444);
+
         XLogger.info("称号插件已加载");
         XLogger.info("版本: " + getPluginMeta().getVersion());
         // http://patorjk.com/software/taag/#p=display&f=Big&t=MiniPlayerTitle
