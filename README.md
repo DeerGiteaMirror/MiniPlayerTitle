@@ -3,7 +3,7 @@
 
 <img src="https://ssl.lunadeer.cn:14437/i/2024/03/28/6604de7db2e6f.png" alt="" width="70%">
 
-[开源地址](https://ssl.lunadeer.cn:14446/zhangyuheng/MiniPlayerTitle) | [文档地址](https://ssl.lunadeer.cn:14448/doc/2/)
+### [开源地址](https://ssl.lunadeer.cn:14446/zhangyuheng/MiniPlayerTitle) | [文档地址](https://ssl.lunadeer.cn:14448/doc/2/)
 
 </div>
 
