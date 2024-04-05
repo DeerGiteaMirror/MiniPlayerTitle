@@ -41,6 +41,9 @@ public class Database {
         }
         try {
             Statement stmt = conn.createStatement();
+            if (sql.contains("SERIAL PRIMARY KEY") && MiniPlayerTitle.config.getDbType().equals("sqlite")) {
+                sql = sql.replace("SERIAL PRIMARY KEY", "INTEGER PRIMARY KEY AUTOINCREMENT");
+            }
             // if query with no result return null
             if (stmt.execute(sql)) {
                 return stmt.getResultSet();
@@ -87,7 +90,7 @@ public class Database {
         String sql = "";
 
         // title table
-        sql += "CREATE TABLE IF NOT EXISTS mplt_title (" +
+        sql = "CREATE TABLE IF NOT EXISTS mplt_title (" +
                 "  id                 SERIAL PRIMARY KEY," +
                 "  title              TEXT NOT NULL UNIQUE," +
                 "  description        TEXT NOT NULL," +
@@ -95,9 +98,10 @@ public class Database {
                 "  created_at         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
                 "  updated_at         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP" +
                 ");";
+        query(sql);
 
         // title shop table
-        sql += "CREATE TABLE IF NOT EXISTS mplt_title_shop (" +
+        sql = "CREATE TABLE IF NOT EXISTS mplt_title_shop (" +
                 "  id                 SERIAL PRIMARY KEY," +
                 "  title_id           INTEGER NOT NULL," +
                 "  price              INTEGER NOT NULL DEFAULT 0," +
@@ -108,9 +112,10 @@ public class Database {
                 "  updated_at         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
                 "  FOREIGN KEY (title_id) REFERENCES mplt_title(id) ON DELETE CASCADE" +
                 ");";
+        query(sql);
 
         // player title info table
-        sql += "CREATE TABLE IF NOT EXISTS mplt_player_info (" +
+        sql = "CREATE TABLE IF NOT EXISTS mplt_player_info (" +
                 "  uuid              UUID PRIMARY KEY," +
                 "  coin              INTEGER NOT NULL DEFAULT 0," +
                 "  using_title_id    INTEGER NOT NULL DEFAULT -1," +
@@ -118,9 +123,10 @@ public class Database {
                 "  updated_at        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
                 "  FOREIGN KEY (using_title_id) REFERENCES mplt_title(id) ON DELETE CASCADE" +
                 ");";
+        query(sql);
 
         // player title table
-        sql += "CREATE TABLE IF NOT EXISTS mplt_player_title (" +
+        sql = "CREATE TABLE IF NOT EXISTS mplt_player_title (" +
                 "  id                SERIAL PRIMARY KEY," +
                 "  player_uuid       UUID NOT NULL," +
                 "  title_id          INTEGER NOT NULL," +
@@ -130,8 +136,9 @@ public class Database {
                 "  FOREIGN KEY (title_id) REFERENCES mplt_title(id) ON DELETE CASCADE," +
                 "  FOREIGN KEY (player_uuid) REFERENCES mplt_player_info(uuid) ON DELETE CASCADE" +
                 ");";
+        query(sql);
 
-        sql += "INSERT INTO mplt_title (" +
+        sql = "INSERT INTO mplt_title (" +
                 "id,         " +
                 "title,      " +
                 "description," +
@@ -146,8 +153,6 @@ public class Database {
                 "CURRENT_TIMESTAMP, " +
                 "CURRENT_TIMESTAMP  " +
                 ") ON CONFLICT (id) DO NOTHING;";
-
-
         query(sql);
     }
 }
