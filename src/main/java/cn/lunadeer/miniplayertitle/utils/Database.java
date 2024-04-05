@@ -6,12 +6,30 @@ import java.sql.*;
 
 public class Database {
 
-    public static Connection createConnection(){
+    public static Connection createConnection() {
         try {
-            Class.forName("org.postgresql.Driver");
-            return DriverManager.getConnection(MiniPlayerTitle.config.getDBConnectionUrl(), MiniPlayerTitle.config.getDbUser(), MiniPlayerTitle.config.getDbPass());
+            String connectionUrl;
+            if (MiniPlayerTitle.config.getDbType().equals("pgsql")) {
+                XLogger.info("正在连接到 PostgreSQL 数据库");
+                Class.forName("org.postgresql.Driver");
+                connectionUrl = "jdbc:postgresql://" + MiniPlayerTitle.config.getDbHost() + ":" + MiniPlayerTitle.config.getDbPort();
+                connectionUrl += "/" + MiniPlayerTitle.config.getDbName();
+                return DriverManager.getConnection(connectionUrl, MiniPlayerTitle.config.getDbUser(), MiniPlayerTitle.config.getDbPass());
+            } else if (MiniPlayerTitle.config.getDbType().equals("sqlite")) {
+                XLogger.info("正在连接到 SQLite 数据库");
+                Class.forName("org.sqlite.JDBC");
+                connectionUrl = "jdbc:sqlite:" + MiniPlayerTitle.instance.getDataFolder() + "/" + MiniPlayerTitle.config.getDbName() + ".db";
+                return DriverManager.getConnection(connectionUrl);
+            } else {
+                XLogger.err("=== 严重错误 ===");
+                XLogger.err("数据库类型错误，只能为 pgsql 或 sqlite");
+                XLogger.err("===============");
+                return null;
+            }
         } catch (ClassNotFoundException | SQLException e) {
+            XLogger.err("=== 严重错误 ===");
             XLogger.err("Database connection failed: " + e.getMessage());
+            XLogger.err("===============");
             return null;
         }
     }
@@ -26,13 +44,42 @@ public class Database {
             // if query with no result return null
             if (stmt.execute(sql)) {
                 return stmt.getResultSet();
-            } else {
-                return null;
             }
         } catch (SQLException e) {
-            XLogger.err("Database query failed: " + e.getMessage());
-            XLogger.err("SQL: " + sql);
-            return null;
+            handleDatabaseError("Database query failed: ", e, sql);
+        }
+        return null;
+    }
+
+    private static void handleDatabaseError(String errorMessage, SQLException e, String sql) {
+        XLogger.err("=== 严重错误 ===");
+        XLogger.err(errorMessage + e.getMessage());
+        XLogger.err("SQL: " + sql);
+        XLogger.err("===============");
+    }
+
+    private static void addColumnIfNotExists(String tableName, String columnName, String columnDefinition) {
+        if (MiniPlayerTitle.config.getDbType().equals("pgsql")) {
+            String sql = "ALTER TABLE " + tableName + " ADD COLUMN IF NOT EXISTS " + columnName + " " + columnDefinition + ";";
+            query(sql);
+        } else if (MiniPlayerTitle.config.getDbType().equals("sqlite")) {
+            try {
+                ResultSet rs = query("PRAGMA table_info(" + tableName + ");");
+                boolean columnExists = false;
+                if (rs != null) {
+                    while (rs.next()) {
+                        if (columnName.equals(rs.getString("name"))) {
+                            columnExists = true;
+                            break;
+                        }
+                    }
+                }
+                if (!columnExists) {
+                    query("ALTER TABLE " + tableName + " ADD COLUMN " + columnName + " " + columnDefinition + ";");
+                }
+            } catch (SQLException e) {
+                handleDatabaseError("Database operation failed: ", e, "");
+            }
         }
     }
 

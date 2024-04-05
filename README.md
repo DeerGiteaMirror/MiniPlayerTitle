@@ -21,7 +21,7 @@
 ## 功能介绍
 
 - 本插件支持 PlayerTitle 的 [新版RGB颜色格式](https://ricedoc.handyplus.cn/wiki/PlayerTitle/rgb/#新版本格式) （详情见下文）
-- 本插件仅支持 PostgresSQL 数据库，不支持 MySQL、Sqlite 等
+- 支持 PostgresSQL 和 Sqlite 数据库
 - 本插件使用 **TUI** 作为简易的交互方式，非 PlayerTitle 的箱子UI
 - 支持设置称号**限量销售、限时销售**
 - 支持玩家使用称号币自定义称号
@@ -82,6 +82,12 @@
 ![image-20240111093331929](https://ssl.lunadeer.cn:14437/i/2024/01/11/659f456c4a88b.png)
 
 ## 管理员指南
+
+### 0. 数据库
+
+如果使用 Postgresql 数据库，需要手动创建数据库。
+
+如果使用 sqlite 数据库，插件会自动在插件目录下创建数据库文件。配置文件内的 Host、Port、User、Pass 字段不会被使用。
 
 ### 1. 创建称号
 
@@ -167,6 +173,7 @@
 ```yaml
 # 数据库配置
 Database:
+  Type: sqlite # pgsql, sqlite
   Host: localhost
   Port: 5432
   Name: miniplayertitle
