@@ -2,6 +2,7 @@ package cn.lunadeer.miniplayertitle;
 
 import cn.lunadeer.miniplayertitle.utils.ConfigManager;
 import cn.lunadeer.miniplayertitle.utils.Database;
+import cn.lunadeer.miniplayertitle.utils.GiteaReleaseCheck;
 import cn.lunadeer.miniplayertitle.utils.XLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,6 +25,12 @@ public final class MiniPlayerTitle extends JavaPlugin {
         Objects.requireNonNull(Bukkit.getPluginCommand("MiniPlayerTitle")).setTabCompleter(new Commands());
 
         Metrics metrics = new Metrics(this, 21444);
+        if (config.isCheckUpdate()) {
+            giteaReleaseCheck = new GiteaReleaseCheck(this,
+                    "https://ssl.lunadeer.cn:14446",
+                    "zhangyuheng",
+                    "MiniPlayerTitle");
+        }
 
         XLogger.info("称号插件已加载");
         XLogger.info("版本: " + getPluginMeta().getVersion());
@@ -46,4 +53,5 @@ public final class MiniPlayerTitle extends JavaPlugin {
     public static MiniPlayerTitle instance;
     public static ConfigManager config;
     public static Connection dbConnection;
+    private GiteaReleaseCheck giteaReleaseCheck;
 }

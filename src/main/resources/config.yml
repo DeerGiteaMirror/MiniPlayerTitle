@@ -16,4 +16,6 @@ CustomCost:
 
 DefaultCoin: 0
 
+CheckUpdate: true
+
 Debug: false

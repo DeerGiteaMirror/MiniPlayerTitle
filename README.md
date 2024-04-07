@@ -4,6 +4,8 @@
 <img src="https://ssl.lunadeer.cn:14437/i/2024/03/28/6604de7db2e6f.png" alt="" width="70%">
 
 ### [开源地址](https://ssl.lunadeer.cn:14446/zhangyuheng/MiniPlayerTitle) | [文档地址](https://ssl.lunadeer.cn:14448/doc/2/)
+### [下载页面](https://ssl.lunadeer.cn:14446/zhangyuheng/MiniPlayerTitle/releases)
+### [统计页面](https://bstats.org/plugin/bukkit/MiniPlayerTitle/21444) | [Hangar](https://hangar.papermc.io/zhangyuheng/MiniPlayerTitle)
 
 </div>
 
@@ -192,6 +194,9 @@ CustomCost:
 
 # 玩家称号币初始值
 DefaultCoin: 0
+
+# 更新检查
+CheckUpdate: true
 
 Debug: false
 ```

@@ -31,6 +31,7 @@ public class ConfigManager {
         _enable_custom = _file.getBoolean("CustomCost.Enabled", true);
         _custom_cost = _file.getInt("CustomCost.Cost", 1000);
         _max_length = _file.getInt("CustomCost.MaxLength", 8);
+        _check_update = _file.getBoolean("CheckUpdate", true);
     }
 
     public Boolean isDebug() {
@@ -142,6 +143,10 @@ public class ConfigManager {
         _plugin.saveConfig();
     }
 
+    public Boolean isCheckUpdate() {
+        return _check_update;
+    }
+
 
     private final MiniPlayerTitle _plugin;
     private FileConfiguration _file;
@@ -158,6 +163,6 @@ public class ConfigManager {
     private Integer _default_coin;
     private Boolean _enable_custom;
     private Integer _custom_cost;
-
     private Integer _max_length;
+    private Boolean _check_update;
 }
