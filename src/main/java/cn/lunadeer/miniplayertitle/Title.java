@@ -1,10 +1,7 @@
 package cn.lunadeer.miniplayertitle;
 
-import cn.lunadeer.miniplayertitle.utils.Database;
-import cn.lunadeer.miniplayertitle.utils.Notification;
-import cn.lunadeer.miniplayertitle.utils.STUI.Line;
-import cn.lunadeer.miniplayertitle.utils.STUI.ListView;
-import cn.lunadeer.miniplayertitle.utils.XLogger;
+import cn.lunadeer.minecraftpluginutils.stui.ListView;
+import cn.lunadeer.minecraftpluginutils.stui.components.Line;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -28,13 +25,13 @@ public class Title {
         sql += "'" + description + "', ";
         sql += "true ";
         sql += ") RETURNING id;";
-        try (ResultSet rs = Database.query(sql)) {
+        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
             if (rs != null && rs.next()) {
                 int titleId = rs.getInt("id");
                 return new Title(titleId);
             }
         } catch (Exception e) {
-            XLogger.err("Title create failed: " + e.getMessage());
+            MiniPlayerTitle.logger.err("Title create failed: " + e.getMessage());
         }
         return null;
     }
@@ -43,7 +40,7 @@ public class Title {
         List<Title> titles = new ArrayList<>();
         String sql = "";
         sql += "SELECT id FROM mplt_title;";
-        try (ResultSet rs = Database.query(sql)) {
+        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
             if (rs != null) {
                 while (rs.next()) {
                     Integer id = rs.getInt("id");
@@ -51,7 +48,7 @@ public class Title {
                 }
             }
         } catch (Exception e) {
-            XLogger.err("Title all failed: " + e.getMessage());
+            MiniPlayerTitle.logger.err("Title all failed: " + e.getMessage());
         }
         return titles;
     }
@@ -61,7 +58,7 @@ public class Title {
         if (!(sender instanceof Player)) {
             for (Title title : titles) {
                 Component idx = Component.text("[" + title.getId() + "]");
-                Notification.info(sender, idx.append(title.getTitle()));
+                MiniPlayerTitle.notification.info(sender, idx.append(title.getTitle()));
             }
             return;
         }
@@ -83,21 +80,21 @@ public class Title {
         sql += "SELECT id, title, description, enabled ";
         sql += "FROM mplt_title ";
         sql += "WHERE id = " + id + ";";
-        try (ResultSet rs = Database.query(sql)) {
+        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
             if (rs != null && rs.next()) {
                 this._title = rs.getString("title");
                 this._description = rs.getString("description");
                 this._enabled = rs.getBoolean("enabled");
             }
         } catch (Exception e) {
-            XLogger.err("Title load failed: " + e.getMessage());
+            MiniPlayerTitle.logger.err("Title load failed: " + e.getMessage());
         }
     }
 
     public static void delete(Integer id) {
         String sql = "";
         sql += "DELETE FROM mplt_title WHERE id = " + id + ";";
-        Database.query(sql);
+        MiniPlayerTitle.database.query(sql);
     }
 
     private void save() {
@@ -116,7 +113,7 @@ public class Title {
             sql += "updated_at = CURRENT_TIMESTAMP ";
             sql += "WHERE id = " + this._id + ";";
         }
-        Database.query(sql);
+        MiniPlayerTitle.database.query(sql);
     }
 
     public Integer getId() {

@@ -1,6 +1,5 @@
 package cn.lunadeer.miniplayertitle;
 
-import cn.lunadeer.miniplayertitle.utils.XLogger;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 
@@ -28,7 +27,7 @@ public class Color {
             this.g = 0;
             this.b = 0;
             this.hex = "#000000";
-            XLogger.err("Invalid color: " + r + ", " + g + ", " + b);
+            MiniPlayerTitle.logger.err("Invalid color: " + r + ", " + g + ", " + b);
         }
     }
 
@@ -43,7 +42,7 @@ public class Color {
             this.g = 0;
             this.b = 0;
             this.hex = "#000000";
-            XLogger.err("Invalid color: " + hex);
+            MiniPlayerTitle.logger.err("Invalid color: " + hex);
         }
     }
 

@@ -1,6 +1,5 @@
 package cn.lunadeer.miniplayertitle;
 
-import cn.lunadeer.miniplayertitle.utils.Notification;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;

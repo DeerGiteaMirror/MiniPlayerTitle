@@ -1,9 +1,7 @@
 package cn.lunadeer.miniplayertitle;
 
 
-import cn.lunadeer.miniplayertitle.utils.Database;
 import cn.lunadeer.miniplayertitle.utils.Time;
-import cn.lunadeer.miniplayertitle.utils.XLogger;
 
 import java.sql.ResultSet;
 
@@ -29,13 +27,13 @@ public class SaleTitle extends Title {
         sql += "INSERT INTO mplt_title_shop (title_id, price, days, amount, sale_end_at) ";
         sql += "VALUES (" + title_id + ", 0, 0, 0, -1) ";
         sql += "RETURNING id;";
-        try (ResultSet rs = Database.query(sql)) {
+        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
             if (rs != null && rs.next()) {
                 Integer id = rs.getInt("id");
                 return new SaleTitle(id, title_id, 0, 0, 0, -1L);
             }
         } catch (Exception e) {
-            XLogger.err("SaleTitle create failed: " + e.getMessage());
+            MiniPlayerTitle.logger.err("SaleTitle create failed: " + e.getMessage());
         }
         return null;
     }
@@ -110,7 +108,7 @@ public class SaleTitle extends Title {
         }
     }
 
-    public Integer getSaleId(){
+    public Integer getSaleId() {
         return this._sale_id;
     }
 
@@ -125,6 +123,6 @@ public class SaleTitle extends Title {
         sql += "updated_at = CURRENT_TIMESTAMP ";
         sql += "WHERE id = " + this._sale_id + ";";
 
-        Database.query(sql);
+        MiniPlayerTitle.database.query(sql);
     }
 }

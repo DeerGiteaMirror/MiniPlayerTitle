@@ -1,6 +1,5 @@
 package cn.lunadeer.miniplayertitle;
 
-import cn.lunadeer.miniplayertitle.utils.Database;
 import cn.lunadeer.miniplayertitle.utils.Time;
 
 import java.sql.ResultSet;
@@ -21,12 +20,12 @@ public class PlayerTitle extends Title {
         sql += "INSERT INTO mplt_player_title (title_id, player_uuid, expire_at) ";
         sql += "VALUES (" + title_id + ", '" + player_uuid.toString() + "', " + System.currentTimeMillis() + ") ";
         sql += "RETURNING id;";
-        try (ResultSet rs = Database.query(sql)) {
+        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
             if (rs != null && rs.next()) {
                 return new PlayerTitle(title_id, player_uuid, -1L);
             }
         } catch (Exception e) {
-            cn.lunadeer.miniplayertitle.utils.XLogger.err("PlayerTitle create failed: " + e.getMessage());
+            MiniPlayerTitle.logger.err("PlayerTitle create failed: " + e.getMessage());
         }
         return null;
     }
@@ -61,6 +60,6 @@ public class PlayerTitle extends Title {
         sql += "updated_at = CURRENT_TIMESTAMP ";
         sql += "WHERE player_uuid = '" + _player_uuid.toString() + "' ";
         sql += "AND title_id = " + this._id + ";";
-        Database.query(sql);
+        MiniPlayerTitle.database.query(sql);
     }
 }

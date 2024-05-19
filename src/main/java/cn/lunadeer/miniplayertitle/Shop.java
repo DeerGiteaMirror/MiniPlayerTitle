@@ -1,11 +1,8 @@
 package cn.lunadeer.miniplayertitle;
 
-import cn.lunadeer.miniplayertitle.utils.Database;
-import cn.lunadeer.miniplayertitle.utils.Notification;
-import cn.lunadeer.miniplayertitle.utils.STUI.Button;
-import cn.lunadeer.miniplayertitle.utils.STUI.Line;
-import cn.lunadeer.miniplayertitle.utils.STUI.ListView;
-import cn.lunadeer.miniplayertitle.utils.XLogger;
+import cn.lunadeer.minecraftpluginutils.stui.ListView;
+import cn.lunadeer.minecraftpluginutils.stui.components.Button;
+import cn.lunadeer.minecraftpluginutils.stui.components.Line;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.command.CommandSender;
@@ -21,7 +18,7 @@ public class Shop {
         if (!(sender instanceof Player)) {
             for (SaleTitle title : titles.values()) {
                 Component idx = Component.text("[" + title.getSaleId() + "] ");
-                Notification.info(sender, idx.append(title.getTitle()));
+                MiniPlayerTitle.notification.info(sender, idx.append(title.getTitle()));
             }
             return;
         }
@@ -34,7 +31,7 @@ public class Shop {
             TextComponent idx = Component.text("[" + title_sale_id + "] ");
             SaleTitle title = entry.getValue();
             Line line = Line.create();
-            Component button = Button.create("购买", "/mplt buy " + title_sale_id);
+            Component button = Button.create("购买").setExecuteCommand("/mplt buy " + title_sale_id).build();
             line.append(idx)
                     .append(title.getTitle())
                     .append("价格:" + title.getPrice() + " 有效期:" + (title.getDays() == -1 ? "永久" : title.getDays() + "天"))
@@ -49,7 +46,7 @@ public class Shop {
     public static void deleteTitle(Integer id) {
         String sql = "";
         sql += "DELETE FROM mplt_title_shop WHERE id = " + id + ";";
-        Database.query(sql);
+        MiniPlayerTitle.database.query(sql);
     }
 
     public static Map<Integer, SaleTitle> getSaleTitles() {
@@ -63,7 +60,7 @@ public class Shop {
         sql += "sale_end_at ";
         sql += "FROM mplt_title_shop;";
         Map<Integer, SaleTitle> titles = new HashMap<>();
-        try (ResultSet rs = Database.query(sql)) {
+        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
             while (rs != null && rs.next()) {
                 Integer id = rs.getInt("id");
                 Integer title_id = rs.getInt("title_id");
@@ -75,7 +72,7 @@ public class Shop {
                 titles.put(id, title);
             }
         } catch (Exception e) {
-            XLogger.err("XPlayer getTitles failed: " + e.getMessage());
+            MiniPlayerTitle.logger.err("XPlayer getTitles failed: " + e.getMessage());
         }
         return titles;
     }

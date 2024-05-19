@@ -1,12 +1,10 @@
 package cn.lunadeer.miniplayertitle;
 
+import cn.lunadeer.minecraftpluginutils.stui.View;
+import cn.lunadeer.minecraftpluginutils.stui.ViewStyles;
+import cn.lunadeer.minecraftpluginutils.stui.components.Button;
+import cn.lunadeer.minecraftpluginutils.stui.components.Line;
 import cn.lunadeer.miniplayertitle.commands.AdminCommands;
-import cn.lunadeer.miniplayertitle.utils.Notification;
-import cn.lunadeer.miniplayertitle.utils.STUI.Button;
-import cn.lunadeer.miniplayertitle.utils.STUI.Line;
-import cn.lunadeer.miniplayertitle.utils.STUI.View;
-import cn.lunadeer.miniplayertitle.utils.STUI.ViewStyles;
-import cn.lunadeer.miniplayertitle.utils.XLogger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.command.Command;
@@ -111,13 +109,13 @@ public class Commands implements TabExecutor {
     private static void printHelp(@NotNull CommandSender sender) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            Notification.warn(player, "用法: /mplt <use|list|shop|buy|custom|custominfo>");
+            MiniPlayerTitle.notification.warn(player, "用法: /mplt <use|list|shop|buy|custom|custominfo>");
             if (player.isOp()) {
-                Notification.warn(player, "用法: /mplt <create|delete|setdesc|setname|addshop|removeshop|setprice|setamount|setendat|listall>");
+                MiniPlayerTitle.notification.warn(player, "用法: /mplt <create|delete|setdesc|setname|addshop|removeshop|setprice|setamount|setendat|listall>");
             }
         } else {
-            XLogger.info("用法: /mplt <use|list|shop|buy|custom>");
-            XLogger.info("用法: /mplt <create|delete|setdesc|setname|addshop|removeshop|setprice|setamount|setendat|listall>");
+            MiniPlayerTitle.logger.info("用法: /mplt <use|list|shop|buy|custom>");
+            MiniPlayerTitle.logger.info("用法: /mplt <create|delete|setdesc|setname|addshop|removeshop|setprice|setamount|setendat|listall>");
         }
     }
 
@@ -134,9 +132,9 @@ public class Commands implements TabExecutor {
         Line line_2 = Line.create();
         line_2.append(Component.text("帮助文档:"));
         line_2.append(Component.text("[点击在浏览器中打开]").clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, "https://ssl.lunadeer.cn:14446/zhangyuheng/MiniPlayerTitle")));
-        Component backpack = Button.create("称号背包", "/mplt list");
-        Component shop = Button.create("称号商店", "/mplt shop");
-        Component custom = Button.create("自定义称号", "/mplt custominfo");
+        Component backpack = Button.create("称号背包").setExecuteCommand("/mplt list").build();
+        Component shop = Button.create("称号商店").setExecuteCommand("/mplt shop").build();
+        Component custom = Button.create("自定义称号").setExecuteCommand("/mplt custominfo").build();
         Line line = Line.create();
         line.append(backpack).append(shop).append(custom);
         view.actionBar(line).addLine(line_1).addLine(line_2);
