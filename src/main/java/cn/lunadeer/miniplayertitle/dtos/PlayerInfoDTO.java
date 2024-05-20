@@ -1,7 +1,6 @@
 package cn.lunadeer.miniplayertitle.dtos;
 
 import cn.lunadeer.miniplayertitle.MiniPlayerTitle;
-import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

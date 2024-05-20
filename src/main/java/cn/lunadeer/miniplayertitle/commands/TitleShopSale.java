@@ -1,11 +1,18 @@
 package cn.lunadeer.miniplayertitle.commands;
 
 import cn.lunadeer.miniplayertitle.MiniPlayerTitle;
+import cn.lunadeer.miniplayertitle.dtos.PlayerInfoDTO;
+import cn.lunadeer.miniplayertitle.dtos.PlayerTitleDTO;
 import cn.lunadeer.miniplayertitle.dtos.TitleDTO;
 import cn.lunadeer.miniplayertitle.dtos.TitleShopDTO;
+import cn.lunadeer.miniplayertitle.tuis.MyTitles;
 import cn.lunadeer.miniplayertitle.tuis.SaleInfo;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 
 import static cn.lunadeer.miniplayertitle.commands.Apis.notOpOrConsole;
 import static cn.lunadeer.miniplayertitle.tuis.Apis.getLastArgsPage;
@@ -44,14 +51,13 @@ public class TitleShopSale {
                 int day = Integer.parseInt(date[2]);
                 success = titleShop.setSaleEndAt(year, month, day);
                 break;
-            case "end_at_y":
-                success = titleShop.setSaleEndAtY(Integer.parseInt(args[3]));
+            case "more_end_at":
+                int days = Integer.parseInt(args[3]);
+                success = titleShop.setSaleEndAt(titleShop.getSaleEndAt().plusDays(days));
                 break;
-            case "end_at_m":
-                success = titleShop.setSaleEndAtM(Integer.parseInt(args[3]));
-                break;
-            case "end_at_d":
-                success = titleShop.setSaleEndAtD(Integer.parseInt(args[3]));
+            case "less_end_at":
+                int days2 = Integer.parseInt(args[3]);
+                success = titleShop.setSaleEndAt(titleShop.getSaleEndAt().minusDays(days2));
                 break;
             default:
                 MiniPlayerTitle.notification.warn(sender, "用法: /mplt set_sale <price|days|amount|end_at|end_at_y|end_at_m|end_at_d> <商品ID> <值> [页数]");
@@ -115,6 +121,72 @@ public class TitleShopSale {
         if (args.length == 3) {
             int page = getLastArgsPage(args);
             SaleInfo.show(sender, new String[]{"sale_info", args[1], String.valueOf(page)});
+        }
+    }
+
+    /**
+     * 购买商品
+     * mplt buy_sale <商品ID>
+     *
+     * @param sender
+     * @param args
+     */
+    public static void buySale(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+            MiniPlayerTitle.notification.error(sender, "该命令只能由玩家执行");
+            return;
+        }
+        Player player = (Player) sender;
+        PlayerInfoDTO playerInfo = PlayerInfoDTO.get(player.getUniqueId());
+        if (playerInfo == null) {
+            MiniPlayerTitle.notification.error(player, "获取玩家信息时出现错误，详情请查看控制台日志");
+            return;
+        }
+        TitleShopDTO titleShop = TitleShopDTO.get(Integer.valueOf(args[1]));
+        if (titleShop == null) {
+            MiniPlayerTitle.notification.error(player, "获取详情时出现错误，详情请查看控制台日志");
+            return;
+        }
+
+        if (titleShop.isExpired() || titleShop.getDays() == 0) {
+            MiniPlayerTitle.notification.error(player, "此称号已停止销售");
+            return;
+        }
+        if (titleShop.getAmount() != -1 && titleShop.getAmount() <= 0) {
+            MiniPlayerTitle.notification.error(player, "此称号已售罄");
+            return;
+        }
+        if (titleShop.getPrice() > playerInfo.getCoin()) {
+            MiniPlayerTitle.notification.error(player, "你的余额不足");
+            return;
+        }
+
+        List<PlayerTitleDTO> playerTitles = PlayerTitleDTO.getAllOf(player.getUniqueId());
+        PlayerTitleDTO had = null;
+        for (PlayerTitleDTO playerTitle : playerTitles) {
+            if (Objects.equals(playerTitle.getTitle().getId(), titleShop.getTitle().getId())) {
+                had = playerTitle;
+                break;
+            }
+        }
+
+        if (had == null) {
+            had = PlayerTitleDTO.create(player.getUniqueId(), titleShop.getTitle(), LocalDateTime.now().plusDays(titleShop.getDays()));
+            if (had == null) {
+                MiniPlayerTitle.notification.error(player, "购买称号时出现错误，详情请查看控制台日志");
+                return;
+            }
+            MiniPlayerTitle.notification.info(player, "成功购买称号: " + had.getTitle().getTitleColored());
+        } else if (!had.isExpired()) {
+            MiniPlayerTitle.notification.warn(player, "你已拥有此称号，在过期前无法再次购买");
+        } else {
+            had.setExpireAt(LocalDateTime.now().plusDays(titleShop.getDays()));
+            MiniPlayerTitle.notification.info(player, "成功续续期称号: " + had.getTitle().getTitleColored());
+        }
+
+        if (args.length == 2) {
+            int page = getLastArgsPage(args);
+            MyTitles.show(sender, new String[]{"my_titles", String.valueOf(page)});
         }
     }
 

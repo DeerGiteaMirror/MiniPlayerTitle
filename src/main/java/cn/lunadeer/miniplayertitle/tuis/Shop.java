@@ -3,8 +3,6 @@ package cn.lunadeer.miniplayertitle.tuis;
 import cn.lunadeer.minecraftpluginutils.stui.ListView;
 import cn.lunadeer.minecraftpluginutils.stui.components.Button;
 import cn.lunadeer.minecraftpluginutils.stui.components.Line;
-import cn.lunadeer.miniplayertitle.MiniPlayerTitle;
-import cn.lunadeer.miniplayertitle.dtos.TitleDTO;
 import cn.lunadeer.miniplayertitle.dtos.TitleShopDTO;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

@@ -3,6 +3,7 @@ package cn.lunadeer.miniplayertitle.dtos;
 import cn.lunadeer.miniplayertitle.MiniPlayerTitle;
 
 import java.sql.ResultSet;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,9 +13,7 @@ public class TitleShopDTO {
     private Integer price;
     private Integer days;
     private Integer amount;
-    private Integer sale_end_at_y;
-    private Integer sale_end_at_m;
-    private Integer sale_end_at_d;
+    private LocalDateTime sale_end_at;
 
     public Integer getId() {
         return id;
@@ -69,47 +68,17 @@ public class TitleShopDTO {
         return false;
     }
 
-    public Integer getSaleEndAtY() {
-        return sale_end_at_y;
+    public LocalDateTime getSaleEndAt() {
+        return sale_end_at;
     }
 
-    public boolean setSaleEndAtY(int sale_end_at_y) {
+    public boolean setSaleEndAt(LocalDateTime dateTime) {
         String sql = "";
-        sql += "UPDATE mplt_title_shop SET sale_end_at_y = " + sale_end_at_y + " WHERE id = " + id + ";";
+        sql += "UPDATE mplt_title_shop SET sale_end_at_y = " + dateTime.getYear() + ", sale_end_at_m = " + dateTime.getMonthValue() + ", sale_end_at_d = " + dateTime.getDayOfMonth() + " WHERE id = " + id + ";";
         try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
             return true;
         } catch (Exception e) {
-            MiniPlayerTitle.database.handleDatabaseError("设置称号商店销售结束年份失败", e, sql);
-        }
-        return false;
-    }
-
-    public Integer getSaleEndAtM() {
-        return sale_end_at_m;
-    }
-
-    public boolean setSaleEndAtM(int sale_end_at_m) {
-        String sql = "";
-        sql += "UPDATE mplt_title_shop SET sale_end_at_m = " + sale_end_at_m + " WHERE id = " + id + ";";
-        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
-            return true;
-        } catch (Exception e) {
-            MiniPlayerTitle.database.handleDatabaseError("设置称号商店销售结束月份失败", e, sql);
-        }
-        return false;
-    }
-
-    public Integer getSaleEndAtD() {
-        return sale_end_at_d;
-    }
-
-    public boolean setSaleEndAtD(int sale_end_at_d) {
-        String sql = "";
-        sql += "UPDATE mplt_title_shop SET sale_end_at_d = " + sale_end_at_d + " WHERE id = " + id + ";";
-        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
-            return true;
-        } catch (Exception e) {
-            MiniPlayerTitle.database.handleDatabaseError("设置称号商店销售结束日期失败", e, sql);
+            MiniPlayerTitle.database.handleDatabaseError("设置称号商店销售结束时间失败", e, sql);
         }
         return false;
     }
@@ -160,9 +129,14 @@ public class TitleShopDTO {
         titleShop.price = rs.getInt("price");
         titleShop.days = rs.getInt("days");
         titleShop.amount = rs.getInt("amount");
-        titleShop.sale_end_at_y = rs.getInt("sale_end_at_y");
-        titleShop.sale_end_at_m = rs.getInt("sale_end_at_m");
-        titleShop.sale_end_at_d = rs.getInt("sale_end_at_d");
+        int y = rs.getInt("sale_end_at_y");
+        int m = rs.getInt("sale_end_at_m");
+        int d = rs.getInt("sale_end_at_d");
+        if (y == -1 && m == -1 && d == -1) {
+            titleShop.sale_end_at = null;
+        } else {
+            titleShop.sale_end_at = LocalDateTime.of(y, m, d, 0, 0, 0);
+        }
         return titleShop;
     }
 
@@ -191,6 +165,11 @@ public class TitleShopDTO {
             MiniPlayerTitle.database.handleDatabaseError("删除称号商店失败", e, sql);
         }
         return false;
+    }
+
+    public boolean isExpired() {
+        if (sale_end_at == null) return false;
+        return LocalDateTime.now().isAfter(sale_end_at);
     }
 
 }

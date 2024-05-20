@@ -8,13 +8,19 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import static cn.lunadeer.miniplayertitle.commands.Apis.updateName;
+
 public class Events implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player bukkitPlayer = event.getPlayer();
         PlayerInfoDTO player = PlayerInfoDTO.get(bukkitPlayer.getUniqueId());
-        player.updateName();
+        if (player == null) {
+            MiniPlayerTitle.notification.error(bukkitPlayer, "获取玩家信息时出现错误，请联系管理员");
+            return;
+        }
+        updateName(bukkitPlayer, player.getUsingTitle());
     }
 
     @EventHandler

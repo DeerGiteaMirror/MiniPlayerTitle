@@ -1,11 +1,15 @@
 package cn.lunadeer.miniplayertitle.commands;
 
 import cn.lunadeer.miniplayertitle.MiniPlayerTitle;
+import cn.lunadeer.miniplayertitle.dtos.PlayerInfoDTO;
 import cn.lunadeer.miniplayertitle.dtos.TitleDTO;
+import cn.lunadeer.miniplayertitle.tuis.MyTitles;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import static cn.lunadeer.miniplayertitle.commands.Apis.notOpOrConsole;
+import static cn.lunadeer.miniplayertitle.commands.Apis.updateName;
 
 public class TitleManage {
     /**
@@ -107,6 +111,43 @@ public class TitleManage {
             }
         } catch (Exception e) {
             MiniPlayerTitle.notification.error(sender, e.getMessage());
+        }
+    }
+
+    /**
+     * 使用称号
+     * mplt use_title <称号ID> [页码]
+     *
+     * @param sender CommandSender
+     * @param args   String[]
+     */
+    public static void useTitle(CommandSender sender, String[] args) {
+        if (notOpOrConsole(sender)) return;
+        if (args.length < 2) {
+            MiniPlayerTitle.notification.warn(sender, "用法: /mplt use_title <称号ID> [页码]");
+            return;
+        }
+        TitleDTO title = TitleDTO.get(Integer.parseInt(args[1]));
+        if (title == null) {
+            MiniPlayerTitle.notification.error(sender, "称号不存在");
+            return;
+        }
+        PlayerInfoDTO playerInfo = PlayerInfoDTO.get(((Player) sender).getUniqueId());
+        if (playerInfo == null) {
+            MiniPlayerTitle.notification.error(sender, "获取玩家信息时出现错误");
+            return;
+        }
+        boolean success = playerInfo.setUsingTitle(title);
+        if (success) {
+            updateName((Player) sender, title);
+            MiniPlayerTitle.notification.info(sender, "已使用称号");
+        } else {
+            MiniPlayerTitle.notification.error(sender, "使用称号失败，具体请查看控制台日志");
+        }
+
+        if (args.length == 3) {
+            int page = Integer.parseInt(args[2]);
+            MyTitles.show(sender, new String[]{"my_titles", String.valueOf(page)});
         }
     }
 }
