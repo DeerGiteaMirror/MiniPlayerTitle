@@ -56,8 +56,7 @@ public class PlayerTitle extends Title {
     private void save() {
         String sql = "";
         sql += "UPDATE mplt_player_title ";
-        sql += "SET expire_at = " + this._expire_at + ", ";
-        sql += "updated_at = CURRENT_TIMESTAMP ";
+        sql += "SET expire_at = " + this._expire_at + " ";
         sql += "WHERE player_uuid = '" + _player_uuid.toString() + "' ";
         sql += "AND title_id = " + this._id + ";";
         MiniPlayerTitle.database.query(sql);

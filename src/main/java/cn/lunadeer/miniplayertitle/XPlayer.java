@@ -55,8 +55,7 @@ public class XPlayer {
         checkTitleValid();
         String sql = "";
         sql += "UPDATE mplt_player_info ";
-        sql += "SET using_title_id = " + _current_title_id + ", ";
-        sql += "updated_at = CURRENT_TIMESTAMP ";
+        sql += "SET using_title_id = " + _current_title_id + " ";
         sql += "WHERE uuid = '" + _player.getUniqueId() + "';";
         MiniPlayerTitle.database.query(sql);
         updateName();
@@ -87,8 +86,7 @@ public class XPlayer {
         _coin = coin;
         String sql = "";
         sql += "UPDATE mplt_player_info ";
-        sql += "SET coin = " + coin + ", ";
-        sql += "updated_at = CURRENT_TIMESTAMP ";
+        sql += "SET coin = " + coin + " ";
         sql += "WHERE uuid = '" + _player.getUniqueId().toString() + "';";
         MiniPlayerTitle.database.query(sql);
     }

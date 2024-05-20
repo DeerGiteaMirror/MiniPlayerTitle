@@ -119,8 +119,7 @@ public class SaleTitle extends Title {
         sql += "price = " + this._price + ", ";
         sql += "days = " + this._days + ", ";
         sql += "amount = " + this._amount + ", ";
-        sql += "sale_end_at = " + this._sale_end_at + ", ";
-        sql += "updated_at = CURRENT_TIMESTAMP ";
+        sql += "sale_end_at = " + this._sale_end_at + " ";
         sql += "WHERE id = " + this._sale_id + ";";
 
         MiniPlayerTitle.database.query(sql);

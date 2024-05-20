@@ -110,7 +110,6 @@ public class Title {
             sql += "title = '" + this._title + "', ";
             sql += "description = '" + this._description + "', ";
             sql += "enabled = " + this._enabled + " ";
-            sql += "updated_at = CURRENT_TIMESTAMP ";
             sql += "WHERE id = " + this._id + ";";
         }
         MiniPlayerTitle.database.query(sql);

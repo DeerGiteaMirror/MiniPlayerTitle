@@ -72,5 +72,14 @@ public class DatabaseTables {
                 "CURRENT_TIMESTAMP  " +
                 ") ON CONFLICT (id) DO NOTHING;";
         MiniPlayerTitle.database.query(sql);
+
+        MiniPlayerTitle.database.deleteColumnIfExists("mplt_title", "created_at");
+        MiniPlayerTitle.database.deleteColumnIfExists("mplt_title", "updated_at");
+        MiniPlayerTitle.database.deleteColumnIfExists("mplt_title_shop", "created_at");
+        MiniPlayerTitle.database.deleteColumnIfExists("mplt_title_shop", "updated_at");
+        MiniPlayerTitle.database.deleteColumnIfExists("mplt_player_info", "created_at");
+        MiniPlayerTitle.database.deleteColumnIfExists("mplt_player_info", "updated_at");
+        MiniPlayerTitle.database.deleteColumnIfExists("mplt_player_title", "created_at");
+        MiniPlayerTitle.database.deleteColumnIfExists("mplt_player_title", "updated_at");
     }
 }
