@@ -119,15 +119,9 @@ public class ConfigManager {
         return _max_length;
     }
 
-    public void enableCustom(){
+    public void setCustom(boolean enable) {
         _enable_custom = true;
-        _file.set("CustomCost.Enabled", true);
-        _plugin.saveConfig();
-    }
-
-    public void disableCustom(){
-        _enable_custom = false;
-        _file.set("CustomCost.Enabled", false);
+        _file.set("CustomCost.Enabled", enable);
         _plugin.saveConfig();
     }
 

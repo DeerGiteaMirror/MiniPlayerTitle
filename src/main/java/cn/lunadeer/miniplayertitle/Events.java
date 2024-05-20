@@ -1,5 +1,6 @@
 package cn.lunadeer.miniplayertitle;
 
+import cn.lunadeer.miniplayertitle.dtos.PlayerInfoDTO;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -12,8 +13,7 @@ public class Events implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player bukkitPlayer = event.getPlayer();
-        XPlayer player = new XPlayer(bukkitPlayer);
-        Commands.home_view(bukkitPlayer);
+        PlayerInfoDTO player = PlayerInfoDTO.get(bukkitPlayer.getUniqueId());
         player.updateName();
     }
 
