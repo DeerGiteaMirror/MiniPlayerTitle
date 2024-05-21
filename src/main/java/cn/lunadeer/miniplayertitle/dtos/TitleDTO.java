@@ -41,13 +41,11 @@ public class TitleDTO {
         return null;
     }
 
-    public static boolean delete(int id) {
+    public boolean delete() {
         String sql = "";
         sql += "DELETE FROM mplt_title WHERE id = ?;";
         try (ResultSet rs = MiniPlayerTitle.database.query(sql, id)) {
-            if (rs != null && rs.next()) {
-                return true;
-            }
+            return true;
         } catch (Exception e) {
             MiniPlayerTitle.database.handleDatabaseError("删除称号失败", e, sql);
         }

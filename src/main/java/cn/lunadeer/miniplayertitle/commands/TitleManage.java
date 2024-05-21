@@ -2,6 +2,7 @@ package cn.lunadeer.miniplayertitle.commands;
 
 import cn.lunadeer.miniplayertitle.MiniPlayerTitle;
 import cn.lunadeer.miniplayertitle.dtos.PlayerInfoDTO;
+import cn.lunadeer.miniplayertitle.dtos.PlayerTitleDTO;
 import cn.lunadeer.miniplayertitle.dtos.TitleDTO;
 import cn.lunadeer.miniplayertitle.tuis.AllTitles;
 import cn.lunadeer.miniplayertitle.tuis.MyTitles;
@@ -48,7 +49,16 @@ public class TitleManage {
                 MiniPlayerTitle.notification.warn(sender, "用法: /mplt delete_title <称号ID>");
                 return;
             }
-            TitleDTO.delete(Integer.parseInt(args[1]));
+            TitleDTO title = TitleDTO.get(Integer.parseInt(args[1]));
+            if (title == null) {
+                MiniPlayerTitle.notification.error(sender, "称号不存在");
+                return;
+            }
+            boolean success = title.delete();
+            if (!success) {
+                MiniPlayerTitle.notification.error(sender, "删除称号失败，具体请查看控制台日志");
+                return;
+            }
             MiniPlayerTitle.notification.info(sender, "已删除称号");
             if (args.length == 3) {
                 int page = Integer.parseInt(args[2]);
@@ -154,5 +164,56 @@ public class TitleManage {
             int page = Integer.parseInt(args[2]);
             MyTitles.show(sender, new String[]{"my_titles", String.valueOf(page)});
         }
+    }
+
+    /**
+     * 创建自定义称号
+     * mplt custom_title <称号>
+     *
+     * @param sender CommandSender
+     * @param args   String[]
+     */
+    public static void customTitle(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+            MiniPlayerTitle.notification.error(sender, "该命令只能由玩家执行");
+            return;
+        }
+        Player player = (Player) sender;
+        if (!MiniPlayerTitle.config.isEnableCustom()) {
+            MiniPlayerTitle.notification.error(sender, "自定义称号功能已关闭");
+            return;
+        }
+        PlayerInfoDTO playerInfo = PlayerInfoDTO.get(player.getUniqueId());
+        if (playerInfo == null) {
+            MiniPlayerTitle.notification.error(sender, "获取玩家信息时出现错误");
+            return;
+        }
+        if (MiniPlayerTitle.config.getCustomCost() > playerInfo.getCoin()) {
+            MiniPlayerTitle.notification.error(sender, "称号币不足");
+            return;
+        }
+        if (args.length < 2) {
+            MiniPlayerTitle.notification.warn(sender, "用法: /mplt custom_title <称号>");
+            return;
+        }
+        TitleDTO title = TitleDTO.create(args[1], player.getName() + "的自定义称号");
+        if (title == null) {
+            MiniPlayerTitle.notification.error(sender, "创建称号失败，具体请查看控制台日志");
+            return;
+        }
+        if (title.getTitlePlainText().length() > MiniPlayerTitle.config.getMaxLength()) {
+            MiniPlayerTitle.notification.error(sender, "称号长度超过限制");
+            title.delete();
+            return;
+        }
+        PlayerTitleDTO created_rec = PlayerTitleDTO.create(player.getUniqueId(), title, null);
+        if (created_rec == null) {
+            MiniPlayerTitle.notification.error(sender, "创建称号记录失败，具体请查看控制台日志");
+            title.delete();
+            return;
+        }
+        playerInfo.setCoin(playerInfo.getCoin() - MiniPlayerTitle.config.getCustomCost());
+        MiniPlayerTitle.notification.info(sender, "成功创建自定义称号");
+        MyTitles.show(sender, new String[]{"my_titles"});
     }
 }

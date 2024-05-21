@@ -38,7 +38,7 @@ public class CustomInfo {
                 .append("自定义称号最大长度（不含颜色代码）：").append(MiniPlayerTitle.config.getMaxLength().toString());
         Line line_5 = Line.create()
                 .append("自定义方法：")
-                .append("在聊天框输入 /mplt custom <称号>");
+                .append("在聊天框输入 /mplt custom_title <称号>");
         Line line_6 = Line.create()
                 .append("可以使用 Minecraft渐变颜色生成器 来生成具有渐变效果的称号")
                 .append(Button.create("点击在浏览器中打开生成器").setOpenURL("https://ssl.lunadeer.cn:14440/").build());

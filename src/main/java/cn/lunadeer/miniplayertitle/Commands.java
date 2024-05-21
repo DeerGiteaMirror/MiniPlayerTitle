@@ -65,6 +65,9 @@ public class Commands implements TabExecutor {
             case "set_desc":
                 TitleManage.setTitleDescription(sender, args);
                 break;
+            case "custom_title":
+                TitleManage.customTitle(sender, args);
+                break;
             default:
                 return false;
         }
