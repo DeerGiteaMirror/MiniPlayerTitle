@@ -24,7 +24,7 @@ public class PlayerTitleDTO {
         return title;
     }
 
-    public UUID getPlayer_uuid() {
+    public UUID getPlayerUuid() {
         return player_uuid;
     }
 

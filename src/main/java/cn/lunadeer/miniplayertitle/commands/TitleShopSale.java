@@ -24,7 +24,7 @@ public class TitleShopSale {
 
     /**
      * 设置商品信息
-     * mplt set_sale <price|days|amount|end_at|end_at_y|end_at_m|end_at_d> <商品ID> <值> [页数]
+     * mplt set_sale <price|days|amount|end_at|more_end_at|less_end_at> <商品ID> <值> [页数]
      *
      * @param sender CommandSender
      * @param args   String[]

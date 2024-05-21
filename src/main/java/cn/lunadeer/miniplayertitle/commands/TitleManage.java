@@ -30,6 +30,7 @@ public class TitleManage {
         TitleDTO title = TitleDTO.create(args[1], args[2]);
         if (title != null) {
             MiniPlayerTitle.notification.info(sender, Component.text("成功创建称号: [" + title.getId() + "]").append(title.getTitleColored()));
+            AllTitles.show(sender, new String[]{"all_titles"});
         } else {
             MiniPlayerTitle.notification.error(sender, "创建称号失败，具体请查看控制台日志");
         }
@@ -37,7 +38,7 @@ public class TitleManage {
 
     /**
      * 删除称号
-     * mplt delete_title <称号ID>
+     * mplt delete_title <称号ID> [页码]
      *
      * @param sender CommandSender
      * @param args   String[]
@@ -71,12 +72,12 @@ public class TitleManage {
 
     /**
      * 设置称号名称
-     * mplt set_title <称号ID> <称号名称>
+     * mplt edit_title_name <称号ID> <称号名称>
      *
      * @param sender CommandSender
      * @param args   String[]
      */
-    public static void setTitle(CommandSender sender, String[] args) {
+    public static void editTitleName(CommandSender sender, String[] args) {
         try {
             if (notOpOrConsole(sender)) return;
             if (args.length != 3) {
@@ -101,12 +102,12 @@ public class TitleManage {
 
     /**
      * 设置称号描述
-     * mplt set_desc <称号ID> <称号描述>
+     * mplt edit_title_desc <称号ID> <称号描述>
      *
      * @param sender CommandSender
      * @param args   String[]
      */
-    public static void setTitleDescription(CommandSender sender, String[] args) {
+    public static void editTitleDescription(CommandSender sender, String[] args) {
         try {
             if (notOpOrConsole(sender)) return;
             if (args.length != 3) {
@@ -131,7 +132,7 @@ public class TitleManage {
 
     /**
      * 使用称号
-     * mplt use_title <称号ID> [页码]
+     * mplt use_title <背包ID> [页码]
      *
      * @param sender CommandSender
      * @param args   String[]
@@ -139,22 +140,27 @@ public class TitleManage {
     public static void useTitle(CommandSender sender, String[] args) {
         if (notOpOrConsole(sender)) return;
         if (args.length < 2) {
-            MiniPlayerTitle.notification.warn(sender, "用法: /mplt use_title <称号ID> [页码]");
+            MiniPlayerTitle.notification.warn(sender, "用法: /mplt use_title <背包ID> [页码]");
             return;
         }
-        TitleDTO title = TitleDTO.get(Integer.parseInt(args[1]));
+        Player player = (Player) sender;
+        PlayerTitleDTO title = PlayerTitleDTO.get(Integer.parseInt(args[1]));
         if (title == null) {
             MiniPlayerTitle.notification.error(sender, "称号不存在");
             return;
         }
-        PlayerInfoDTO playerInfo = PlayerInfoDTO.get(((Player) sender).getUniqueId());
+        if (!title.getPlayerUuid().equals(player.getUniqueId())) {
+            MiniPlayerTitle.notification.error(sender, "该称号不属于你");
+            return;
+        }
+        PlayerInfoDTO playerInfo = PlayerInfoDTO.get((player).getUniqueId());
         if (playerInfo == null) {
             MiniPlayerTitle.notification.error(sender, "获取玩家信息时出现错误");
             return;
         }
-        boolean success = playerInfo.setUsingTitle(title);
+        boolean success = playerInfo.setUsingTitle(title.getTitle());
         if (success) {
-            updateName((Player) sender, title);
+            updateName((Player) sender, title.getTitle());
             MiniPlayerTitle.notification.info(sender, "已使用称号");
         } else {
             MiniPlayerTitle.notification.error(sender, "使用称号失败，具体请查看控制台日志");
@@ -168,7 +174,7 @@ public class TitleManage {
 
     /**
      * 创建自定义称号
-     * mplt custom_title <称号>
+     * mplt custom_title <称号内容>
      *
      * @param sender CommandSender
      * @param args   String[]
