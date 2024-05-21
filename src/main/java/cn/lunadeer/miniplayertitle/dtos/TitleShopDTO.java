@@ -96,7 +96,8 @@ public class TitleShopDTO {
 
     public static TitleShopDTO get(Integer id) {
         String sql = "";
-        sql += "SELECT id, title_id, price, days, amount, sale_end_at FROM mplt_title_shop WHERE id = " + id + ";";
+        sql += "SELECT id, title_id, price, days, amount, sale_end_at_y, sale_end_at_m, sale_end_at_d " +
+                "FROM mplt_title_shop WHERE id = " + id + ";";
         try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
             if (rs.next()) {
                 return getTitleShop(rs);
@@ -109,7 +110,8 @@ public class TitleShopDTO {
 
     public static List<TitleShopDTO> getAll() {
         String sql = "";
-        sql += "SELECT id, title_id, price, days, amount, sale_end_at FROM mplt_title_shop;";
+        sql += "SELECT id, title_id, price, days, amount, sale_end_at_y, sale_end_at_m, sale_end_at_d " +
+                "FROM mplt_title_shop;";
         List<TitleShopDTO> titleShops = new ArrayList<>();
         try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
             while (rs != null && rs.next()) {

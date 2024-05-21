@@ -26,6 +26,9 @@ public class AllTitles {
                 .append("所有称号"));
 
         for (TitleDTO title : titles) {
+            if (title.getId() == -1){
+                continue;
+            }
             Line line = Line.create()
                     .append(title.getId().toString())
                     .append(title.getTitleColored());

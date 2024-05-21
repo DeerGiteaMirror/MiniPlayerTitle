@@ -38,8 +38,12 @@ public class MyTitles {
                 continue;
             }
             Line line = Line.create()
-                    .append(title.getTitle().getTitleColored())
-                    .append("有效期至: " + title.getExpireAt().getYear() + "年" + title.getExpireAt().getMonthValue() + "月" + title.getExpireAt().getDayOfMonth() + "日");
+                    .append(title.getTitle().getTitleColored());
+            if (title.getExpireAt() == null) {
+                line.append("永久");
+            } else {
+                line.append("有效期至: " + title.getExpireAt().getYear() + "年" + title.getExpireAt().getMonthValue() + "月" + title.getExpireAt().getDayOfMonth() + "日");
+            }
             if (Objects.equals(playerInfo.getUsingTitle().getId(), title.getId())) {
                 line.append(Button.createRed("卸下").setExecuteCommand("/mplt use_title -1 " + page).build());
             } else {

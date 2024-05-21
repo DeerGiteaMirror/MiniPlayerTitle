@@ -21,7 +21,7 @@ public class Apis {
     }
 
     public static void updateName(Player player, @Nullable TitleDTO title) {
-        if (title == null) {
+        if (title == null || title.getId() == -1) {
             Component newDisplayName = Component.text()
                     .append(Component.text("<"))
                     .append(player.name())

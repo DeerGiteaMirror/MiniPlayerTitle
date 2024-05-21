@@ -56,23 +56,6 @@ public class DatabaseTables {
                 ");";
         MiniPlayerTitle.database.query(sql);
 
-        sql = "INSERT INTO mplt_title (" +
-                "id,         " +
-                "title,      " +
-                "description," +
-                "enabled,    " +
-                "created_at, " +
-                "updated_at  " +
-                ") VALUES (" +
-                "-1,          " +
-                "'default',   " +
-                "'default',   " +
-                "TRUE,        " +
-                "CURRENT_TIMESTAMP, " +
-                "CURRENT_TIMESTAMP  " +
-                ") ON CONFLICT (id) DO NOTHING;";
-        MiniPlayerTitle.database.query(sql);
-
         MiniPlayerTitle.database.deleteColumnIfExists("mplt_title", "created_at");
         MiniPlayerTitle.database.deleteColumnIfExists("mplt_title", "updated_at");
         MiniPlayerTitle.database.deleteColumnIfExists("mplt_title", "enabled");
@@ -89,24 +72,39 @@ public class DatabaseTables {
         MiniPlayerTitle.database.addColumnIfNotExists("mplt_title_shop", "sale_end_at_y", "INTEGER NOT NULL DEFAULT -1");
         MiniPlayerTitle.database.addColumnIfNotExists("mplt_title_shop", "sale_end_at_m", "INTEGER NOT NULL DEFAULT -1");
         MiniPlayerTitle.database.addColumnIfNotExists("mplt_title_shop", "sale_end_at_d", "INTEGER NOT NULL DEFAULT -1");
-        // convert sale_end_at(YYYYMMDD) to sale_end_at_y, sale_end_at_m, sale_end_at_d
-        sql = "UPDATE mplt_title_shop SET " +
-                "sale_end_at_y = (sale_end_at / 10000), " +
-                "sale_end_at_m = (sale_end_at % 10000 / 100), " +
-                "sale_end_at_d = (sale_end_at % 100) " +
-                "WHERE sale_end_at != -1;";
-        MiniPlayerTitle.database.query(sql);
+        // convert sale_end_at(YYYYMMDD) to sale_end_at_y, sale_end_at_m, sale_end_at_d if sale_end_at column exists
+        if (MiniPlayerTitle.database.isColumnExist("mplt_title_shop", "sale_end_at")) {
+            sql = "UPDATE mplt_title_shop SET " +
+                    "sale_end_at_y = (sale_end_at / 10000), " +
+                    "sale_end_at_m = (sale_end_at % 10000 / 100), " +
+                    "sale_end_at_d = (sale_end_at % 100) " +
+                    "WHERE sale_end_at != -1;";
+            MiniPlayerTitle.database.query(sql);
+        }
         MiniPlayerTitle.database.deleteColumnIfExists("mplt_title_shop", "sale_end_at");
 
         MiniPlayerTitle.database.addColumnIfNotExists("mplt_player_title", "expire_at_y", "INTEGER NOT NULL DEFAULT -1");
         MiniPlayerTitle.database.addColumnIfNotExists("mplt_player_title", "expire_at_m", "INTEGER NOT NULL DEFAULT -1");
         MiniPlayerTitle.database.addColumnIfNotExists("mplt_player_title", "expire_at_d", "INTEGER NOT NULL DEFAULT -1");
-        sql = "UPDATE mplt_player_title SET " +
-                "expire_at_y = (expire_at / 10000), " +
-                "expire_at_m = (expire_at % 10000 / 100), " +
-                "expire_at_d = (expire_at % 100) " +
-                "WHERE expire_at != -1;";
-        MiniPlayerTitle.database.query(sql);
+        if (MiniPlayerTitle.database.isColumnExist("mplt_player_title", "expire_at")) {
+            sql = "UPDATE mplt_player_title SET " +
+                    "expire_at_y = (expire_at / 10000), " +
+                    "expire_at_m = (expire_at % 10000 / 100), " +
+                    "expire_at_d = (expire_at % 100) " +
+                    "WHERE expire_at != -1;";
+            MiniPlayerTitle.database.query(sql);
+        }
         MiniPlayerTitle.database.deleteColumnIfExists("mplt_player_title", "expire_at");
+
+        sql = "INSERT INTO mplt_title (" +
+                "id,         " +
+                "title,      " +
+                "description " +
+                ") VALUES (" +
+                "-1,          " +
+                "'default',   " +
+                "'default'    " +
+                ") ON CONFLICT (id) DO NOTHING;";
+        MiniPlayerTitle.database.query(sql);
     }
 }

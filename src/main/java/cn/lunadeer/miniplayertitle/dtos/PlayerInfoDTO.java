@@ -27,11 +27,9 @@ public class PlayerInfoDTO {
         String sql = "";
         sql = "INSERT INTO mplt_player_info (uuid, coin) " +
                 "VALUES ('" + uuid.toString() + "', " + MiniPlayerTitle.config.getDefaultCoin() + ") " +
-                "RETURNING " +
-                "uuid, coin, using_title_id " +
-                "ON CONFLICT (uuid) DO NOTHING;";
+                "ON CONFLICT DO NOTHING;";
         try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
-            if (rs.next()) return getPlayerInfoDTO(rs);
+            return get(uuid);
         } catch (Exception e) {
             MiniPlayerTitle.database.handleDatabaseError("创建玩家信息失败", e, sql);
         }
@@ -58,10 +56,7 @@ public class PlayerInfoDTO {
         String sql = "";
         sql = "UPDATE mplt_player_info SET using_title_id = " + title.getId() + " WHERE uuid = '" + uuid.toString() + "';";
         try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
-            if (rs != null && rs.next()) {
-                using_title = title;
-                return true;
-            }
+            return true;
         } catch (Exception e) {
             MiniPlayerTitle.database.handleDatabaseError("设置玩家使用称号失败", e, sql);
         }
@@ -76,10 +71,8 @@ public class PlayerInfoDTO {
         String sql = "";
         sql = "UPDATE mplt_player_info SET coin = " + coin + " WHERE uuid = '" + uuid.toString() + "';";
         try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
-            if (rs != null && rs.next()) {
-                this.coin = coin;
-                return true;
-            }
+            this.coin = coin;
+            return true;
         } catch (Exception e) {
             MiniPlayerTitle.database.handleDatabaseError("设置玩家金币失败", e, sql);
         }

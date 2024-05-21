@@ -3,6 +3,7 @@ package cn.lunadeer.miniplayertitle.commands;
 import cn.lunadeer.miniplayertitle.MiniPlayerTitle;
 import cn.lunadeer.miniplayertitle.dtos.PlayerInfoDTO;
 import cn.lunadeer.miniplayertitle.dtos.TitleDTO;
+import cn.lunadeer.miniplayertitle.tuis.AllTitles;
 import cn.lunadeer.miniplayertitle.tuis.MyTitles;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
@@ -43,12 +44,16 @@ public class TitleManage {
     public static void deleteTitle(CommandSender sender, String[] args) {
         try {
             if (notOpOrConsole(sender)) return;
-            if (args.length != 2) {
+            if (args.length < 2) {
                 MiniPlayerTitle.notification.warn(sender, "用法: /mplt delete_title <称号ID>");
                 return;
             }
             TitleDTO.delete(Integer.parseInt(args[1]));
             MiniPlayerTitle.notification.info(sender, "已删除称号");
+            if (args.length == 3) {
+                int page = Integer.parseInt(args[2]);
+                AllTitles.show(sender, new String[]{"all_titles", String.valueOf(page)});
+            }
         } catch (Exception e) {
             MiniPlayerTitle.notification.error(sender, e.getMessage());
         }

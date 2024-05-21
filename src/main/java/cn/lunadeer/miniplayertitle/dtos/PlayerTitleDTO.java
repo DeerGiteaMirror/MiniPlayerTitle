@@ -2,6 +2,7 @@ package cn.lunadeer.miniplayertitle.dtos;
 
 import cn.lunadeer.miniplayertitle.MiniPlayerTitle;
 
+import javax.annotation.Nullable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -33,8 +34,11 @@ public class PlayerTitleDTO {
 
     public boolean setExpireAt(LocalDateTime dateTime) {
         String sql = "";
-        sql += "UPDATE mplt_player_title SET expire_at_y = " + dateTime.getYear() + ", expire_at_m = " + dateTime.getMonthValue() + ", expire_at_d = " + dateTime.getDayOfMonth() + " " +
-                "WHERE id = " + id + ";";
+        if (dateTime == null) {
+            sql += "UPDATE mplt_player_title SET expire_at_y = -1, expire_at_m = -1, expire_at_d = -1 WHERE id = " + id + ";";
+        } else {
+            sql += "UPDATE mplt_player_title SET expire_at_y = " + dateTime.getYear() + ", expire_at_m = " + dateTime.getMonthValue() + ", expire_at_d = " + dateTime.getDayOfMonth() + " WHERE id = " + id + ";";
+        }
         try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
             return true;
         } catch (Exception e) {
@@ -43,11 +47,16 @@ public class PlayerTitleDTO {
         return false;
     }
 
-    public static PlayerTitleDTO create(UUID player_uuid, TitleDTO title, LocalDateTime expire_at) {
+    public static PlayerTitleDTO create(UUID player_uuid, TitleDTO title, @Nullable LocalDateTime expire_at) {
         String sql = "";
-        sql += "INSERT INTO mplt_player_title (player_uuid, title_id, expire_at_y, expire_at_m, expire_at_d) " +
-                "VALUES ('" + player_uuid.toString() + "', " + title.getId() + ", " + expire_at.getYear() + ", " + expire_at.getMonthValue() + ", " + expire_at.getDayOfMonth() + ") " +
-                "RETURNING " +
+        sql += "INSERT INTO mplt_player_title (player_uuid, title_id, expire_at_y, expire_at_m, expire_at_d) ";
+
+        if (expire_at == null) {
+            sql += "VALUES ('" + player_uuid.toString() + "', " + title.getId() + ", -1, -1, -1) ";
+        } else {
+            sql += "VALUES ('" + player_uuid.toString() + "', " + title.getId() + ", " + expire_at.getYear() + ", " + expire_at.getMonthValue() + ", " + expire_at.getDayOfMonth() + ") ";
+        }
+        sql += "RETURNING " +
                 "id, player_uuid, title_id, expire_at_y, expire_at_m, expire_at_d;";
         try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
             if (rs.next()) {
