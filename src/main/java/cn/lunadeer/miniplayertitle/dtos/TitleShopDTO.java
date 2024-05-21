@@ -29,8 +29,8 @@ public class TitleShopDTO {
 
     public boolean setPrice(int price) {
         String sql = "";
-        sql += "UPDATE mplt_title_shop SET price = " + price + " WHERE id = " + id + ";";
-        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
+        sql += "UPDATE mplt_title_shop SET price = ? WHERE id = ?;";
+        try (ResultSet rs = MiniPlayerTitle.database.query(sql, price, id)) {
             return true;
         } catch (Exception e) {
             MiniPlayerTitle.database.handleDatabaseError("设置称号商店价格失败", e, sql);
@@ -44,8 +44,8 @@ public class TitleShopDTO {
 
     public boolean setDays(int days) {
         String sql = "";
-        sql += "UPDATE mplt_title_shop SET days = " + days + " WHERE id = " + id + ";";
-        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
+        sql += "UPDATE mplt_title_shop SET days = ? WHERE id = ?;";
+        try (ResultSet rs = MiniPlayerTitle.database.query(sql, days, id)) {
             return true;
         } catch (Exception e) {
             MiniPlayerTitle.database.handleDatabaseError("设置称号商店天数失败", e, sql);
@@ -59,8 +59,8 @@ public class TitleShopDTO {
 
     public boolean setAmount(int amount) {
         String sql = "";
-        sql += "UPDATE mplt_title_shop SET amount = " + amount + " WHERE id = " + id + ";";
-        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
+        sql += "UPDATE mplt_title_shop SET amount = ? WHERE id = ?;";
+        try (ResultSet rs = MiniPlayerTitle.database.query(sql, amount, id)) {
             return true;
         } catch (Exception e) {
             MiniPlayerTitle.database.handleDatabaseError("设置称号商店数量失败", e, sql);
@@ -73,20 +73,13 @@ public class TitleShopDTO {
     }
 
     public boolean setSaleEndAt(LocalDateTime dateTime) {
-        String sql = "";
-        sql += "UPDATE mplt_title_shop SET sale_end_at_y = " + dateTime.getYear() + ", sale_end_at_m = " + dateTime.getMonthValue() + ", sale_end_at_d = " + dateTime.getDayOfMonth() + " WHERE id = " + id + ";";
-        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
-            return true;
-        } catch (Exception e) {
-            MiniPlayerTitle.database.handleDatabaseError("设置称号商店销售结束时间失败", e, sql);
-        }
-        return false;
+        return setSaleEndAt(dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth());
     }
 
     public boolean setSaleEndAt(int y, int m, int d) {
         String sql = "";
-        sql += "UPDATE mplt_title_shop SET sale_end_at_y = " + y + ", sale_end_at_m = " + m + ", sale_end_at_d = " + d + " WHERE id = " + id + ";";
-        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
+        sql += "UPDATE mplt_title_shop SET sale_end_at_y = ?, sale_end_at_m = ?, sale_end_at_d = ? WHERE id = ?;";
+        try (ResultSet rs = MiniPlayerTitle.database.query(sql, y, m, d, id)) {
             return true;
         } catch (Exception e) {
             MiniPlayerTitle.database.handleDatabaseError("设置称号商店销售结束时间失败", e, sql);
@@ -97,8 +90,8 @@ public class TitleShopDTO {
     public static TitleShopDTO get(Integer id) {
         String sql = "";
         sql += "SELECT id, title_id, price, days, amount, sale_end_at_y, sale_end_at_m, sale_end_at_d " +
-                "FROM mplt_title_shop WHERE id = " + id + ";";
-        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
+                "FROM mplt_title_shop WHERE id = ?;";
+        try (ResultSet rs = MiniPlayerTitle.database.query(sql, id)) {
             if (rs.next()) {
                 return getTitleShop(rs);
             }
@@ -145,10 +138,10 @@ public class TitleShopDTO {
     public static TitleShopDTO create(TitleDTO title) {
         String sql = "";
         sql += "INSERT INTO mplt_title_shop (title_id, price, days, amount, sale_end_at_y, sale_end_at_m, sale_end_at_d) " +
-                "VALUES (" + title.getId() + ", 0, -1, 0, -1, -1, -1) " +
+                "VALUES (?, 0, -1, 0, -1, -1, -1) " +
                 "RETURNING " +
                 "id, title_id, price, days, amount, sale_end_at_y, sale_end_at_m, sale_end_at_d;";
-        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
+        try (ResultSet rs = MiniPlayerTitle.database.query(sql, title.getId())) {
             if (rs.next()) {
                 return getTitleShop(rs);
             }
@@ -160,8 +153,8 @@ public class TitleShopDTO {
 
     public boolean delete() {
         String sql = "";
-        sql += "DELETE FROM mplt_title_shop WHERE id = " + id + ";";
-        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
+        sql += "DELETE FROM mplt_title_shop WHERE id = ?;";
+        try (ResultSet rs = MiniPlayerTitle.database.query(sql, id)) {
             return true;
         } catch (Exception e) {
             MiniPlayerTitle.database.handleDatabaseError("删除称号商店失败", e, sql);

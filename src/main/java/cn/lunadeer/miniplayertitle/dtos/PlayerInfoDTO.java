@@ -13,8 +13,8 @@ public class PlayerInfoDTO {
 
     public static PlayerInfoDTO get(UUID uuid) {
         String sql = "";
-        sql = "SELECT uuid, coin, using_title_id FROM mplt_player_info WHERE uuid = '" + uuid.toString() + "';";
-        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
+        sql = "SELECT uuid, coin, using_title_id FROM mplt_player_info WHERE uuid = ?;";
+        try (ResultSet rs = MiniPlayerTitle.database.query(sql, uuid)) {
             if (rs.next()) return getPlayerInfoDTO(rs);
             else return create(uuid);
         } catch (Exception e) {
@@ -26,9 +26,9 @@ public class PlayerInfoDTO {
     private static PlayerInfoDTO create(UUID uuid) {
         String sql = "";
         sql = "INSERT INTO mplt_player_info (uuid, coin) " +
-                "VALUES ('" + uuid.toString() + "', " + MiniPlayerTitle.config.getDefaultCoin() + ") " +
+                "VALUES (?, ?) " +
                 "ON CONFLICT DO NOTHING;";
-        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
+        try (ResultSet rs = MiniPlayerTitle.database.query(sql, uuid, MiniPlayerTitle.config.getDefaultCoin())) {
             return get(uuid);
         } catch (Exception e) {
             MiniPlayerTitle.database.handleDatabaseError("创建玩家信息失败", e, sql);
@@ -54,8 +54,8 @@ public class PlayerInfoDTO {
 
     public boolean setUsingTitle(TitleDTO title) {
         String sql = "";
-        sql = "UPDATE mplt_player_info SET using_title_id = " + title.getId() + " WHERE uuid = '" + uuid.toString() + "';";
-        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
+        sql = "UPDATE mplt_player_info SET using_title_id = ? WHERE uuid = ?;";
+        try (ResultSet rs = MiniPlayerTitle.database.query(sql, title.getId(), uuid)) {
             return true;
         } catch (Exception e) {
             MiniPlayerTitle.database.handleDatabaseError("设置玩家使用称号失败", e, sql);
@@ -69,8 +69,8 @@ public class PlayerInfoDTO {
 
     public boolean setCoin(Integer coin) {
         String sql = "";
-        sql = "UPDATE mplt_player_info SET coin = " + coin + " WHERE uuid = '" + uuid.toString() + "';";
-        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
+        sql = "UPDATE mplt_player_info SET coin = ? WHERE uuid = ?;";
+        try (ResultSet rs = MiniPlayerTitle.database.query(sql, coin, uuid)) {
             this.coin = coin;
             return true;
         } catch (Exception e) {

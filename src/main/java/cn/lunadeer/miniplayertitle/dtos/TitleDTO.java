@@ -30,10 +30,10 @@ public class TitleDTO {
     public static TitleDTO create(String title, String description) {
         String sql = "";
         sql += "INSERT INTO mplt_title (title, description) " +
-                "VALUES ('" + title + "', '" + description + "') " +
+                "VALUES (?, ?) " +
                 "RETURNING " +
                 "id, title, description;";
-        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
+        try (ResultSet rs = MiniPlayerTitle.database.query(sql, title, description)) {
             if (rs.next()) return getTitleDTO(rs);
         } catch (Exception e) {
             MiniPlayerTitle.database.handleDatabaseError("创建称号失败", e, sql);
@@ -43,8 +43,8 @@ public class TitleDTO {
 
     public static boolean delete(int id) {
         String sql = "";
-        sql += "DELETE FROM mplt_title WHERE id = " + id + ";";
-        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
+        sql += "DELETE FROM mplt_title WHERE id = ?;";
+        try (ResultSet rs = MiniPlayerTitle.database.query(sql, id)) {
             if (rs != null && rs.next()) {
                 return true;
             }
@@ -126,8 +126,8 @@ public class TitleDTO {
 
     public boolean updateTitle(String title) {
         String sql = "";
-        sql += "UPDATE mplt_title SET title = '" + title + "' WHERE id = " + this.id + ";";
-        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
+        sql += "UPDATE mplt_title SET title = ? WHERE id = ?;";
+        try (ResultSet rs = MiniPlayerTitle.database.query(sql, title, this.id)) {
             if (rs != null && rs.next()) {
                 this.title = title;
                 return true;
@@ -140,8 +140,8 @@ public class TitleDTO {
 
     public boolean updateDescription(String description) {
         String sql = "";
-        sql += "UPDATE mplt_title SET description = '" + description + "' WHERE id = " + this.id + ";";
-        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
+        sql += "UPDATE mplt_title SET description = ? WHERE id = ?;";
+        try (ResultSet rs = MiniPlayerTitle.database.query(sql, description, this.id)) {
             if (rs != null && rs.next()) {
                 this.description = description;
                 return true;

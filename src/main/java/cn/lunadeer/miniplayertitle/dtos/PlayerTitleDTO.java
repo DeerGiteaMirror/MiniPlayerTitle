@@ -52,13 +52,13 @@ public class PlayerTitleDTO {
         sql += "INSERT INTO mplt_player_title (player_uuid, title_id, expire_at_y, expire_at_m, expire_at_d) ";
 
         if (expire_at == null) {
-            sql += "VALUES ('" + player_uuid.toString() + "', " + title.getId() + ", -1, -1, -1) ";
+            sql += "VALUES (?, ? , -1, -1, -1) ";
         } else {
-            sql += "VALUES ('" + player_uuid.toString() + "', " + title.getId() + ", " + expire_at.getYear() + ", " + expire_at.getMonthValue() + ", " + expire_at.getDayOfMonth() + ") ";
+            sql += "VALUES (?, ?, " + expire_at.getYear() + ", " + expire_at.getMonthValue() + ", " + expire_at.getDayOfMonth() + ") ";
         }
         sql += "RETURNING " +
                 "id, player_uuid, title_id, expire_at_y, expire_at_m, expire_at_d;";
-        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
+        try (ResultSet rs = MiniPlayerTitle.database.query(sql, player_uuid, title.getId())) {
             if (rs.next()) {
                 return getRs(rs);
             }
@@ -71,8 +71,8 @@ public class PlayerTitleDTO {
     public static PlayerTitleDTO get(Integer id) {
         String sql = "";
         sql += "SELECT id, player_uuid, title_id, expire_at_y, expire_at_m, expire_at_d FROM mplt_player_title " +
-                "WHERE id = " + id + ";";
-        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
+                "WHERE id = ?;";
+        try (ResultSet rs = MiniPlayerTitle.database.query(sql, id)) {
             if (rs.next()) {
                 return getRs(rs);
             }
@@ -101,9 +101,9 @@ public class PlayerTitleDTO {
     public static List<PlayerTitleDTO> getAllOf(UUID player_uuid) {
         String sql = "";
         sql += "SELECT id, player_uuid, title_id, expire_at_y, expire_at_m, expire_at_d FROM mplt_player_title " +
-                "WHERE player_uuid = '" + player_uuid.toString() + "';";
+                "WHERE player_uuid = ?;";
         List<PlayerTitleDTO> playerTitles = new ArrayList<>();
-        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
+        try (ResultSet rs = MiniPlayerTitle.database.query(sql, player_uuid)) {
             while (rs.next()) {
                 playerTitles.add(getRs(rs));
             }
