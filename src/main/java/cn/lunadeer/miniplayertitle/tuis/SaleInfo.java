@@ -7,6 +7,7 @@ import cn.lunadeer.minecraftpluginutils.stui.components.NumChanger;
 import cn.lunadeer.miniplayertitle.MiniPlayerTitle;
 import cn.lunadeer.miniplayertitle.dtos.TitleDTO;
 import cn.lunadeer.miniplayertitle.dtos.TitleShopDTO;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -100,9 +101,9 @@ public class SaleInfo {
         } else {
             if (player.isOp()) {
                 end_at.append(Button.create("<<").setPreSufIx("", "").setHoverText("提前10天").setExecuteCommand("/mplt set_sale less_end_at " + titleShop.getId() + " 10 " + page).build()
-                        .append(Button.create("-").setPreSufIx("", "").setHoverText("提前1天").setExecuteCommand("/mplt set_sale less_end_at " + titleShop.getId() + " 1 " + page).build()));
-                end_at.append(titleShop.getSaleEndAt().getYear() + "年" + titleShop.getSaleEndAt().getMonthValue() + "月" + titleShop.getSaleEndAt().getDayOfMonth() + "日");
-                end_at.append(Button.create("+").setPreSufIx("", "").setHoverText("延后1天").setExecuteCommand("/mplt set_sale more_end_at " + titleShop.getId() + " 1 " + page).build()
+                        .append(Button.create("-").setPreSufIx("", "").setHoverText("提前1天").setExecuteCommand("/mplt set_sale less_end_at " + titleShop.getId() + " 1 " + page).build())
+                        .append(Component.text(titleShop.getSaleEndAt().getYear() + "年" + titleShop.getSaleEndAt().getMonthValue() + "月" + titleShop.getSaleEndAt().getDayOfMonth() + "日"))
+                        .append(Button.create("+").setPreSufIx("", "").setHoverText("延后1天").setExecuteCommand("/mplt set_sale more_end_at " + titleShop.getId() + " 1 " + page).build())
                         .append(Button.create(">>").setPreSufIx("", "").setHoverText("延后10天").setExecuteCommand("/mplt set_sale more_end_at " + titleShop.getId() + " 10 " + page).build()));
                 end_at.append(Button.create("转为常驻").setExecuteCommand("/mplt set_sale end_at " + titleShop.getId() + " -1:-1:-1 " + page).build());
             } else {

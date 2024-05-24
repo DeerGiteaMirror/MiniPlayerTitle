@@ -4,6 +4,7 @@ import cn.lunadeer.minecraftpluginutils.stui.ListView;
 import cn.lunadeer.minecraftpluginutils.stui.components.Button;
 import cn.lunadeer.minecraftpluginutils.stui.components.Line;
 import cn.lunadeer.miniplayertitle.MiniPlayerTitle;
+import cn.lunadeer.miniplayertitle.dtos.PlayerInfoDTO;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -16,6 +17,14 @@ public class Menu {
 
         Player player = playerOnly(sender);
         if (player == null) return;
+
+        PlayerInfoDTO playerInfo = PlayerInfoDTO.get(player.getUniqueId());
+        if (playerInfo == null) {
+            MiniPlayerTitle.notification.error(player, "获取玩家信息时出现错误");
+            return;
+        }
+        Line balance = Line.create()
+                .append("称号币余额: ").append(playerInfo.getCoin().toString());
         Line backpack = Line.create()
                 .append(Button.create("称号背包").setExecuteCommand("/mplt my_titles").build()).append("查看你拥有的称号");
         Line shop = Line.create()
@@ -28,6 +37,8 @@ public class Menu {
         ListView view = ListView.create(10, "/mplt");
         view.title("称号系统")
                 .navigator(Line.create().append("主菜单"))
+                .add(balance)
+                .add(Line.create())
                 .add(backpack)
                 .add(shop)
                 .add(manual);

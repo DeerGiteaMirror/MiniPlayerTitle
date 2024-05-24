@@ -82,6 +82,20 @@ public class PlayerTitleDTO {
         return null;
     }
 
+    public static PlayerTitleDTO get(UUID player, Integer title) {
+        String sql = "";
+        sql += "SELECT id, player_uuid, title_id, expire_at_y, expire_at_m, expire_at_d FROM mplt_player_title " +
+                "WHERE player_uuid = ? AND title_id = ?;";
+        try (ResultSet rs = MiniPlayerTitle.database.query(sql, player, title)) {
+            if (rs.next()) {
+                return getRs(rs);
+            }
+        } catch (Exception e) {
+            MiniPlayerTitle.database.handleDatabaseError("获取玩家称号失败", e, sql);
+        }
+        return null;
+    }
+
     private static PlayerTitleDTO getRs(ResultSet rs) throws SQLException {
         PlayerTitleDTO playerTitle = new PlayerTitleDTO();
         playerTitle.id = rs.getInt("id");

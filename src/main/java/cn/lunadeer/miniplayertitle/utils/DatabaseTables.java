@@ -106,5 +106,7 @@ public class DatabaseTables {
                 "'default'    " +
                 ") ON CONFLICT (id) DO NOTHING;";
         MiniPlayerTitle.database.query(sql);
+
+        MiniPlayerTitle.database.addColumnIfNotExists("mplt_player_info", "last_use_name", "TEXT NOT NULL DEFAULT 'null'");
     }
 }

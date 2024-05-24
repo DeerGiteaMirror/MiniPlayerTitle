@@ -1,7 +1,9 @@
 package cn.lunadeer.miniplayertitle;
 
+import cn.lunadeer.miniplayertitle.commands.PlayerManage;
 import cn.lunadeer.miniplayertitle.commands.TitleManage;
 import cn.lunadeer.miniplayertitle.commands.TitleShopSale;
+import cn.lunadeer.miniplayertitle.dtos.PlayerInfoDTO;
 import cn.lunadeer.miniplayertitle.tuis.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -55,7 +57,7 @@ public class Commands implements TabExecutor {
             case "use_title":           // mplt use_title <背包ID> [页码]
                 TitleManage.useTitle(sender, args);
                 break;
-            case "create_title":        // mplt create_title <称号名称> <称号描述>
+            case "create_title":        // mplt create_title <称号名称> [称号描述]
                 TitleManage.createTitle(sender, args);
                 break;
             case "delete_title":        // mplt delete_title <称号ID>  [页码]
@@ -70,6 +72,12 @@ public class Commands implements TabExecutor {
             case "custom_title":        // mplt custom_title <称号>
                 TitleManage.customTitle(sender, args);
                 break;
+            case "add_coin":            // mplt add_coin <玩家名称> <称号币数量>
+                PlayerManage.addCoin(sender, args);
+                break;
+            case "set_coin":            // mplt set_coin <玩家名称> <称号币数量>
+                PlayerManage.setCoin(sender, args);
+                break;
             default:
                 return false;
         }
@@ -81,7 +89,7 @@ public class Commands implements TabExecutor {
         if (args.length == 1) {
             return Arrays.asList("menu", "all_titles", "my_titles", "shop", "custom_info", "sale_info",
                     "create_sale", "set_sale", "delete_sale", "buy_sale", "use_title", "create_title",
-                    "delete_title", "edit_title_name", "edit_title_desc", "custom_title");
+                    "delete_title", "edit_title_name", "edit_title_desc", "custom_title", "add_coin", "set_coin");
         }
         if (args.length == 2) {
             switch (args[0]) {
@@ -99,7 +107,11 @@ public class Commands implements TabExecutor {
                 case "set_sale":
                     return Arrays.asList("price", "days", "amount", "end_at", "more_end_at", "less_end_at");
                 case "custom_title":
+                case "create_title":
                     return Collections.singletonList("<称号内容>");
+                case "add_coin":
+                case "set_coin":
+                    return PlayerInfoDTO.playerNameList();
                 default:
                     return null;
             }
@@ -112,6 +124,11 @@ public class Commands implements TabExecutor {
                     return Collections.singletonList("<新的称号描述>");
                 case "edit_title_name":
                     return Collections.singletonList("<新的称号名称>");
+                case "create_title":
+                    return Collections.singletonList("<称号描述>");
+                case "add_coin":
+                case "set_coin":
+                    return Collections.singletonList("<数量>");
                 default:
                     return null;
             }

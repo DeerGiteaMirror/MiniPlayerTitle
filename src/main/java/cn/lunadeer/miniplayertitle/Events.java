@@ -1,6 +1,7 @@
 package cn.lunadeer.miniplayertitle;
 
 import cn.lunadeer.miniplayertitle.dtos.PlayerInfoDTO;
+import cn.lunadeer.miniplayertitle.dtos.PlayerTitleDTO;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -15,12 +16,19 @@ public class Events implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player bukkitPlayer = event.getPlayer();
-        PlayerInfoDTO player = PlayerInfoDTO.get(bukkitPlayer.getUniqueId());
+        PlayerInfoDTO player = PlayerInfoDTO.get(bukkitPlayer);
         if (player == null) {
             MiniPlayerTitle.notification.error(bukkitPlayer, "获取玩家信息时出现错误，请联系管理员");
             return;
         }
-        updateName(bukkitPlayer, player.getUsingTitle());
+        PlayerTitleDTO title = PlayerTitleDTO.get(bukkitPlayer.getUniqueId(), player.getUsingTitle().getId());
+        if (title == null || title.isExpired()) {
+            MiniPlayerTitle.notification.warn(bukkitPlayer, "你当前使用的称号 %s 已过期", player.getUsingTitle().getTitlePlainText());
+            player.setUsingTitle(null);
+            updateName(bukkitPlayer, null);
+        } else {
+            updateName(bukkitPlayer, title.getTitle());
+        }
     }
 
     @EventHandler

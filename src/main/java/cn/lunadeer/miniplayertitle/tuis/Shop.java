@@ -33,6 +33,7 @@ public class Shop {
                 continue;
             }
             Line line = Line.create()
+                    .append(title.getId().toString())
                     .append(title.getTitle().getTitleColored())
                     .append(Button.createGreen("详情").setExecuteCommand("/mplt sale_info " + title.getId()).build());
             view.add(line);

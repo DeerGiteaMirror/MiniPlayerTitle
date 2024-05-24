@@ -10,24 +10,26 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.time.LocalDateTime;
+
 import static cn.lunadeer.miniplayertitle.commands.Apis.notOpOrConsole;
 import static cn.lunadeer.miniplayertitle.commands.Apis.updateName;
 
 public class TitleManage {
     /**
      * 创建称号
-     * mplt create_title <称号名称> <称号描述>
+     * mplt create_title <称号名称> [称号描述]
      *
      * @param sender CommandSender
      * @param args   String[]
      */
     public static void createTitle(CommandSender sender, String[] args) {
         if (notOpOrConsole(sender)) return;
-        if (args.length != 3) {
-            MiniPlayerTitle.notification.warn(sender, "用法: /mplt create_title <称号名称> <称号描述>");
+        if (args.length < 2) {
+            MiniPlayerTitle.notification.warn(sender, "用法: /mplt create_title <称号名称> [称号描述]");
             return;
         }
-        TitleDTO title = TitleDTO.create(args[1], args[2]);
+        TitleDTO title = TitleDTO.create(args[1], args.length == 3 ? args[2] : "这是一个管理员创建的称号");
         if (title != null) {
             MiniPlayerTitle.notification.info(sender, Component.text("成功创建称号: [" + title.getId() + "]").append(title.getTitleColored()));
             AllTitles.show(sender, new String[]{"all_titles"});
@@ -156,6 +158,12 @@ public class TitleManage {
         PlayerInfoDTO playerInfo = PlayerInfoDTO.get((player).getUniqueId());
         if (playerInfo == null) {
             MiniPlayerTitle.notification.error(sender, "获取玩家信息时出现错误");
+            return;
+        }
+        if (title.getExpireAt().isBefore(LocalDateTime.now())) {
+            MiniPlayerTitle.notification.error(sender, "称号 %s 已过期", title.getTitle().getTitlePlainText());
+            playerInfo.setUsingTitle(null);
+            updateName(player, null);
             return;
         }
         boolean success = playerInfo.setUsingTitle(title.getTitle());

@@ -9,6 +9,7 @@ import cn.lunadeer.miniplayertitle.dtos.PlayerTitleDTO;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -41,6 +42,8 @@ public class MyTitles {
                     .append(title.getTitle().getTitleColored());
             if (title.getExpireAt() == null) {
                 line.append("永久");
+            } else if (title.getExpireAt().isBefore(LocalDateTime.now())) {
+                line.append("已过期");
             } else {
                 line.append("有效期至: " + title.getExpireAt().getYear() + "年" + title.getExpireAt().getMonthValue() + "月" + title.getExpireAt().getDayOfMonth() + "日");
             }
