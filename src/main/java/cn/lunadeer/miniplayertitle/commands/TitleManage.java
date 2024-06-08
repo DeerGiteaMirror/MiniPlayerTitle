@@ -160,7 +160,7 @@ public class TitleManage {
             MiniPlayerTitle.notification.error(sender, "获取玩家信息时出现错误");
             return;
         }
-        if (title.getExpireAt().isBefore(LocalDateTime.now())) {
+        if (title.isExpired()) {
             MiniPlayerTitle.notification.error(sender, "称号 %s 已过期", title.getTitle().getTitlePlainText());
             playerInfo.setUsingTitle(null);
             updateName(player, null);
