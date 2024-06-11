@@ -140,7 +140,10 @@ public class TitleManage {
      * @param args   String[]
      */
     public static void useTitle(CommandSender sender, String[] args) {
-        if (notOpOrConsole(sender)) return;
+        if (!(sender instanceof Player)) {
+            MiniPlayerTitle.notification.error(sender, "该命令只能由玩家执行");
+            return;
+        }
         if (args.length < 2) {
             MiniPlayerTitle.notification.warn(sender, "用法: /mplt use_title <背包ID> [页码]");
             return;
