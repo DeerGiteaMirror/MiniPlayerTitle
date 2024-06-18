@@ -17,7 +17,7 @@ public final class MiniPlayerTitle extends JavaPlugin {
         new Scheduler(this);
         new Notification(this);
         new XLogger(instance);
-        new ConfigManager(instance);
+        config = new ConfigManager(instance);
         XLogger.setDebug(config.isDebug());
         database = new DatabaseManager(this,
                 DatabaseManager.TYPE.valueOf(config.getDbType().toUpperCase()),
@@ -61,6 +61,7 @@ public final class MiniPlayerTitle extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        database.close();
     }
 
     public static MiniPlayerTitle instance;
