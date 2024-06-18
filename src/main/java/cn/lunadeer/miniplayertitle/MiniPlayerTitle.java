@@ -27,7 +27,6 @@ public final class MiniPlayerTitle extends JavaPlugin {
                 config.getDbUser(),
                 config.getDbPass());
         DatabaseTables.migrate();
-
         if (config.isExternalEco()) {
             XLogger.info("已启用外部经济插件");
             new VaultConnect(this);
