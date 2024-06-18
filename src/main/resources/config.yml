@@ -16,6 +16,8 @@ CustomCost:
 
 DefaultCoin: 0
 
+ExternalEco: false  # 使用外部经济插件 需要Vault支持
+
 CheckUpdate: true
 
 Debug: false

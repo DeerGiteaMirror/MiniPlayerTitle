@@ -25,7 +25,7 @@ public class PlayerManage {
             }
             if (playerInfo.addCoin(Integer.parseInt(args[2]))) {
                 MiniPlayerTitle.notification.info(sender, "成功给玩家 %s 添加 %s 称号币", playerInfo.getLastUseName(), args[2]);
-                MiniPlayerTitle.notification.info(sender, "玩家 %s 当前余额 %d 称号币", playerInfo.getLastUseName(), playerInfo.getCoin());
+                MiniPlayerTitle.notification.info(sender, "玩家 %s 当前余额 %f 称号币", playerInfo.getLastUseName(), playerInfo.getCoin());
             } else {
                 MiniPlayerTitle.notification.error(sender, "给玩家添加称号币失败，详细错误请查看控制台日志");
             }
@@ -51,7 +51,7 @@ public class PlayerManage {
             }
             if (playerInfo.setCoin(Integer.parseInt(args[2]))) {
                 MiniPlayerTitle.notification.info(sender, "成功给玩家 %s 设置 %s 称号币", playerInfo.getLastUseName(), args[2]);
-                MiniPlayerTitle.notification.info(sender, "玩家 %s 当前余额 %d 称号币", playerInfo.getLastUseName(), playerInfo.getCoin());
+                MiniPlayerTitle.notification.info(sender, "玩家 %s 当前余额 %f 称号币", playerInfo.getLastUseName(), playerInfo.getCoin());
             } else {
                 MiniPlayerTitle.notification.error(sender, "给玩家设置称号币失败，详细错误请查看控制台日志");
             }

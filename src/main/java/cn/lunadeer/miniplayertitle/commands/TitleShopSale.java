@@ -39,7 +39,7 @@ public class TitleShopSale {
         boolean success;
         switch (args[1]) {
             case "price":
-                success = titleShop.setPrice(Integer.parseInt(args[3]));
+                success = titleShop.setPrice(Double.parseDouble(args[3]));
                 break;
             case "days":
                 success = titleShop.setDays(Integer.parseInt(args[3]));

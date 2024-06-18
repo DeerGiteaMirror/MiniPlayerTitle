@@ -10,7 +10,7 @@ import java.util.List;
 public class TitleShopDTO {
     private Integer id;
     private TitleDTO title;
-    private Integer price;
+    private Double price;
     private Integer days;
     private Integer amount;
     private LocalDateTime sale_end_at;
@@ -23,13 +23,13 @@ public class TitleShopDTO {
         return title;
     }
 
-    public Integer getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public boolean setPrice(int price) {
+    public boolean setPrice(Double price) {
         String sql = "";
-        sql += "UPDATE mplt_title_shop SET price = ? WHERE id = ?;";
+        sql += "UPDATE mplt_title_shop SET price_d = ? WHERE id = ?;";
         try (ResultSet rs = MiniPlayerTitle.database.query(sql, price, id)) {
             return true;
         } catch (Exception e) {
@@ -89,7 +89,7 @@ public class TitleShopDTO {
 
     public static TitleShopDTO get(Integer id) {
         String sql = "";
-        sql += "SELECT id, title_id, price, days, amount, sale_end_at_y, sale_end_at_m, sale_end_at_d " +
+        sql += "SELECT id, title_id, price_d, days, amount, sale_end_at_y, sale_end_at_m, sale_end_at_d " +
                 "FROM mplt_title_shop WHERE id = ?;";
         try (ResultSet rs = MiniPlayerTitle.database.query(sql, id)) {
             if (rs.next()) {
@@ -103,7 +103,7 @@ public class TitleShopDTO {
 
     public static List<TitleShopDTO> getAll() {
         String sql = "";
-        sql += "SELECT id, title_id, price, days, amount, sale_end_at_y, sale_end_at_m, sale_end_at_d " +
+        sql += "SELECT id, title_id, price_d, days, amount, sale_end_at_y, sale_end_at_m, sale_end_at_d " +
                 "FROM mplt_title_shop;";
         List<TitleShopDTO> titleShops = new ArrayList<>();
         try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
@@ -121,7 +121,7 @@ public class TitleShopDTO {
         TitleShopDTO titleShop = new TitleShopDTO();
         titleShop.id = rs.getInt("id");
         titleShop.title = TitleDTO.get(rs.getInt("title_id"));
-        titleShop.price = rs.getInt("price");
+        titleShop.price = rs.getDouble("price_d");
         titleShop.days = rs.getInt("days");
         titleShop.amount = rs.getInt("amount");
         int y = rs.getInt("sale_end_at_y");
@@ -137,10 +137,10 @@ public class TitleShopDTO {
 
     public static TitleShopDTO create(TitleDTO title) {
         String sql = "";
-        sql += "INSERT INTO mplt_title_shop (title_id, price, days, amount, sale_end_at_y, sale_end_at_m, sale_end_at_d) " +
+        sql += "INSERT INTO mplt_title_shop (title_id, price_d, days, amount, sale_end_at_y, sale_end_at_m, sale_end_at_d) " +
                 "VALUES (?, 0, -1, 0, -1, -1, -1) " +
                 "RETURNING " +
-                "id, title_id, price, days, amount, sale_end_at_y, sale_end_at_m, sale_end_at_d;";
+                "id, title_id, price_d, days, amount, sale_end_at_y, sale_end_at_m, sale_end_at_d;";
         try (ResultSet rs = MiniPlayerTitle.database.query(sql, title.getId())) {
             if (rs.next()) {
                 return getTitleShop(rs);

@@ -14,18 +14,24 @@ public final class MiniPlayerTitle extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
         instance = this;
+        new Scheduler(this);
         notification = new Notification(this);
         logger = new XLogger(instance);
         config = new ConfigManager(instance);
         logger.setDebug(config.isDebug());
         database = new DatabaseManager(this,
-                config.getDbType().equals("pgsql") ? DatabaseManager.TYPE.POSTGRESQL : DatabaseManager.TYPE.SQLITE,
+                DatabaseManager.TYPE.valueOf(config.getDbType().toUpperCase()),
                 config.getDbHost(),
                 config.getDbPort(),
                 config.getDbName(),
                 config.getDbUser(),
                 config.getDbPass());
         DatabaseTables.migrate();
+
+        if (config.isExternalEco()) {
+            logger.info("已启用外部经济插件");
+            new VaultConnect(this);
+        }
 
         Bukkit.getPluginManager().registerEvents(new Events(), this);
         Objects.requireNonNull(Bukkit.getPluginCommand("MiniPlayerTitle")).setExecutor(new Commands());

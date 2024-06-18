@@ -108,5 +108,19 @@ public class DatabaseTables {
         MiniPlayerTitle.database.query(sql);
 
         MiniPlayerTitle.database.addColumnIfNotExists("mplt_player_info", "last_use_name", "TEXT NOT NULL DEFAULT 'null'");
+
+        // 3.0.6
+        MiniPlayerTitle.database.addColumnIfNotExists("mplt_player_info", "coin_d", "DOUBLE PRECISION NOT NULL DEFAULT 0");
+        MiniPlayerTitle.database.addColumnIfNotExists("mplt_title_shop", "price_d", "DOUBLE PRECISION NOT NULL DEFAULT 0");
+        if (MiniPlayerTitle.database.isColumnExist("mplt_player_info", "coin")) {
+            sql = "UPDATE mplt_player_info SET coin_d = coin;";
+            MiniPlayerTitle.database.query(sql);
+        }
+        if (MiniPlayerTitle.database.isColumnExist("mplt_title_shop", "price")) {
+            sql = "UPDATE mplt_title_shop SET price_d = price;";
+            MiniPlayerTitle.database.query(sql);
+        }
+        MiniPlayerTitle.database.deleteColumnIfExists("mplt_player_info", "coin");
+        MiniPlayerTitle.database.deleteColumnIfExists("mplt_title_shop", "price");
     }
 }

@@ -1,5 +1,6 @@
 package cn.lunadeer.miniplayertitle.dtos;
 
+import cn.lunadeer.minecraftpluginutils.VaultConnect;
 import cn.lunadeer.miniplayertitle.MiniPlayerTitle;
 import org.bukkit.entity.Player;
 
@@ -12,13 +13,13 @@ import java.util.UUID;
 
 public class PlayerInfoDTO {
     private UUID uuid;
-    private Integer coin;
+    private Double coin;
     private TitleDTO using_title;
     private String last_use_name;
 
     public static PlayerInfoDTO get(UUID uuid) {
         String sql = "";
-        sql = "SELECT uuid, coin, using_title_id, last_use_name FROM mplt_player_info WHERE uuid = ?;";
+        sql = "SELECT uuid, coin_d, using_title_id, last_use_name FROM mplt_player_info WHERE uuid = ?;";
         try (ResultSet rs = MiniPlayerTitle.database.query(sql, uuid)) {
             if (rs.next()) return getPlayerInfoDTO(rs);
             else return null;
@@ -48,7 +49,7 @@ public class PlayerInfoDTO {
 
     public static PlayerInfoDTO get(String name) {
         String sql = "";
-        sql = "SELECT uuid, coin, using_title_id, last_use_name FROM mplt_player_info WHERE last_use_name = ?;";
+        sql = "SELECT uuid, coin_d, using_title_id, last_use_name FROM mplt_player_info WHERE last_use_name = ?;";
         try (ResultSet rs = MiniPlayerTitle.database.query(sql, name)) {
             if (rs.next()) return getPlayerInfoDTO(rs);
             else return null;
@@ -60,7 +61,7 @@ public class PlayerInfoDTO {
 
     private static PlayerInfoDTO create(Player player) {
         String sql = "";
-        sql = "INSERT INTO mplt_player_info (uuid, coin, last_use_name) " +
+        sql = "INSERT INTO mplt_player_info (uuid, coin_d, last_use_name) " +
                 "VALUES (?, ?, ?) " +
                 "ON CONFLICT DO NOTHING;";
         try (ResultSet rs = MiniPlayerTitle.database.query(sql, player.getUniqueId(), MiniPlayerTitle.config.getDefaultCoin(), player.getName())) {
@@ -85,13 +86,17 @@ public class PlayerInfoDTO {
     private static PlayerInfoDTO getPlayerInfoDTO(ResultSet rs) throws SQLException {
         PlayerInfoDTO playerInfoDTO = new PlayerInfoDTO();
         playerInfoDTO.uuid = UUID.fromString(rs.getString("uuid"));
-        playerInfoDTO.coin = rs.getInt("coin");
+        playerInfoDTO.coin = rs.getDouble("coin_d");
         playerInfoDTO.using_title = TitleDTO.get(rs.getInt("using_title_id"));
         playerInfoDTO.last_use_name = rs.getString("last_use_name");
         return playerInfoDTO;
     }
 
-    public Integer getCoin() {
+    public Double getCoin() {
+        if (MiniPlayerTitle.config.isExternalEco()) {
+            Player player = MiniPlayerTitle.instance.getServer().getPlayer(uuid);
+            return VaultConnect.instance.getBalance(player);
+        }
         return coin;
     }
 
@@ -115,13 +120,28 @@ public class PlayerInfoDTO {
         return false;
     }
 
-    public boolean addCoin(Integer coin) {
+    public boolean addCoin(double coin) {
+        if (MiniPlayerTitle.config.isExternalEco()) {
+            Player player = MiniPlayerTitle.instance.getServer().getPlayer(uuid);
+            VaultConnect.instance.depositPlayer(player, coin);
+            return true;
+        }
         return setCoin(this.coin + coin);
     }
 
-    public boolean setCoin(Integer coin) {
+    public boolean setCoin(double coin) {
+        if (MiniPlayerTitle.config.isExternalEco()) {
+            Player player = MiniPlayerTitle.instance.getServer().getPlayer(uuid);
+            double balance = VaultConnect.instance.getBalance(player);
+            if (balance < coin) {
+                VaultConnect.instance.depositPlayer(player, coin - balance);
+            } else {
+                VaultConnect.instance.withdrawPlayer(player, balance - coin);
+            }
+            return true;
+        }
         String sql = "";
-        sql = "UPDATE mplt_player_info SET coin = ? WHERE uuid = ?;";
+        sql = "UPDATE mplt_player_info SET coin_d = ? WHERE uuid = ?;";
         try (ResultSet rs = MiniPlayerTitle.database.query(sql, coin, uuid)) {
             this.coin = coin;
             return true;

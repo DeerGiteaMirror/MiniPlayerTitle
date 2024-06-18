@@ -32,6 +32,7 @@ public class ConfigManager {
         _custom_cost = _file.getInt("CustomCost.Cost", 1000);
         _max_length = _file.getInt("CustomCost.MaxLength", 8);
         _check_update = _file.getBoolean("CheckUpdate", true);
+        _external_eco = _file.getBoolean("ExternalEco", false);
     }
 
     public Boolean isDebug() {
@@ -141,6 +142,10 @@ public class ConfigManager {
         return _check_update;
     }
 
+    public Boolean isExternalEco() {
+        return _external_eco;
+    }
+
 
     private final MiniPlayerTitle _plugin;
     private FileConfiguration _file;
@@ -159,4 +164,5 @@ public class ConfigManager {
     private Integer _custom_cost;
     private Integer _max_length;
     private Boolean _check_update;
+    private Boolean _external_eco;
 }
