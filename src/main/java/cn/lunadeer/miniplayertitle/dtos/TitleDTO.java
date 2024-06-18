@@ -42,14 +42,18 @@ public class TitleDTO {
     }
 
     public boolean delete() {
-        String sql = "";
-        sql += "DELETE FROM mplt_title WHERE id = ?;";
-        try (ResultSet rs = MiniPlayerTitle.database.query(sql, id)) {
+        String updateSql = "UPDATE mplt_player_info SET using_title_id = -1 WHERE using_title_id = ?;";
+        String deleteSql = "DELETE FROM mplt_title WHERE id = ?;";
+        try {
+            // 执行更新操作
+            MiniPlayerTitle.database.query(updateSql, this.id);
+            // 执行删除操作
+            MiniPlayerTitle.database.query(deleteSql, this.id);
             return true;
         } catch (Exception e) {
-            MiniPlayerTitle.database.handleDatabaseError("删除称号失败", e, sql);
+            MiniPlayerTitle.database.handleDatabaseError("删除称号失败", e, updateSql + " " + deleteSql);
+            return false;
         }
-        return false;
     }
 
     public static List<TitleDTO> getAll() {
