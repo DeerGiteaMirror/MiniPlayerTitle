@@ -1,6 +1,6 @@
 package cn.lunadeer.miniplayertitle.commands;
 
-import cn.lunadeer.miniplayertitle.MiniPlayerTitle;
+import cn.lunadeer.minecraftpluginutils.Notification;
 import cn.lunadeer.miniplayertitle.dtos.PlayerInfoDTO;
 import org.bukkit.command.CommandSender;
 
@@ -20,17 +20,17 @@ public class PlayerManage {
         try {
             PlayerInfoDTO playerInfo = PlayerInfoDTO.get(args[1]);
             if (playerInfo == null) {
-                MiniPlayerTitle.notification.error(sender, "玩家不存在");
+                Notification.error(sender, "玩家不存在");
                 return;
             }
             if (playerInfo.addCoin(Integer.parseInt(args[2]))) {
-                MiniPlayerTitle.notification.info(sender, "成功给玩家 %s 添加 %s 称号币", playerInfo.getLastUseName(), args[2]);
-                MiniPlayerTitle.notification.info(sender, "玩家 %s 当前余额 %f 称号币", playerInfo.getLastUseName(), playerInfo.getCoin());
+                Notification.info(sender, "成功给玩家 %s 添加 %s 称号币", playerInfo.getLastUseName(), args[2]);
+                Notification.info(sender, "玩家 %s 当前余额 %f 称号币", playerInfo.getLastUseName(), playerInfo.getCoin());
             } else {
-                MiniPlayerTitle.notification.error(sender, "给玩家添加称号币失败，详细错误请查看控制台日志");
+                Notification.error(sender, "给玩家添加称号币失败，详细错误请查看控制台日志");
             }
         } catch (Exception e) {
-            MiniPlayerTitle.notification.error(sender, "给玩家添加称号币时出错：%s", e.getMessage());
+            Notification.error(sender, "给玩家添加称号币时出错：%s", e.getMessage());
         }
     }
 
@@ -46,17 +46,17 @@ public class PlayerManage {
         try {
             PlayerInfoDTO playerInfo = PlayerInfoDTO.get(args[1]);
             if (playerInfo == null) {
-                MiniPlayerTitle.notification.error(sender, "玩家不存在");
+                Notification.error(sender, "玩家不存在");
                 return;
             }
             if (playerInfo.setCoin(Integer.parseInt(args[2]))) {
-                MiniPlayerTitle.notification.info(sender, "成功给玩家 %s 设置 %s 称号币", playerInfo.getLastUseName(), args[2]);
-                MiniPlayerTitle.notification.info(sender, "玩家 %s 当前余额 %f 称号币", playerInfo.getLastUseName(), playerInfo.getCoin());
+                Notification.info(sender, "成功给玩家 %s 设置 %s 称号币", playerInfo.getLastUseName(), args[2]);
+                Notification.info(sender, "玩家 %s 当前余额 %f 称号币", playerInfo.getLastUseName(), playerInfo.getCoin());
             } else {
-                MiniPlayerTitle.notification.error(sender, "给玩家设置称号币失败，详细错误请查看控制台日志");
+                Notification.error(sender, "给玩家设置称号币失败，详细错误请查看控制台日志");
             }
         } catch (Exception e) {
-            MiniPlayerTitle.notification.error(sender, "给玩家设置称号币时出错：%s", e.getMessage());
+            Notification.error(sender, "给玩家设置称号币时出错：%s", e.getMessage());
         }
     }
 }

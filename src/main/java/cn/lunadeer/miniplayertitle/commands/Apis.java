@@ -1,6 +1,6 @@
 package cn.lunadeer.miniplayertitle.commands;
 
-import cn.lunadeer.miniplayertitle.MiniPlayerTitle;
+import cn.lunadeer.minecraftpluginutils.Notification;
 import cn.lunadeer.miniplayertitle.dtos.TitleDTO;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
@@ -13,7 +13,7 @@ public class Apis {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             if (!player.isOp()) {
-                MiniPlayerTitle.notification.warn(player, "你没有权限使用此命令");
+                Notification.warn(player, "你没有权限使用此命令");
                 return true;
             }
         }

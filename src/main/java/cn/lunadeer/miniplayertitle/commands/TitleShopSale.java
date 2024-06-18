@@ -1,6 +1,6 @@
 package cn.lunadeer.miniplayertitle.commands;
 
-import cn.lunadeer.miniplayertitle.MiniPlayerTitle;
+import cn.lunadeer.minecraftpluginutils.Notification;
 import cn.lunadeer.miniplayertitle.dtos.PlayerInfoDTO;
 import cn.lunadeer.miniplayertitle.dtos.PlayerTitleDTO;
 import cn.lunadeer.miniplayertitle.dtos.TitleDTO;
@@ -33,7 +33,7 @@ public class TitleShopSale {
         if (notOpOrConsole(sender)) return;
         TitleShopDTO titleShop = TitleShopDTO.get(Integer.valueOf(args[2]));
         if (titleShop == null) {
-            MiniPlayerTitle.notification.error(sender, "获取详情时出现错误，详情请查看控制台日志");
+            Notification.error(sender, "获取详情时出现错误，详情请查看控制台日志");
             return;
         }
         boolean success;
@@ -63,11 +63,11 @@ public class TitleShopSale {
                 success = titleShop.setSaleEndAt(titleShop.getSaleEndAt().minusDays(days2));
                 break;
             default:
-                MiniPlayerTitle.notification.warn(sender, "用法: /mplt set_sale <price|days|amount|end_at|end_at_y|end_at_m|end_at_d> <商品ID> <值> [页数]");
+                Notification.warn(sender, "用法: /mplt set_sale <price|days|amount|end_at|end_at_y|end_at_m|end_at_d> <商品ID> <值> [页数]");
                 return;
         }
         if (!success) {
-            MiniPlayerTitle.notification.error(sender, "设置商品信息时出现错误，详情请查看控制台日志");
+            Notification.error(sender, "设置商品信息时出现错误，详情请查看控制台日志");
         }
         if (args.length == 5) {
             int page = getLastArgsPage(args);
@@ -86,15 +86,15 @@ public class TitleShopSale {
         if (notOpOrConsole(sender)) return;
         TitleDTO title = TitleDTO.get(Integer.parseInt(args[1]));
         if (title == null) {
-            MiniPlayerTitle.notification.error(sender, "获取称号详情时出现错误，详情请查看控制台日志");
+            Notification.error(sender, "获取称号详情时出现错误，详情请查看控制台日志");
             return;
         }
         TitleShopDTO sale = TitleShopDTO.create(title);
         if (sale == null) {
-            MiniPlayerTitle.notification.error(sender, "创建商品时出现错误，详情请查看控制台日志");
+            Notification.error(sender, "创建商品时出现错误，详情请查看控制台日志");
             return;
         }
-        MiniPlayerTitle.notification.info(sender, "已创建称号商品");
+        Notification.info(sender, "已创建称号商品");
         if (sender instanceof Player) {
             SaleInfo.show(sender, new String[]{"sale_info", String.valueOf(sale.getId())});
         }
@@ -111,14 +111,14 @@ public class TitleShopSale {
         if (notOpOrConsole(sender)) return;
         TitleShopDTO titleShop = TitleShopDTO.get(Integer.valueOf(args[1]));
         if (titleShop == null) {
-            MiniPlayerTitle.notification.error(sender, "获取详情时出现错误");
+            Notification.error(sender, "获取详情时出现错误");
             return;
         }
         boolean success = titleShop.delete();
         if (success) {
-            MiniPlayerTitle.notification.info(sender, "已删除商品");
+            Notification.info(sender, "已删除商品");
         } else {
-            MiniPlayerTitle.notification.error(sender, "删除商品时出现错误，详情请查看控制台日志");
+            Notification.error(sender, "删除商品时出现错误，详情请查看控制台日志");
         }
 
         if (args.length == 3) {
@@ -135,31 +135,31 @@ public class TitleShopSale {
      */
     public static void buySale(CommandSender sender, String[] args) {
         if (!(sender instanceof Player)) {
-            MiniPlayerTitle.notification.error(sender, "该命令只能由玩家执行");
+            Notification.error(sender, "该命令只能由玩家执行");
             return;
         }
         Player player = (Player) sender;
         PlayerInfoDTO playerInfo = PlayerInfoDTO.get(player.getUniqueId());
         if (playerInfo == null) {
-            MiniPlayerTitle.notification.error(player, "获取玩家信息时出现错误，详情请查看控制台日志");
+            Notification.error(player, "获取玩家信息时出现错误，详情请查看控制台日志");
             return;
         }
         TitleShopDTO titleShop = TitleShopDTO.get(Integer.valueOf(args[1]));
         if (titleShop == null) {
-            MiniPlayerTitle.notification.error(player, "获取详情时出现错误，详情请查看控制台日志");
+            Notification.error(player, "获取详情时出现错误，详情请查看控制台日志");
             return;
         }
 
         if (titleShop.isExpired() || titleShop.getDays() == 0) {
-            MiniPlayerTitle.notification.error(player, "此称号已停止销售");
+            Notification.error(player, "此称号已停止销售");
             return;
         }
         if (titleShop.getAmount() != -1 && titleShop.getAmount() <= 0) {
-            MiniPlayerTitle.notification.error(player, "此称号已售罄");
+            Notification.error(player, "此称号已售罄");
             return;
         }
         if (titleShop.getPrice() > playerInfo.getCoin()) {
-            MiniPlayerTitle.notification.error(player, "你的余额不足");
+            Notification.error(player, "你的余额不足");
             return;
         }
 
@@ -175,19 +175,19 @@ public class TitleShopSale {
         if (had == null) {
             had = PlayerTitleDTO.create(player.getUniqueId(), titleShop.getTitle(), titleShop.getDays() == -1 ? null : LocalDateTime.now().plusDays(titleShop.getDays()));
             if (had == null) {
-                MiniPlayerTitle.notification.error(player, "购买称号时出现错误，详情请查看控制台日志");
+                Notification.error(player, "购买称号时出现错误，详情请查看控制台日志");
                 return;
             }
             titleShop.setAmount(titleShop.getAmount() - 1);
             playerInfo.setCoin(playerInfo.getCoin() - titleShop.getPrice());
-            MiniPlayerTitle.notification.info(player, Component.text("成功购买称号: ").append(had.getTitle().getTitleColored()));
+            Notification.info(player, Component.text("成功购买称号: ").append(had.getTitle().getTitleColored()));
         } else if (!had.isExpired()) {
-            MiniPlayerTitle.notification.warn(player, "你已拥有此称号，在过期前无法再次购买");
+            Notification.warn(player, "你已拥有此称号，在过期前无法再次购买");
         } else {
             had.setExpireAt(titleShop.getDays() == -1 ? null : LocalDateTime.now().plusDays(titleShop.getDays()));
             titleShop.setAmount(titleShop.getAmount() - 1);
             playerInfo.setCoin(playerInfo.getCoin() - titleShop.getPrice());
-            MiniPlayerTitle.notification.info(player, Component.text("成功续续期称号: ").append(had.getTitle().getTitleColored()));
+            Notification.info(player, Component.text("成功续续期称号: ").append(had.getTitle().getTitleColored()));
         }
 
         int page = getArgPage(args, 3);

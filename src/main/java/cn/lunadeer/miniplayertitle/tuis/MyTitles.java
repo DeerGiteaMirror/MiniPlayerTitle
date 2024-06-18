@@ -1,9 +1,9 @@
 package cn.lunadeer.miniplayertitle.tuis;
 
+import cn.lunadeer.minecraftpluginutils.Notification;
 import cn.lunadeer.minecraftpluginutils.stui.ListView;
 import cn.lunadeer.minecraftpluginutils.stui.components.Button;
 import cn.lunadeer.minecraftpluginutils.stui.components.Line;
-import cn.lunadeer.miniplayertitle.MiniPlayerTitle;
 import cn.lunadeer.miniplayertitle.dtos.PlayerInfoDTO;
 import cn.lunadeer.miniplayertitle.dtos.PlayerTitleDTO;
 import org.bukkit.command.CommandSender;
@@ -24,7 +24,7 @@ public class MyTitles {
 
         PlayerInfoDTO playerInfo = PlayerInfoDTO.get(player.getUniqueId());
         if (playerInfo == null) {
-            MiniPlayerTitle.notification.error(player, "获取玩家信息时出现错误，详情请查看控制台日志");
+            Notification.error(player, "获取玩家信息时出现错误，详情请查看控制台日志");
             return;
         }
         List<PlayerTitleDTO> titles = PlayerTitleDTO.getAllOf(player.getUniqueId());

@@ -1,6 +1,7 @@
 package cn.lunadeer.miniplayertitle.dtos;
 
 import cn.lunadeer.minecraftpluginutils.VaultConnect;
+import cn.lunadeer.minecraftpluginutils.XLogger;
 import cn.lunadeer.miniplayertitle.MiniPlayerTitle;
 import org.bukkit.entity.Player;
 
@@ -34,13 +35,13 @@ public class PlayerInfoDTO {
         if (info == null) {
             info = create(player);
             if (info == null) {
-                MiniPlayerTitle.logger.err("创建玩家信息时失败");
+                XLogger.err("创建玩家信息时失败");
                 return null;
             }
         } else {
             info = updateName(player);
             if (info == null) {
-                MiniPlayerTitle.logger.err("更新玩家名称时失败");
+                XLogger.err("更新玩家名称时失败");
                 return null;
             }
         }

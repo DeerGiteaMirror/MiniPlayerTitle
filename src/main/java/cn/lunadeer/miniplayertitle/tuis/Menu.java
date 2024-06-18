@@ -1,5 +1,6 @@
 package cn.lunadeer.miniplayertitle.tuis;
 
+import cn.lunadeer.minecraftpluginutils.Notification;
 import cn.lunadeer.minecraftpluginutils.stui.ListView;
 import cn.lunadeer.minecraftpluginutils.stui.components.Button;
 import cn.lunadeer.minecraftpluginutils.stui.components.Line;
@@ -20,7 +21,7 @@ public class Menu {
 
         PlayerInfoDTO playerInfo = PlayerInfoDTO.get(player.getUniqueId());
         if (playerInfo == null) {
-            MiniPlayerTitle.notification.error(player, "获取玩家信息时出现错误");
+            Notification.error(player, "获取玩家信息时出现错误");
             return;
         }
         Line balance = Line.create()

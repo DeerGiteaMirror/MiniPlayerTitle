@@ -1,13 +1,13 @@
 package cn.lunadeer.miniplayertitle.tuis;
 
-import cn.lunadeer.miniplayertitle.MiniPlayerTitle;
+import cn.lunadeer.minecraftpluginutils.Notification;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class Apis {
     public static Player playerOnly(CommandSender sender) {
         if (!(sender instanceof Player)) {
-            MiniPlayerTitle.notification.error(sender, "该命令只能由玩家执行");
+            Notification.error(sender, "该命令只能由玩家执行");
             return null;
         }
         return (Player) sender;

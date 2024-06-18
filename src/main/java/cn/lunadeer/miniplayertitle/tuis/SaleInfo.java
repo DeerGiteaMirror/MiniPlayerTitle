@@ -1,10 +1,10 @@
 package cn.lunadeer.miniplayertitle.tuis;
 
+import cn.lunadeer.minecraftpluginutils.Notification;
 import cn.lunadeer.minecraftpluginutils.stui.ListView;
 import cn.lunadeer.minecraftpluginutils.stui.components.Button;
 import cn.lunadeer.minecraftpluginutils.stui.components.Line;
 import cn.lunadeer.minecraftpluginutils.stui.components.NumChanger;
-import cn.lunadeer.miniplayertitle.MiniPlayerTitle;
 import cn.lunadeer.miniplayertitle.dtos.TitleDTO;
 import cn.lunadeer.miniplayertitle.dtos.TitleShopDTO;
 import net.kyori.adventure.text.Component;
@@ -23,12 +23,12 @@ public class SaleInfo {
         int page = getArgPage(args, 3);
         TitleShopDTO titleShop = TitleShopDTO.get(Integer.valueOf(args[1]));
         if (titleShop == null) {
-            MiniPlayerTitle.notification.error(player, "获取详情时出现错误");
+            Notification.error(player, "获取详情时出现错误");
             return;
         }
         TitleDTO title = titleShop.getTitle();
         if (title == null) {
-            MiniPlayerTitle.notification.error(player, "获取详情时出现错误");
+            Notification.error(player, "获取详情时出现错误");
             return;
         }
         int now_year = LocalDateTime.now().getYear();

@@ -15,10 +15,10 @@ public final class MiniPlayerTitle extends JavaPlugin {
         // Plugin startup logic
         instance = this;
         new Scheduler(this);
-        notification = new Notification(this);
-        logger = new XLogger(instance);
-        config = new ConfigManager(instance);
-        logger.setDebug(config.isDebug());
+        new Notification(this);
+        new XLogger(instance);
+        new ConfigManager(instance);
+        XLogger.setDebug(config.isDebug());
         database = new DatabaseManager(this,
                 DatabaseManager.TYPE.valueOf(config.getDbType().toUpperCase()),
                 config.getDbHost(),
@@ -29,7 +29,7 @@ public final class MiniPlayerTitle extends JavaPlugin {
         DatabaseTables.migrate();
 
         if (config.isExternalEco()) {
-            logger.info("已启用外部经济插件");
+            XLogger.info("已启用外部经济插件");
             new VaultConnect(this);
         }
 
@@ -45,17 +45,17 @@ public final class MiniPlayerTitle extends JavaPlugin {
                     "MiniPlayerTitle");
         }
 
-        logger.info("称号插件已加载");
-        logger.info("版本: " + getPluginMeta().getVersion());
+        XLogger.info("称号插件已加载");
+        XLogger.info("版本: " + getPluginMeta().getVersion());
         // http://patorjk.com/software/taag/#p=display&f=Big&t=MiniPlayerTitle
-        logger.info("  __  __ _       _ _____  _                    _______ _ _   _");
-        logger.info(" |  \\/  (_)     (_)  __ \\| |                  |__   __(_) | | |");
-        logger.info(" | \\  / |_ _ __  _| |__) | | __ _ _   _  ___ _ __| |   _| |_| | ___");
-        logger.info(" | |\\/| | | '_ \\| |  ___/| |/ _` | | | |/ _ \\ '__| |  | | __| |/ _ \\");
-        logger.info(" | |  | | | | | | | |    | | (_| | |_| |  __/ |  | |  | | |_| |  __/");
-        logger.info(" |_|  |_|_|_| |_|_|_|    |_|\\__,_|\\__, |\\___|_|  |_|  |_|\\__|_|\\___|");
-        logger.info("                                   __/ |");
-        logger.info("                                  |___/");
+        XLogger.info("  __  __ _       _ _____  _                    _______ _ _   _");
+        XLogger.info(" |  \\/  (_)     (_)  __ \\| |                  |__   __(_) | | |");
+        XLogger.info(" | \\  / |_ _ __  _| |__) | | __ _ _   _  ___ _ __| |   _| |_| | ___");
+        XLogger.info(" | |\\/| | | '_ \\| |  ___/| |/ _` | | | |/ _ \\ '__| |  | | __| |/ _ \\");
+        XLogger.info(" | |  | | | | | | | |    | | (_| | |_| |  __/ |  | |  | | |_| |  __/");
+        XLogger.info(" |_|  |_|_|_| |_|_|_|    |_|\\__,_|\\__, |\\___|_|  |_|  |_|\\__|_|\\___|");
+        XLogger.info("                                   __/ |");
+        XLogger.info("                                  |___/");
     }
 
     @Override
@@ -66,7 +66,5 @@ public final class MiniPlayerTitle extends JavaPlugin {
     public static MiniPlayerTitle instance;
     public static ConfigManager config;
     public static DatabaseManager database;
-    public static XLogger logger;
-    public static Notification notification;
     private GiteaReleaseCheck giteaReleaseCheck;
 }

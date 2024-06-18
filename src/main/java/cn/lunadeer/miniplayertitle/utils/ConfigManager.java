@@ -16,10 +16,6 @@ public class ConfigManager {
         _file = _plugin.getConfig();
         _debug = _file.getBoolean("Debug", false);
         _db_type = _file.getString("Database.Type", "sqlite");
-        if (!_db_type.equals("pgsql") && !_db_type.equals("sqlite")) {
-            MiniPlayerTitle.logger.err("当前数据库只支持 pgsql 或 sqlite，已重置为 sqlite");
-            setDbType("sqlite");
-        }
         _db_host = _file.getString("Database.Host", "localhost");
         _db_port = _file.getString("Database.Port", "5432");
         _db_name = _file.getString("Database.Name", "miniplayertitle");
