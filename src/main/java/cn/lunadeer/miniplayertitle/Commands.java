@@ -66,7 +66,7 @@ public class Commands implements TabExecutor {
             case "edit_title_name":     // mplt edit_title_name <称号ID> <称号名称>
                 TitleManage.editTitleName(sender, args);
                 break;
-            case "edit_title_desc":      // mplt set_title_desc <称号ID> <称号描述>
+            case "edit_title_desc":      // mplt edit_title_desc <称号ID> <称号描述>
                 TitleManage.editTitleDescription(sender, args);
                 break;
             case "custom_title":        // mplt custom_title <称号>
