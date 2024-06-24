@@ -1,6 +1,7 @@
 package cn.lunadeer.miniplayertitle.tuis;
 
 import cn.lunadeer.minecraftpluginutils.Notification;
+import cn.lunadeer.minecraftpluginutils.VaultConnect;
 import cn.lunadeer.minecraftpluginutils.stui.ListView;
 import cn.lunadeer.minecraftpluginutils.stui.components.Button;
 import cn.lunadeer.minecraftpluginutils.stui.components.Line;
@@ -24,8 +25,14 @@ public class Menu {
             Notification.error(player, "获取玩家信息时出现错误");
             return;
         }
-        Line balance = Line.create()
-                .append("称号币余额: ").append(playerInfo.getCoin().toString());
+        Line balance;
+        if (!MiniPlayerTitle.config.isExternalEco()) {
+            balance = Line.create()
+                    .append("称号币余额: ").append(playerInfo.getCoin().toString());
+        } else {
+            balance = Line.create()
+                    .append("余额: ").append(playerInfo.getCoin().toString()).append(VaultConnect.instance.currencyNamePlural());
+        }
         Line backpack = Line.create()
                 .append(Button.create("称号背包").setExecuteCommand("/mplt my_titles").build()).append("查看你拥有的称号");
         Line shop = Line.create()

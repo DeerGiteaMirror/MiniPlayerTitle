@@ -1,15 +1,19 @@
 package cn.lunadeer.miniplayertitle.dtos;
 
+import cn.lunadeer.minecraftpluginutils.XLogger;
 import cn.lunadeer.miniplayertitle.Color;
 import cn.lunadeer.miniplayertitle.MiniPlayerTitle;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
+import org.bukkit.ChatColor;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TitleDTO {
     private int id;
@@ -80,7 +84,6 @@ public class TitleDTO {
             if (part.isEmpty()) {
                 continue;
             }
-            // match hex regx ^[0-9a-fA-F]{6}$
             Color color = new Color("#ffffff");
             String content;
             if (part.length() > 6 && part.substring(0, 6).matches("^[0-9a-fA-F]{6}$")) {
@@ -98,6 +101,29 @@ public class TitleDTO {
             title_component.append(component);
         }
         return title_component.build().hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text(this.description)));
+    }
+
+    /**
+     * 获取称号的颜色化字符串
+     * 需要使用 translateAlternateColorCodes 方法对返回字符串进行处理
+     * &#FFFFFF -> &x&f&f&f&f&f
+     *
+     * @return String
+     */
+    public String getTitleColoredBukkit() {
+        String title = this.title.replaceAll("&#", "#");
+        Pattern pattern = Pattern.compile("#[a-fA-F0-9]{6}");
+        Matcher matcher = pattern.matcher(title);
+        while (matcher.find()) {
+            String hexCode = matcher.group();
+            StringBuilder builder = new StringBuilder("&x");
+            for (char c : hexCode.substring(1).toCharArray()) {
+                builder.append('&').append(c);
+            }
+            title = title.replace(hexCode, builder.toString());
+        }
+        XLogger.debug("TitleDTO.getTitleColoredBukkit: %s", title);
+        return title;
     }
 
     public String getTitlePlainText() {

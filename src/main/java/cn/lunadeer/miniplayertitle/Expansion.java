@@ -6,6 +6,7 @@ import cn.lunadeer.miniplayertitle.dtos.PlayerTitleDTO;
 import cn.lunadeer.miniplayertitle.dtos.TitleDTO;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +44,8 @@ public class Expansion extends PlaceholderExpansion {
                 return "";
             }
             TitleDTO t = title.getTitle();
-            return MiniPlayerTitle.config.getPrefix() + t.getTitlePlainText() + MiniPlayerTitle.config.getSuffix();
+            return ChatColor.translateAlternateColorCodes('&',
+                    MiniPlayerTitle.config.getPrefix() + t.getTitleColoredBukkit() + MiniPlayerTitle.config.getSuffix());
         }
 
         return null; //
