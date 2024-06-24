@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import static cn.lunadeer.miniplayertitle.Expansion.isPapi;
 import static cn.lunadeer.miniplayertitle.commands.Apis.updateName;
 
 public class Events implements Listener {
@@ -38,6 +39,9 @@ public class Events implements Listener {
 
     @EventHandler
     public void onPlayerSendChat(AsyncChatEvent event) {
+        if (isPapi()) {
+            return;
+        }
         Component nameComponent = event.getPlayer().displayName();
         Component chatComponent = event.message();
         Component newChatComponent = Component.text()

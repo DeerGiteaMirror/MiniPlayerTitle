@@ -32,6 +32,8 @@ public final class MiniPlayerTitle extends JavaPlugin {
             new VaultConnect(this);
         }
 
+        new Expansion(this);
+
         Bukkit.getPluginManager().registerEvents(new Events(), this);
         Objects.requireNonNull(Bukkit.getPluginCommand("MiniPlayerTitle")).setExecutor(new Commands());
         Objects.requireNonNull(Bukkit.getPluginCommand("MiniPlayerTitle")).setTabCompleter(new Commands());
