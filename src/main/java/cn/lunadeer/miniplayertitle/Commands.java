@@ -78,6 +78,9 @@ public class Commands implements TabExecutor {
             case "set_coin":            // mplt set_coin <玩家名称> <称号币数量>
                 PlayerManage.setCoin(sender, args);
                 break;
+            case "grant_title":         // mplt grant_title <玩家名称> <称号> <描述> [天数]
+                PlayerManage.grantTitle(sender, args);
+                break;
             default:
                 return false;
         }
@@ -89,7 +92,9 @@ public class Commands implements TabExecutor {
         if (args.length == 1) {
             return Arrays.asList("menu", "all_titles", "my_titles", "shop", "custom_info", "sale_info",
                     "create_sale", "set_sale", "delete_sale", "buy_sale", "use_title", "create_title",
-                    "delete_title", "edit_title_name", "edit_title_desc", "custom_title", "add_coin", "set_coin");
+                    "delete_title", "edit_title_name", "edit_title_desc", "custom_title", "add_coin", "set_coin",
+                    "grant_title"
+            );
         }
         if (args.length == 2) {
             switch (args[0]) {
@@ -111,6 +116,7 @@ public class Commands implements TabExecutor {
                     return Collections.singletonList("<称号内容>");
                 case "add_coin":
                 case "set_coin":
+                case "grant_title":
                     return PlayerInfoDTO.playerNameList();
                 default:
                     return null;
@@ -129,6 +135,8 @@ public class Commands implements TabExecutor {
                 case "add_coin":
                 case "set_coin":
                     return Collections.singletonList("<数量>");
+                case "grant_title":
+                    return Collections.singletonList("<称号>");
                 default:
                     return null;
             }
@@ -137,6 +145,16 @@ public class Commands implements TabExecutor {
             switch (args[0]) {
                 case "set_sale":
                     return Collections.singletonList("<值>");
+                case "grant_title":
+                    return Collections.singletonList("<描述>");
+                default:
+                    return null;
+            }
+        }
+        if (args.length == 5) {
+            switch (args[0]) {
+                case "grant_title":
+                    return Collections.singletonList("<天数(默认永久)>");
                 default:
                     return null;
             }

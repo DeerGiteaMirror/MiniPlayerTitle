@@ -109,6 +109,10 @@ public class PlayerInfoDTO {
         return last_use_name;
     }
 
+    public UUID getUuid() {
+        return uuid;
+    }
+
     public boolean setUsingTitle(@Nullable TitleDTO title) {
         String sql = "";
         sql = "UPDATE mplt_player_info SET using_title_id = ? WHERE uuid = ?;";
