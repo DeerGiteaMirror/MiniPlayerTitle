@@ -178,14 +178,18 @@ public class TitleShopSale {
                 Notification.error(player, "购买称号时出现错误，详情请查看控制台日志");
                 return;
             }
-            titleShop.setAmount(titleShop.getAmount() - 1);
+            if (titleShop.getAmount() >= 1) {
+                titleShop.setAmount(titleShop.getAmount() - 1);
+            }
             playerInfo.setCoin(playerInfo.getCoin() - titleShop.getPrice());
             Notification.info(player, Component.text("成功购买称号: ").append(had.getTitle().getTitleColored()));
         } else if (!had.isExpired()) {
             Notification.warn(player, "你已拥有此称号，在过期前无法再次购买");
         } else {
             had.setExpireAt(titleShop.getDays() == -1 ? null : LocalDateTime.now().plusDays(titleShop.getDays()));
-            titleShop.setAmount(titleShop.getAmount() - 1);
+            if (titleShop.getAmount() >= 1) {
+                titleShop.setAmount(titleShop.getAmount() - 1);
+            }
             playerInfo.setCoin(playerInfo.getCoin() - titleShop.getPrice());
             Notification.info(player, Component.text("成功续续期称号: ").append(had.getTitle().getTitleColored()));
         }
