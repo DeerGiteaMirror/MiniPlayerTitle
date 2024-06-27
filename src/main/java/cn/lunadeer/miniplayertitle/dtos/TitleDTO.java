@@ -6,7 +6,6 @@ import cn.lunadeer.miniplayertitle.MiniPlayerTitle;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
-import org.bukkit.ChatColor;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

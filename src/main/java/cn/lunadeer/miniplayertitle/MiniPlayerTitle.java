@@ -32,7 +32,9 @@ public final class MiniPlayerTitle extends JavaPlugin {
             new VaultConnect(this);
         }
 
-        new Expansion(this);
+        if (usingPapi()) {
+            new Expansion(this);
+        }
 
         Bukkit.getPluginManager().registerEvents(new Events(), this);
         Objects.requireNonNull(Bukkit.getPluginCommand("MiniPlayerTitle")).setExecutor(new Commands());
@@ -69,4 +71,8 @@ public final class MiniPlayerTitle extends JavaPlugin {
     public static ConfigManager config;
     public static DatabaseManager database;
     private GiteaReleaseCheck giteaReleaseCheck;
+
+    public static boolean usingPapi() {
+        return Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
+    }
 }

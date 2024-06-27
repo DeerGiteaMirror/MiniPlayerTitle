@@ -8,7 +8,8 @@ import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
 
-import static cn.lunadeer.miniplayertitle.Expansion.isPapi;
+import static cn.lunadeer.miniplayertitle.MiniPlayerTitle.usingPapi;
+
 
 public class Apis {
     public static boolean notOpOrConsole(CommandSender sender) {
@@ -23,7 +24,7 @@ public class Apis {
     }
 
     public static void updateName(Player player, @Nullable TitleDTO title) {
-        if (isPapi()) {
+        if (usingPapi()) {
             return;
         }
         if (title == null || title.getId() == -1) {

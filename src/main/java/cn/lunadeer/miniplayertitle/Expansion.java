@@ -5,11 +5,12 @@ import cn.lunadeer.miniplayertitle.dtos.PlayerInfoDTO;
 import cn.lunadeer.miniplayertitle.dtos.PlayerTitleDTO;
 import cn.lunadeer.miniplayertitle.dtos.TitleDTO;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+
+import static cn.lunadeer.miniplayertitle.MiniPlayerTitle.usingPapi;
 
 public class Expansion extends PlaceholderExpansion {
 
@@ -19,7 +20,7 @@ public class Expansion extends PlaceholderExpansion {
 
     public Expansion(JavaPlugin plugin) {
         this.plugin = plugin;
-        if (isPapi()) {
+        if (usingPapi()) {
             XLogger.info("PlaceholderAPI is enabled, registering expansion...");
             this.register();
         } else {
@@ -64,9 +65,5 @@ public class Expansion extends PlaceholderExpansion {
     @Override
     public @NotNull String getVersion() {
         return plugin.getPluginMeta().getVersion();
-    }
-
-    public static boolean isPapi() {
-        return Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
     }
 }
