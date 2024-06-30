@@ -148,18 +148,25 @@ public class TitleManage {
             return;
         }
         Player player = (Player) sender;
-        PlayerTitleDTO title = PlayerTitleDTO.get(Integer.parseInt(args[1]));
+        PlayerInfoDTO playerInfo = PlayerInfoDTO.get((player).getUniqueId());
+        if (playerInfo == null) {
+            Notification.error(sender, "获取玩家信息时出现错误");
+            return;
+        }
+        int id = Integer.parseInt(args[1]);
+        if (id == -1) {
+            Notification.info(sender, "已卸下称号");
+            playerInfo.setUsingTitle(null);
+            updateName(player, null);
+            return;
+        }
+        PlayerTitleDTO title = PlayerTitleDTO.get(id);
         if (title == null) {
             Notification.error(sender, "称号不存在");
             return;
         }
         if (!title.getPlayerUuid().equals(player.getUniqueId())) {
             Notification.error(sender, "该称号不属于你");
-            return;
-        }
-        PlayerInfoDTO playerInfo = PlayerInfoDTO.get((player).getUniqueId());
-        if (playerInfo == null) {
-            Notification.error(sender, "获取玩家信息时出现错误");
             return;
         }
         if (title.isExpired()) {
