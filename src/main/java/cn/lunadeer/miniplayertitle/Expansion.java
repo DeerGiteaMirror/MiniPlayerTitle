@@ -45,8 +45,7 @@ public class Expansion extends PlaceholderExpansion {
                 return "";
             }
             TitleDTO t = title.getTitle();
-            return ChatColor.translateAlternateColorCodes('&',
-                    MiniPlayerTitle.config.getPrefix() + t.getTitleColoredBukkit() + MiniPlayerTitle.config.getSuffix());
+            return ChatColor.translateAlternateColorCodes('&', t.getTitleColoredBukkit());
         }
 
         return null; //
