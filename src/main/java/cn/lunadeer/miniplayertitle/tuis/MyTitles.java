@@ -47,7 +47,7 @@ public class MyTitles {
             } else {
                 line.append("有效期至: " + title.getExpireAt().getYear() + "年" + title.getExpireAt().getMonthValue() + "月" + title.getExpireAt().getDayOfMonth() + "日");
             }
-            if (Objects.equals(playerInfo.getUsingTitle().getId(), title.getId())) {
+            if (Objects.equals(playerInfo.getUsingTitle().getId(), title.getTitle().getId())) {
                 line.append(Button.createRed("卸下").setExecuteCommand("/mplt use_title -1 " + page).build());
             } else {
                 line.append(Button.createGreen("使用").setExecuteCommand("/mplt use_title " + title.getId() + " " + page).build());

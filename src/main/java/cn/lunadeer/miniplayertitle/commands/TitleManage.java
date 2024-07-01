@@ -158,29 +158,29 @@ public class TitleManage {
             Notification.info(sender, "已卸下称号");
             playerInfo.setUsingTitle(null);
             updateName(player, null);
-            return;
-        }
-        PlayerTitleDTO title = PlayerTitleDTO.get(id);
-        if (title == null) {
-            Notification.error(sender, "称号不存在");
-            return;
-        }
-        if (!title.getPlayerUuid().equals(player.getUniqueId())) {
-            Notification.error(sender, "该称号不属于你");
-            return;
-        }
-        if (title.isExpired()) {
-            Notification.error(sender, "称号 %s 已过期", title.getTitle().getTitlePlainText());
-            playerInfo.setUsingTitle(null);
-            updateName(player, null);
-            return;
-        }
-        boolean success = playerInfo.setUsingTitle(title.getTitle());
-        if (success) {
-            updateName((Player) sender, title.getTitle());
-            Notification.info(sender, "已使用称号");
         } else {
-            Notification.error(sender, "使用称号失败，具体请查看控制台日志");
+            PlayerTitleDTO title = PlayerTitleDTO.get(id);
+            if (title == null) {
+                Notification.error(sender, "称号不存在");
+                return;
+            }
+            if (!title.getPlayerUuid().equals(player.getUniqueId())) {
+                Notification.error(sender, "该称号不属于你");
+                return;
+            }
+            if (title.isExpired()) {
+                Notification.error(sender, "称号 %s 已过期", title.getTitle().getTitlePlainText());
+                playerInfo.setUsingTitle(null);
+                updateName(player, null);
+                return;
+            }
+            boolean success = playerInfo.setUsingTitle(title.getTitle());
+            if (success) {
+                updateName((Player) sender, title.getTitle());
+                Notification.info(sender, "已使用称号");
+            } else {
+                Notification.error(sender, "使用称号失败，具体请查看控制台日志");
+            }
         }
 
         if (args.length == 3) {
