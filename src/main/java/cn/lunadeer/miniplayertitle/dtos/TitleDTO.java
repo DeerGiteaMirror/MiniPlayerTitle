@@ -74,9 +74,11 @@ public class TitleDTO {
     }
 
     public TextComponent getTitleColored() {
-        String title = MiniPlayerTitle.config.getPrefix() + this.title + MiniPlayerTitle.config.getSuffix();
-        String[] parts = title.split("&#");
+        TextComponent prefix = Component.text(MiniPlayerTitle.config.getPrefix(), new Color("#ffffff").getStyle());
+        TextComponent suffix = Component.text(MiniPlayerTitle.config.getSuffix(), new Color("#ffffff").getStyle());
+        String[] parts = this.title.split("&#");
         List<TextComponent> components = new ArrayList<>();
+        components.add(prefix);
         for (String part : parts) {
             if (part.isEmpty()) {
                 continue;
@@ -92,6 +94,7 @@ public class TitleDTO {
             }
             components.add(Component.text(content, color.getStyle()));
         }
+        components.add(suffix);
         TextComponent.Builder title_component = Component.text();
         for (TextComponent component : components) {
             title_component.append(component);
@@ -107,7 +110,7 @@ public class TitleDTO {
      * @return String
      */
     public String getTitleColoredBukkit() {
-        String title = MiniPlayerTitle.config.getPrefix() + this.title + MiniPlayerTitle.config.getSuffix();
+        String title = "&f" + MiniPlayerTitle.config.getPrefix() + this.title + "&f" + MiniPlayerTitle.config.getSuffix();
         title = title.replaceAll("&#", "#");
         Pattern pattern = Pattern.compile("#[a-fA-F0-9]{6}");
         Matcher matcher = pattern.matcher(title);
