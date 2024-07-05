@@ -32,19 +32,10 @@ public class Expansion extends PlaceholderExpansion {
     @Override
     public String onPlaceholderRequest(Player bukkitPlayer, @NotNull String params) {
         if (params.equalsIgnoreCase("player_title")) {
-            PlayerInfoDTO player = PlayerInfoDTO.get(bukkitPlayer);
-            if (player == null) {
+            TitleDTO t = MiniPlayerTitle.instance.getPlayerUsingTitle(bukkitPlayer.getUniqueId());
+            if (t == null) {
                 return "";
             }
-            if (player.getUsingTitle().getId() == -1) {
-                return "";
-            }
-            PlayerTitleDTO title = PlayerTitleDTO.get(bukkitPlayer.getUniqueId(), player.getUsingTitle().getId());
-            if (title == null || title.isExpired()) {
-                player.setUsingTitle(null);
-                return "";
-            }
-            TitleDTO t = title.getTitle();
             return ChatColor.translateAlternateColorCodes('&', t.getTitleColoredBukkit());
         }
 

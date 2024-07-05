@@ -1,6 +1,7 @@
 package cn.lunadeer.miniplayertitle.commands;
 
 import cn.lunadeer.minecraftpluginutils.Notification;
+import cn.lunadeer.miniplayertitle.MiniPlayerTitle;
 import cn.lunadeer.miniplayertitle.dtos.TitleDTO;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
@@ -24,6 +25,7 @@ public class Apis {
     }
 
     public static void updateName(Player player, @Nullable TitleDTO title) {
+        MiniPlayerTitle.instance.setPlayerUsingTitle(player.getUniqueId(), title);
         if (usingPapi()) {
             return;
         }

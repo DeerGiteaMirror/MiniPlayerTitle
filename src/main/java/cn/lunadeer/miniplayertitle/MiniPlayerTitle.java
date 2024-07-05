@@ -1,12 +1,16 @@
 package cn.lunadeer.miniplayertitle;
 
 import cn.lunadeer.minecraftpluginutils.*;
+import cn.lunadeer.miniplayertitle.dtos.TitleDTO;
 import cn.lunadeer.miniplayertitle.utils.ConfigManager;
 import cn.lunadeer.miniplayertitle.utils.DatabaseTables;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 public final class MiniPlayerTitle extends JavaPlugin {
 
@@ -71,8 +75,17 @@ public final class MiniPlayerTitle extends JavaPlugin {
     public static ConfigManager config;
     public static DatabaseManager database;
     private GiteaReleaseCheck giteaReleaseCheck;
+    private Map<UUID, TitleDTO> playerUsingTitle = new HashMap<>();
 
     public static boolean usingPapi() {
         return Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
+    }
+
+    public void setPlayerUsingTitle(UUID uuid, TitleDTO title) {
+        playerUsingTitle.put(uuid, title);
+    }
+
+    public TitleDTO getPlayerUsingTitle(UUID uuid) {
+        return playerUsingTitle.get(uuid);
     }
 }
