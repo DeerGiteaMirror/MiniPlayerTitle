@@ -32,7 +32,7 @@ public class AllTitles {
             Line line = Line.create()
                     .append(title.getId().toString())
                     .append(title.getTitleColored());
-            if (player.isOp()) {
+            if (player.hasPermission("mplt.admin")) {
                 line.append(Button.createRed("删除").setExecuteCommand("/mplt delete_title " + title.getId() + " " + page).build());
                 line.append(Button.createGreen("创建商品").setExecuteCommand("/mplt create_sale " + title.getId()).build());
             }

@@ -13,16 +13,6 @@ import static cn.lunadeer.miniplayertitle.MiniPlayerTitle.usingPapi;
 
 
 public class Apis {
-    public static boolean notOpOrConsole(CommandSender sender) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            if (!player.isOp()) {
-                Notification.warn(player, "你没有权限使用此命令");
-                return true;
-            }
-        }
-        return false;
-    }
 
     public static void updateName(Player player, @Nullable TitleDTO title) {
         MiniPlayerTitle.instance.setPlayerUsingTitle(player.getUniqueId(), title);

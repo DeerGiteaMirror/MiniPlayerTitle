@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-import static cn.lunadeer.miniplayertitle.commands.Apis.notOpOrConsole;
 import static cn.lunadeer.miniplayertitle.tuis.Apis.getArgPage;
 import static cn.lunadeer.miniplayertitle.tuis.Apis.getLastArgsPage;
 
@@ -30,7 +29,7 @@ public class TitleShopSale {
      * @param args   String[]
      */
     public static void setSale(CommandSender sender, String[] args) {
-        if (notOpOrConsole(sender)) return;
+        if (!sender.hasPermission("mplt.admin")) return;
         TitleShopDTO titleShop = TitleShopDTO.get(Integer.valueOf(args[2]));
         if (titleShop == null) {
             Notification.error(sender, "获取详情时出现错误，详情请查看控制台日志");
@@ -83,7 +82,7 @@ public class TitleShopSale {
      * @param args   String[]
      */
     public static void createSale(CommandSender sender, String[] args) {
-        if (notOpOrConsole(sender)) return;
+        if (!sender.hasPermission("mplt.admin")) return;
         TitleDTO title = TitleDTO.get(Integer.parseInt(args[1]));
         if (title == null) {
             Notification.error(sender, "获取称号详情时出现错误，详情请查看控制台日志");
@@ -108,7 +107,7 @@ public class TitleShopSale {
      * @param args   String[]
      */
     public static void deleteSale(CommandSender sender, String[] args) {
-        if (notOpOrConsole(sender)) return;
+        if (!sender.hasPermission("mplt.admin")) return;
         TitleShopDTO titleShop = TitleShopDTO.get(Integer.valueOf(args[1]));
         if (titleShop == null) {
             Notification.error(sender, "获取详情时出现错误");
@@ -138,6 +137,7 @@ public class TitleShopSale {
             Notification.error(sender, "该命令只能由玩家执行");
             return;
         }
+        if (!sender.hasPermission("mplt.command")) return;
         Player player = (Player) sender;
         PlayerInfoDTO playerInfo = PlayerInfoDTO.get(player.getUniqueId());
         if (playerInfo == null) {

@@ -46,11 +46,11 @@ public class SaleInfo {
         Line price = Line.create().append("价格: ");
         if (titleShop.getPrice() <= 0) {
             price.append("免费");
-            if (player.isOp()) {
+            if (player.hasPermission("mplt.admin")) {
                 price.append(Button.create("设置价格").setExecuteCommand("/mplt set_sale price " + titleShop.getId() + " 100 " + page).build());
             }
         } else {
-            if (player.isOp()) {
+            if (player.hasPermission("mplt.admin")) {
                 price.append(NumChanger.create(titleShop.getPrice(), "/mplt set_sale price " + titleShop.getId()).setPageNumber(page).build());
                 price.append(Button.create("设置为免费").setExecuteCommand("/mplt set_sale price " + titleShop.getId() + " 0 " + page).build());
             } else {
@@ -62,11 +62,11 @@ public class SaleInfo {
         Line day = Line.create().append("购买天数: ");
         if (titleShop.getDays() <= 0) {
             day.append("永久");
-            if (player.isOp()) {
+            if (player.hasPermission("mplt.admin")) {
                 day.append(Button.create("转为限时").setExecuteCommand("/mplt set_sale days " + titleShop.getId() + " 7 " + page).build());
             }
         } else {
-            if (player.isOp()) {
+            if (player.hasPermission("mplt.admin")) {
                 day.append(NumChanger.create(titleShop.getDays(), "/mplt set_sale days " + titleShop.getId()).setPageNumber(page).build());
                 day.append(Button.create("转为永久").setExecuteCommand("/mplt set_sale days " + titleShop.getId() + " -1 " + page).build());
             } else {
@@ -78,12 +78,12 @@ public class SaleInfo {
         Line amount = Line.create().append("剩余数量: ");
         if (titleShop.getAmount() == -1) {
             amount.append("无限");
-            if (player.isOp()) {
+            if (player.hasPermission("mplt.admin")) {
                 amount.append(Button.create("转为限量").setExecuteCommand("/mplt set_sale amount " + titleShop.getId() + " 0 " + page).build());
             }
         } else {
 
-            if (player.isOp()) {
+            if (player.hasPermission("mplt.admin")) {
                 amount.append(NumChanger.create(titleShop.getAmount(), "/mplt set_sale amount " + titleShop.getId()).setPageNumber(page).build());
                 amount.append(Button.create("转为无限").setExecuteCommand("/mplt set_sale amount " + titleShop.getId() + " -1 " + page).build());
             } else {
@@ -95,11 +95,11 @@ public class SaleInfo {
         Line end_at = Line.create().append("售卖结束时间: ");
         if (titleShop.getSaleEndAt() == null) {
             end_at.append("常驻");
-            if (player.isOp()) {
+            if (player.hasPermission("mplt.admin")) {
                 end_at.append(Button.create("转为限时").setExecuteCommand("/mplt set_sale end_at " + titleShop.getId() + " " + now_year + ":" + now_month + ":" + now_day + " " + page).build());
             }
         } else {
-            if (player.isOp()) {
+            if (player.hasPermission("mplt.admin")) {
                 end_at.append(Button.create("<<").setPreSufIx("", "").setHoverText("提前10天").setExecuteCommand("/mplt set_sale less_end_at " + titleShop.getId() + " 10 " + page).build()
                         .append(Button.create("-").setPreSufIx("", "").setHoverText("提前1天").setExecuteCommand("/mplt set_sale less_end_at " + titleShop.getId() + " 1 " + page).build())
                         .append(Component.text(titleShop.getSaleEndAt().getYear() + "年" + titleShop.getSaleEndAt().getMonthValue() + "月" + titleShop.getSaleEndAt().getDayOfMonth() + "日"))
@@ -120,7 +120,7 @@ public class SaleInfo {
         } else {
             operate.append(Button.createGreen("购买").setExecuteCommand("/mplt buy_sale " + titleShop.getId()).build());
         }
-        if (player.isOp()) {
+        if (player.hasPermission("mplt.admin")) {
             operate.append(Button.create("删除").setExecuteCommand("/mplt delete_sale " + args[1] + " b").build());
         }
         view.add(Line.create().append("---------------------"));

@@ -58,7 +58,7 @@ public class Menu {
         Line all = Line.create()
                 .append(Button.create("所有称号").setExecuteCommand("/mplt all_titles").build()).append("查看所有称号");
 
-        if (player.isOp()) {
+        if (player.hasPermission("mplt.admin")) {
             view.add(Line.create().append(""));
             view.add(Line.create().append("---以下选项仅OP可见---"));
             view.add(all);

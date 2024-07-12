@@ -11,7 +11,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import static cn.lunadeer.miniplayertitle.commands.Apis.notOpOrConsole;
 import static cn.lunadeer.miniplayertitle.commands.Apis.updateName;
 
 public class TitleManage {
@@ -23,7 +22,7 @@ public class TitleManage {
      * @param args   String[]
      */
     public static void createTitle(CommandSender sender, String[] args) {
-        if (notOpOrConsole(sender)) return;
+        if (!sender.hasPermission("mplt.admin")) return;
         if (args.length < 2) {
             Notification.warn(sender, "用法: /mplt create_title <称号名称> [称号描述]");
             return;
@@ -46,7 +45,7 @@ public class TitleManage {
      */
     public static void deleteTitle(CommandSender sender, String[] args) {
         try {
-            if (notOpOrConsole(sender)) return;
+            if (!sender.hasPermission("mplt.admin")) return;
             if (args.length < 2) {
                 Notification.warn(sender, "用法: /mplt delete_title <称号ID>");
                 return;
@@ -80,7 +79,7 @@ public class TitleManage {
      */
     public static void editTitleName(CommandSender sender, String[] args) {
         try {
-            if (notOpOrConsole(sender)) return;
+            if (!sender.hasPermission("mplt.admin")) return;
             if (args.length != 3) {
                 Notification.warn(sender, "用法: /mplt set_title <称号ID> <称号名称>");
                 return;
@@ -110,7 +109,7 @@ public class TitleManage {
      */
     public static void editTitleDescription(CommandSender sender, String[] args) {
         try {
-            if (notOpOrConsole(sender)) return;
+            if (!sender.hasPermission("mplt.admin")) return;
             if (args.length != 3) {
                 Notification.warn(sender, "用法: /mplt set_desc <称号ID> <称号描述>");
                 return;
@@ -143,6 +142,7 @@ public class TitleManage {
             Notification.error(sender, "该命令只能由玩家执行");
             return;
         }
+        if (!sender.hasPermission("mplt.command")) return;
         if (args.length < 2) {
             Notification.warn(sender, "用法: /mplt use_title <背包ID> [页码]");
             return;
@@ -201,6 +201,7 @@ public class TitleManage {
             Notification.error(sender, "该命令只能由玩家执行");
             return;
         }
+        if (!sender.hasPermission("mplt.custom")) return;
         Player player = (Player) sender;
         if (!MiniPlayerTitle.config.isEnableCustom()) {
             Notification.error(sender, "自定义称号功能已关闭");

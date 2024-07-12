@@ -8,7 +8,6 @@ import org.bukkit.command.CommandSender;
 
 import java.time.LocalDateTime;
 
-import static cn.lunadeer.miniplayertitle.commands.Apis.notOpOrConsole;
 
 public class PlayerManage {
 
@@ -20,7 +19,7 @@ public class PlayerManage {
      * @param args   String[]
      */
     public static void addCoin(CommandSender sender, String[] args) {
-        if (notOpOrConsole(sender)) return;
+        if (!sender.hasPermission("mplt.admin")) return;
         try {
             PlayerInfoDTO playerInfo = PlayerInfoDTO.get(args[1]);
             if (playerInfo == null) {
@@ -46,7 +45,7 @@ public class PlayerManage {
      * @param args   String[]
      */
     public static void setCoin(CommandSender sender, String[] args) {
-        if (notOpOrConsole(sender)) return;
+        if (!sender.hasPermission("mplt.admin")) return;
         try {
             PlayerInfoDTO playerInfo = PlayerInfoDTO.get(args[1]);
             if (playerInfo == null) {
@@ -72,7 +71,7 @@ public class PlayerManage {
      * @param args   String[]
      */
     public static void grantTitle(CommandSender sender, String[] args) {
-        if (notOpOrConsole(sender)) return;
+        if (!sender.hasPermission("mplt.admin")) return;
         try {
             PlayerInfoDTO playerInfo = PlayerInfoDTO.get(args[1]);
             if (playerInfo == null) {
