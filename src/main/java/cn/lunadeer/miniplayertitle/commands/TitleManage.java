@@ -201,7 +201,10 @@ public class TitleManage {
             Notification.error(sender, "该命令只能由玩家执行");
             return;
         }
-        if (!sender.hasPermission("mplt.custom")) return;
+        if (!sender.hasPermission("mplt.custom") || !sender.isOp()) {
+            Notification.error(sender, "你没有权限使用该命令");
+            return;
+        }
         Player player = (Player) sender;
         if (!MiniPlayerTitle.config.isEnableCustom()) {
             Notification.error(sender, "自定义称号功能已关闭");
