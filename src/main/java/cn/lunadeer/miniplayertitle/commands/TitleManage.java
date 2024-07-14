@@ -201,7 +201,7 @@ public class TitleManage {
             Notification.error(sender, "该命令只能由玩家执行");
             return;
         }
-        if (!sender.hasPermission("mplt.custom") || !sender.isOp()) {
+        if (!sender.hasPermission("mplt.custom") && !sender.hasPermission("mplt.admin")) {
             Notification.error(sender, "你没有权限使用该命令");
             return;
         }
