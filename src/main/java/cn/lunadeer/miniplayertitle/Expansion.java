@@ -1,8 +1,6 @@
 package cn.lunadeer.miniplayertitle;
 
 import cn.lunadeer.minecraftpluginutils.XLogger;
-import cn.lunadeer.miniplayertitle.dtos.PlayerInfoDTO;
-import cn.lunadeer.miniplayertitle.dtos.PlayerTitleDTO;
 import cn.lunadeer.miniplayertitle.dtos.TitleDTO;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.ChatColor;

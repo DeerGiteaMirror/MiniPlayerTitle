@@ -1,16 +1,13 @@
-package cn.lunadeer.miniplayertitle;
+package cn.lunadeer.miniplayertitle.events;
 
 import cn.lunadeer.minecraftpluginutils.Notification;
 import cn.lunadeer.miniplayertitle.dtos.PlayerInfoDTO;
 import cn.lunadeer.miniplayertitle.dtos.PlayerTitleDTO;
-import io.papermc.paper.event.player.AsyncChatEvent;
-import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import static cn.lunadeer.miniplayertitle.MiniPlayerTitle.usingPapi;
 import static cn.lunadeer.miniplayertitle.commands.Apis.updateName;
 
 public class Events implements Listener {
@@ -35,20 +32,5 @@ public class Events implements Listener {
         } else {
             updateName(bukkitPlayer, title.getTitle());
         }
-    }
-
-    @EventHandler
-    public void onPlayerSendChat(AsyncChatEvent event) {
-        if (usingPapi()) {
-            return;
-        }
-        Component nameComponent = event.getPlayer().displayName();
-        Component chatComponent = event.message();
-        Component newChatComponent = Component.text()
-                .append(nameComponent)
-                .append(Component.text(" "))
-                .append(chatComponent).build();
-        event.setCancelled(true);
-        event.getPlayer().getServer().sendMessage(newChatComponent);
     }
 }

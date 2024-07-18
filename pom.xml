@@ -6,7 +6,7 @@
 
     <groupId>cn.lunadeer</groupId>
     <artifactId>MiniPlayerTitle</artifactId>
-    <version>4.3.2</version>
+    <version>4.4.0</version>
     <packaging>jar</packaging>
 
     <name>MiniPlayerTitle</name>
@@ -82,7 +82,7 @@
         <dependency>
             <groupId>cn.lunadeer</groupId>
             <artifactId>MinecraftPluginUtils</artifactId>
-            <version>1.3.2-SNAPSHOT</version>
+            <version>1.3.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>me.clip</groupId>

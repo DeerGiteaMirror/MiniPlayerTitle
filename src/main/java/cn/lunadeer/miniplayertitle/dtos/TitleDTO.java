@@ -1,6 +1,9 @@
 package cn.lunadeer.miniplayertitle.dtos;
 
 import cn.lunadeer.minecraftpluginutils.XLogger;
+import cn.lunadeer.minecraftpluginutils.databse.DatabaseManager;
+import cn.lunadeer.minecraftpluginutils.databse.Field;
+import cn.lunadeer.minecraftpluginutils.databse.FieldType;
 import cn.lunadeer.miniplayertitle.Color;
 import cn.lunadeer.miniplayertitle.MiniPlayerTitle;
 import net.kyori.adventure.text.Component;
@@ -14,18 +17,21 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static cn.lunadeer.minecraftpluginutils.databse.DatabaseManager.handleDatabaseError;
+
 public class TitleDTO {
-    private int id;
-    private String title;
-    private String description;
+    private final Field id = new Field("id", FieldType.INT);
+    private final Field title = new Field("title", FieldType.STRING);
+    private final Field description = new Field("description", FieldType.STRING);
+
 
     public static TitleDTO get(int id) {
         String sql = "";
         sql += "SELECT id, title, description FROM mplt_title WHERE id = " + id + ";";
-        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
+        try (ResultSet rs = DatabaseManager.instance.query(sql)) {
             if (rs.next()) return getTitleDTO(rs);
         } catch (Exception e) {
-            MiniPlayerTitle.database.handleDatabaseError("获取称号失败", e, sql);
+            handleDatabaseError("获取称号失败", e, sql);
         }
         return null;
     }
@@ -36,10 +42,10 @@ public class TitleDTO {
                 "VALUES (?, ?) " +
                 "RETURNING " +
                 "id, title, description;";
-        try (ResultSet rs = MiniPlayerTitle.database.query(sql, title, description)) {
+        try (ResultSet rs = DatabaseManager.instance.query(sql, title, description)) {
             if (rs.next()) return getTitleDTO(rs);
         } catch (Exception e) {
-            MiniPlayerTitle.database.handleDatabaseError("创建称号失败", e, sql);
+            handleDatabaseError("创建称号失败", e, sql);
         }
         return null;
     }
@@ -49,12 +55,12 @@ public class TitleDTO {
         String deleteSql = "DELETE FROM mplt_title WHERE id = ?;";
         try {
             // 执行更新操作
-            MiniPlayerTitle.database.query(updateSql, this.id);
+            DatabaseManager.instance.query(updateSql, getId());
             // 执行删除操作
-            MiniPlayerTitle.database.query(deleteSql, this.id);
+            DatabaseManager.instance.query(deleteSql, getId());
             return true;
         } catch (Exception e) {
-            MiniPlayerTitle.database.handleDatabaseError("删除称号失败", e, updateSql + " " + deleteSql);
+            handleDatabaseError("删除称号失败", e, updateSql + " " + deleteSql);
             return false;
         }
     }
@@ -63,12 +69,12 @@ public class TitleDTO {
         String sql = "";
         sql += "SELECT id, title, description FROM mplt_title;";
         List<TitleDTO> titleDTOs = new ArrayList<>();
-        try (ResultSet rs = MiniPlayerTitle.database.query(sql)) {
+        try (ResultSet rs = DatabaseManager.instance.query(sql)) {
             while (rs.next()) {
                 titleDTOs.add(getTitleDTO(rs));
             }
         } catch (Exception e) {
-            MiniPlayerTitle.database.handleDatabaseError("获取称号列表失败", e, sql);
+            handleDatabaseError("获取称号列表失败", e, sql);
         }
         return titleDTOs;
     }
@@ -76,7 +82,7 @@ public class TitleDTO {
     public TextComponent getTitleColored() {
         TextComponent prefix = Component.text(MiniPlayerTitle.config.getPrefix(), new Color("#ffffff").getStyle());
         TextComponent suffix = Component.text(MiniPlayerTitle.config.getSuffix(), new Color("#ffffff").getStyle());
-        String[] parts = this.title.split("&#");
+        String[] parts = getTitleRaw().split("&#");
         List<TextComponent> components = new ArrayList<>();
         components.add(prefix);
         for (String part : parts) {
@@ -99,7 +105,7 @@ public class TitleDTO {
         for (TextComponent component : components) {
             title_component.append(component);
         }
-        return title_component.build().hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text(this.description)));
+        return title_component.build().hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text(getDescription())));
     }
 
     /**
@@ -110,7 +116,7 @@ public class TitleDTO {
      * @return String
      */
     public String getTitleColoredBukkit() {
-        String title = "&f" + MiniPlayerTitle.config.getPrefix() + this.title + "&f" + MiniPlayerTitle.config.getSuffix();
+        String title = "&f" + MiniPlayerTitle.config.getPrefix() + getTitleRaw() + "&f" + MiniPlayerTitle.config.getSuffix();
         title = title.replaceAll("&#", "#");
         Pattern pattern = Pattern.compile("#[a-fA-F0-9]{6}");
         Matcher matcher = pattern.matcher(title);
@@ -127,7 +133,7 @@ public class TitleDTO {
     }
 
     public String getTitlePlainText() {
-        String[] parts = this.title.split("&#");
+        String[] parts = getTitleRaw().split("&#");
         StringBuilder res = new StringBuilder();
         for (String part : parts) {
             if (part.isEmpty()) {
@@ -145,23 +151,27 @@ public class TitleDTO {
     }
 
     public Integer getId() {
-        return this.id;
+        return (Integer) this.id.value;
     }
 
     public String getDescription() {
-        return this.description;
+        return (String) this.description.value;
+    }
+
+    public String getTitleRaw() {
+        return (String) this.title.value;
     }
 
     public boolean updateTitle(String title) {
         String sql = "";
         sql += "UPDATE mplt_title SET title = ? WHERE id = ?;";
-        try (ResultSet rs = MiniPlayerTitle.database.query(sql, title, this.id)) {
+        try (ResultSet rs = DatabaseManager.instance.query(sql, title, getId())) {
             if (rs != null && rs.next()) {
-                this.title = title;
+                this.title.value = title;
                 return true;
             }
         } catch (Exception e) {
-            MiniPlayerTitle.database.handleDatabaseError("更新称号失败", e, sql);
+            handleDatabaseError("更新称号失败", e, sql);
         }
         return false;
     }
@@ -169,22 +179,22 @@ public class TitleDTO {
     public boolean updateDescription(String description) {
         String sql = "";
         sql += "UPDATE mplt_title SET description = ? WHERE id = ?;";
-        try (ResultSet rs = MiniPlayerTitle.database.query(sql, description, this.id)) {
+        try (ResultSet rs = DatabaseManager.instance.query(sql, description, getId())) {
             if (rs != null && rs.next()) {
-                this.description = description;
+                this.description.value = description;
                 return true;
             }
         } catch (Exception e) {
-            MiniPlayerTitle.database.handleDatabaseError("更新称号失败", e, sql);
+            handleDatabaseError("更新称号失败", e, sql);
         }
         return false;
     }
 
     private static TitleDTO getTitleDTO(ResultSet rs) throws SQLException {
         TitleDTO titleDTO = new TitleDTO();
-        titleDTO.id = rs.getInt("id");
-        titleDTO.title = rs.getString("title");
-        titleDTO.description = rs.getString("description");
+        titleDTO.id.value = rs.getInt("id");
+        titleDTO.title.value = rs.getString("title");
+        titleDTO.description.value = rs.getString("description");
         return titleDTO;
     }
 }

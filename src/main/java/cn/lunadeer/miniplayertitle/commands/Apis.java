@@ -1,10 +1,10 @@
 package cn.lunadeer.miniplayertitle.commands;
 
-import cn.lunadeer.minecraftpluginutils.Notification;
+import cn.lunadeer.minecraftpluginutils.Common;
 import cn.lunadeer.miniplayertitle.MiniPlayerTitle;
 import cn.lunadeer.miniplayertitle.dtos.TitleDTO;
 import net.kyori.adventure.text.Component;
-import org.bukkit.command.CommandSender;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
@@ -19,29 +19,30 @@ public class Apis {
         if (usingPapi()) {
             return;
         }
-        if (title == null || title.getId() == -1) {
+
+        Component titleComponent = Component.text("");
+        String titleBukkit = "";
+
+        if (title != null && title.getId() != -1) {
+            titleComponent = title.getTitleColored();
+            titleBukkit = ChatColor.translateAlternateColorCodes('&', title.getTitleColoredBukkit());
+        }
+
+        if (Common.isPaper()) {
             Component newDisplayName = Component.text()
+                    .append(titleComponent)
                     .append(Component.text("<"))
                     .append(player.name())
-                    .append(Component.text("> ")).build();
+                    .append(Component.text(">")).build();
             Component newListName = Component.text()
+                    .append(titleComponent)
+                    .append(Component.text(" "))
                     .append(player.name()).build();
             player.displayName(newDisplayName);
             player.playerListName(newListName);
-            return;
+        } else {
+            player.setDisplayName(titleBukkit + "<" + player.getName() + ">");
+            player.setPlayerListName(titleBukkit + " " + player.getName());
         }
-
-        Component titleComponent = title.getTitleColored();
-        Component newDisplayName = Component.text()
-                .append(titleComponent)
-                .append(Component.text("<"))
-                .append(player.name())
-                .append(Component.text(">")).build();
-        Component newListName = Component.text()
-                .append(titleComponent)
-                .append(Component.text(" "))
-                .append(player.name()).build();
-        player.displayName(newDisplayName);
-        player.playerListName(newListName);
     }
 }

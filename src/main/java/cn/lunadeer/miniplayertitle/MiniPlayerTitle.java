@@ -1,7 +1,12 @@
 package cn.lunadeer.miniplayertitle;
 
 import cn.lunadeer.minecraftpluginutils.*;
+import cn.lunadeer.minecraftpluginutils.databse.DatabaseManager;
+import cn.lunadeer.minecraftpluginutils.databse.DatabaseType;
 import cn.lunadeer.miniplayertitle.dtos.TitleDTO;
+import cn.lunadeer.miniplayertitle.events.Events;
+import cn.lunadeer.miniplayertitle.events.PaperChat;
+import cn.lunadeer.miniplayertitle.events.SpigotChat;
 import cn.lunadeer.miniplayertitle.utils.ConfigManager;
 import cn.lunadeer.miniplayertitle.utils.DatabaseTables;
 import org.bukkit.Bukkit;
@@ -23,8 +28,8 @@ public final class MiniPlayerTitle extends JavaPlugin {
         new XLogger(instance);
         config = new ConfigManager(instance);
         XLogger.setDebug(config.isDebug());
-        database = new DatabaseManager(this,
-                DatabaseManager.TYPE.valueOf(config.getDbType().toUpperCase()),
+        new DatabaseManager(this,
+                DatabaseType.valueOf(config.getDbType().toUpperCase()),
                 config.getDbHost(),
                 config.getDbPort(),
                 config.getDbName(),
@@ -41,6 +46,11 @@ public final class MiniPlayerTitle extends JavaPlugin {
         }
 
         Bukkit.getPluginManager().registerEvents(new Events(), this);
+        if (Common.isPaper()) {
+            Bukkit.getPluginManager().registerEvents(new PaperChat(), this);
+        } else {
+            Bukkit.getPluginManager().registerEvents(new SpigotChat(), this);
+        }
         Objects.requireNonNull(Bukkit.getPluginCommand("MiniPlayerTitle")).setExecutor(new Commands());
         Objects.requireNonNull(Bukkit.getPluginCommand("MiniPlayerTitle")).setTabCompleter(new Commands());
 
@@ -53,7 +63,7 @@ public final class MiniPlayerTitle extends JavaPlugin {
         }
 
         XLogger.info("称号插件已加载");
-        XLogger.info("版本: " + getPluginMeta().getVersion());
+        XLogger.info("版本: " + this.getDescription().getVersion());
         // http://patorjk.com/software/taag/#p=display&f=Big&t=MiniPlayerTitle
         XLogger.info("  __  __ _       _ _____  _                    _______ _ _   _");
         XLogger.info(" |  \\/  (_)     (_)  __ \\| |                  |__   __(_) | | |");
@@ -68,12 +78,11 @@ public final class MiniPlayerTitle extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        database.close();
+        DatabaseManager.instance.close();
     }
 
     public static MiniPlayerTitle instance;
     public static ConfigManager config;
-    public static DatabaseManager database;
     private GiteaReleaseCheck giteaReleaseCheck;
     private Map<UUID, TitleDTO> playerUsingTitle = new HashMap<>();
 
