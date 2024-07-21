@@ -1,6 +1,7 @@
 package cn.lunadeer.miniplayertitle;
 
 import cn.lunadeer.minecraftpluginutils.*;
+import cn.lunadeer.minecraftpluginutils.VaultConnect.VaultConnect;
 import cn.lunadeer.minecraftpluginutils.databse.DatabaseManager;
 import cn.lunadeer.minecraftpluginutils.databse.DatabaseType;
 import cn.lunadeer.miniplayertitle.dtos.TitleDTO;
