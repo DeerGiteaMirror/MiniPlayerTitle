@@ -40,6 +40,10 @@ public class TitleCard implements Listener {
                 Notification.error(sender, "获取销售详情时出现错误");
                 return;
             }
+            if (titleShop.getDays() == 0) {
+                Notification.error(sender, "不可以生成天数为0的称号卡！");
+                return;
+            }
             ItemStack card = TitleCard.create(titleShop);
             Player player = (Player) sender;
             player.getInventory().addItem(card);
