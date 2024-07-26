@@ -1,8 +1,6 @@
 package cn.lunadeer.miniplayertitle.events;
 
-import cn.lunadeer.minecraftpluginutils.Notification;
 import cn.lunadeer.miniplayertitle.MiniPlayerTitle;
-import net.kyori.adventure.text.Component;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;

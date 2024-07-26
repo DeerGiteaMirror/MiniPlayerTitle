@@ -4,7 +4,6 @@ import cn.lunadeer.minecraftpluginutils.Notification;
 import cn.lunadeer.miniplayertitle.dtos.PlayerTitleDTO;
 import cn.lunadeer.miniplayertitle.dtos.TitleDTO;
 import cn.lunadeer.miniplayertitle.dtos.TitleShopDTO;
-import cn.lunadeer.miniplayertitle.tuis.MyTitles;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -65,6 +64,7 @@ public class TitleCard implements Listener {
         }
         use(player, item);
         player.getInventory().removeItem(item);
+        event.setCancelled(true);
     }
 
     private static ItemStack create(@NotNull TitleShopDTO saleInfo) {
