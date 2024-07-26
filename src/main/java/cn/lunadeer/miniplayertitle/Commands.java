@@ -1,6 +1,7 @@
 package cn.lunadeer.miniplayertitle;
 
 import cn.lunadeer.miniplayertitle.commands.PlayerManage;
+import cn.lunadeer.miniplayertitle.commands.TitleCard;
 import cn.lunadeer.miniplayertitle.commands.TitleManage;
 import cn.lunadeer.miniplayertitle.commands.TitleShopSale;
 import cn.lunadeer.miniplayertitle.dtos.PlayerInfoDTO;
@@ -81,6 +82,9 @@ public class Commands implements TabExecutor {
             case "grant_title":         // mplt grant_title <玩家名称> <称号> <描述> [天数]
                 PlayerManage.grantTitle(sender, args);
                 break;
+            case "get_card":            // mplt get_card <商品ID>
+                TitleCard.getTitleCard(sender, args);
+                break;
             default:
                 return false;
         }
@@ -93,7 +97,7 @@ public class Commands implements TabExecutor {
             return Arrays.asList("menu", "all_titles", "my_titles", "shop", "custom_info", "sale_info",
                     "create_sale", "set_sale", "delete_sale", "buy_sale", "use_title", "create_title",
                     "delete_title", "edit_title_name", "edit_title_desc", "custom_title", "add_coin", "set_coin",
-                    "grant_title"
+                    "grant_title", "get_card"
             );
         }
         if (args.length == 2) {
@@ -101,6 +105,7 @@ public class Commands implements TabExecutor {
                 case "sale_info":
                 case "delete_sale":
                 case "buy_sale":
+                case "get_card":
                     return Collections.singletonList("<商品ID>");
                 case "create_sale":
                 case "delete_title":

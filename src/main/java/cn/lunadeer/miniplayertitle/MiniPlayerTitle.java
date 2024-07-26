@@ -4,6 +4,7 @@ import cn.lunadeer.minecraftpluginutils.*;
 import cn.lunadeer.minecraftpluginutils.VaultConnect.VaultConnect;
 import cn.lunadeer.minecraftpluginutils.databse.DatabaseManager;
 import cn.lunadeer.minecraftpluginutils.databse.DatabaseType;
+import cn.lunadeer.miniplayertitle.commands.TitleCard;
 import cn.lunadeer.miniplayertitle.dtos.TitleDTO;
 import cn.lunadeer.miniplayertitle.events.Events;
 import cn.lunadeer.miniplayertitle.events.PaperChat;
@@ -47,6 +48,7 @@ public final class MiniPlayerTitle extends JavaPlugin {
         }
 
         Bukkit.getPluginManager().registerEvents(new Events(), this);
+        Bukkit.getPluginManager().registerEvents(new TitleCard(), this);
         if (Common.isPaper()) {
             Bukkit.getPluginManager().registerEvents(new PaperChat(), this);
         } else {

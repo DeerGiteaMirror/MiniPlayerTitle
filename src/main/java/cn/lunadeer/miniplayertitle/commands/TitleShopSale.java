@@ -194,6 +194,7 @@ public class TitleShopSale {
             Notification.info(player, Component.text("成功续续期称号: ").append(had.getTitle().getTitleColored()));
         }
 
+        TitleManage.useTitle(player, new String[]{"use_title", String.valueOf(had.getId())});
         int page = getArgPage(args, 3);
         MyTitles.show(sender, new String[]{"my_titles", String.valueOf(page)});
     }

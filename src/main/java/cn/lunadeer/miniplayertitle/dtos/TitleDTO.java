@@ -110,7 +110,7 @@ public class TitleDTO {
 
     /**
      * 获取称号的颜色化字符串
-     * 需要使用 translateAlternateColorCodes 方法对返回字符串进行处理
+     * 需要使用 ChatColor.translateAlternateColorCodes 方法对返回字符串进行处理
      * &#FFFFFF -> &x&f&f&f&f&f
      *
      * @return String

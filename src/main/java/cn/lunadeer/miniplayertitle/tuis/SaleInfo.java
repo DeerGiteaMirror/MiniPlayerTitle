@@ -122,6 +122,7 @@ public class SaleInfo {
         }
         if (player.hasPermission("mplt.admin")) {
             operate.append(Button.create("删除").setExecuteCommand("/mplt delete_sale " + args[1] + " b").build());
+            operate.append(Button.createGreen("导出称号卡").setExecuteCommand("/mplt get_card " + args[1]).build());
         }
         view.add(Line.create().append("---------------------"));
         view.add(operate);

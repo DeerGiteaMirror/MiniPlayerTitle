@@ -5,11 +5,13 @@ import cn.lunadeer.miniplayertitle.MiniPlayerTitle;
 import cn.lunadeer.miniplayertitle.dtos.PlayerInfoDTO;
 import cn.lunadeer.miniplayertitle.dtos.PlayerTitleDTO;
 import cn.lunadeer.miniplayertitle.dtos.TitleDTO;
+import cn.lunadeer.miniplayertitle.dtos.TitleShopDTO;
 import cn.lunadeer.miniplayertitle.tuis.AllTitles;
 import cn.lunadeer.miniplayertitle.tuis.MyTitles;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import static cn.lunadeer.miniplayertitle.commands.Apis.updateName;
 
