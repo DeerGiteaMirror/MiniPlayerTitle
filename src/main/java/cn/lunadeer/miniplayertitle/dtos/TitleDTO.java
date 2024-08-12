@@ -1,21 +1,16 @@
 package cn.lunadeer.miniplayertitle.dtos;
 
-import cn.lunadeer.minecraftpluginutils.XLogger;
+import cn.lunadeer.minecraftpluginutils.ColorParser;
 import cn.lunadeer.minecraftpluginutils.databse.DatabaseManager;
 import cn.lunadeer.minecraftpluginutils.databse.Field;
 import cn.lunadeer.minecraftpluginutils.databse.FieldType;
-import cn.lunadeer.miniplayertitle.Color;
 import cn.lunadeer.miniplayertitle.MiniPlayerTitle;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.event.HoverEvent;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static cn.lunadeer.minecraftpluginutils.databse.DatabaseManager.handleDatabaseError;
 
@@ -80,32 +75,8 @@ public class TitleDTO {
     }
 
     public TextComponent getTitleColored() {
-        TextComponent prefix = Component.text(MiniPlayerTitle.config.getPrefix(), new Color("#ffffff").getStyle());
-        TextComponent suffix = Component.text(MiniPlayerTitle.config.getSuffix(), new Color("#ffffff").getStyle());
-        String[] parts = getTitleRaw().split("&#");
-        List<TextComponent> components = new ArrayList<>();
-        components.add(prefix);
-        for (String part : parts) {
-            if (part.isEmpty()) {
-                continue;
-            }
-            Color color = new Color("#ffffff");
-            String content;
-            if (part.length() > 6 && part.substring(0, 6).matches("^[0-9a-fA-F]{6}$")) {
-                String color_str = part.substring(0, 6);
-                color = new Color("#" + color_str);
-                content = part.substring(6);
-            } else {
-                content = part;
-            }
-            components.add(Component.text(content, color.getStyle()));
-        }
-        components.add(suffix);
-        TextComponent.Builder title_component = Component.text();
-        for (TextComponent component : components) {
-            title_component.append(component);
-        }
-        return title_component.build().hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text(getDescription())));
+        String with_pre_suf = "&#ffffff" + MiniPlayerTitle.config.getPrefix() + getTitleRaw() + "&#ffffff" + MiniPlayerTitle.config.getSuffix();
+        return ColorParser.getComponentType(with_pre_suf);
     }
 
     /**
@@ -116,38 +87,12 @@ public class TitleDTO {
      * @return String
      */
     public String getTitleColoredBukkit() {
-        String title = "&f" + MiniPlayerTitle.config.getPrefix() + getTitleRaw() + "&f" + MiniPlayerTitle.config.getSuffix();
-        title = title.replaceAll("&#", "#");
-        Pattern pattern = Pattern.compile("#[a-fA-F0-9]{6}");
-        Matcher matcher = pattern.matcher(title);
-        while (matcher.find()) {
-            String hexCode = matcher.group();
-            StringBuilder builder = new StringBuilder("&x");
-            for (char c : hexCode.substring(1).toCharArray()) {
-                builder.append('&').append(c);
-            }
-            title = title.replace(hexCode, builder.toString());
-        }
-        XLogger.debug("TitleDTO.getTitleColoredBukkit: %s", title);
-        return title;
+        String with_pre_suf = "&#ffffff" + MiniPlayerTitle.config.getPrefix() + getTitleRaw() + "&#ffffff" + MiniPlayerTitle.config.getSuffix();
+        return ColorParser.getBukkitType(with_pre_suf);
     }
 
     public String getTitlePlainText() {
-        String[] parts = getTitleRaw().split("&#");
-        StringBuilder res = new StringBuilder();
-        for (String part : parts) {
-            if (part.isEmpty()) {
-                continue;
-            }
-            String content;
-            if (part.length() > 6 && part.substring(0, 6).matches("^[0-9a-fA-F]{6}$")) {
-                content = part.substring(6);
-            } else {
-                content = part;
-            }
-            res.append(content);
-        }
-        return res.toString();
+        return ColorParser.getPlainText(getTitleRaw());
     }
 
     public Integer getId() {

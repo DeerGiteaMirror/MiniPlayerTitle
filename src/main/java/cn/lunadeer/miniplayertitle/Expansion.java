@@ -34,7 +34,7 @@ public class Expansion extends PlaceholderExpansion {
             if (t == null) {
                 return "";
             }
-            return ChatColor.translateAlternateColorCodes('&', t.getTitleColoredBukkit());
+            return t.getTitleColoredBukkit();
         }
 
         return null; //
