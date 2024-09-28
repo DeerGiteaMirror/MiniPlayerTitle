@@ -52,6 +52,6 @@ public class Expansion extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return plugin.getPluginMeta().getVersion();
+        return MiniPlayerTitle.instance.getDescription().getVersion();
     }
 }
